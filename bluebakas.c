@@ -232,25 +232,28 @@ void InitGraphics() {
     VDP_SetColor(COLOR_BLACK);
     VDP_SetSpriteFlag(VDP_SPRITE_SIZE_8);
 
+    // Writes Meanie sprite to the pattern table
     VDP_WriteVRAM_16K(
         g_Meanie8x8,
         VDP_GetSpritePatternTable() + (SPR_PAT_MEANIE * 8),
         sizeof(g_Meanie8x8)
     );
 
+    // Writes fuel tank sprite to the pattern table
     VDP_WriteVRAM_16K(
         g_Fuel8x8,
         VDP_GetSpritePatternTable() + (SPR_PAT_FUEL * 8),
         sizeof(g_Fuel8x8)
     );
 
+    // Writes explosion sprites to the pattern table
     VDP_WriteVRAM_16K(
         g_Explosion8x8,
         VDP_GetSpritePatternTable() + (SPR_PAT_EXPLOSION * 8),
         sizeof(g_Explosion8x8)
     );
 
-    // SCREEN 1 has one 256-pattern table. Our game graphics use 0-31.
+    // SCREEN 1 has a 256-pattern table. The tiles correspond to 0-31
     VDP_WriteVRAM_16K(
         g_Tiles_Patterns,
         g_ScreenPatternLow,
@@ -262,9 +265,8 @@ void InitGraphics() {
     // SCREEN 1 color table to white on transparent/backdrop.
     Print_SetTextFont(g_Font_PETSCII, 32);
 
-    // SCREEN 1 color table: one byte controls each group of 8 patterns.
-    // Leave all font groups white on the black backdrop, then override
-    // the four groups used by the game tiles.
+    // SCREEN 1 color table: one byte controls each color pair of 8 patterns.
+    // Leave all font groups white on the black backdrop, then override the four groups used by the game tiles.
     VDP_FillVRAM_16K(0xF0, g_ScreenColorLow, 32);
     VDP_Poke_16K(0x20, g_ScreenColorLow + 0); // patterns  0-7:  green / backdrop
     VDP_Poke_16K(0xF0, g_ScreenColorLow + 1); // patterns  8-15: white / backdrop
