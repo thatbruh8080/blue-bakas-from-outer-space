@@ -1,0 +1,2935 @@
+                                      1 ;--------------------------------------------------------
+                                      2 ; File Created by SDCC : free open source ISO C Compiler
+                                      3 ; Version 4.6.0 #16555 (MINGW64)
+                                      4 ;--------------------------------------------------------
+                                      5 	.module print
+                                      6 	
+                                      7 	.optsdcc -mz80 sdcccall(1)
+                                      8 ;--------------------------------------------------------
+                                      9 ; Public variables in this module
+                                     10 ;--------------------------------------------------------
+                                     11 	.globl _CopyNo8HeightFontData
+                                     12 	.globl _Print_ValidatePattern
+                                     13 	.globl _Print_ValidateChar
+                                     14 	.globl _VDP_Poke_16K
+                                     15 	.globl _VDP_FillVRAM_16K
+                                     16 	.globl _VDP_WriteVRAM_16K
+                                     17 	.globl _VDP_RegWrite
+                                     18 	.globl _g_PrintInvalid
+                                     19 	.globl _g_PrintData
+                                     20 	.globl _g_SLTSL
+                                     21 	.globl _g_GRPACY
+                                     22 	.globl _g_GRPACX
+                                     23 	.globl _g_LOGOPR
+                                     24 	.globl _g_CMASK
+                                     25 	.globl _g_CLOC
+                                     26 	.globl _g_FNKSTR
+                                     27 	.globl _g_GETPNT
+                                     28 	.globl _g_PUTPNT
+                                     29 	.globl _g_ATRBYT
+                                     30 	.globl _g_BDRCLR
+                                     31 	.globl _g_BAKCLR
+                                     32 	.globl _g_FORCLR
+                                     33 	.globl _g_CSRX
+                                     34 	.globl _g_CSRY
+                                     35 	.globl _g_CLIKSW
+                                     36 	.globl _g_MLTPAT
+                                     37 	.globl _g_MLTATR
+                                     38 	.globl _g_MLTCGP
+                                     39 	.globl _g_MLTCOL
+                                     40 	.globl _g_MLTNAM
+                                     41 	.globl _g_GRPPAT
+                                     42 	.globl _g_GRPATR
+                                     43 	.globl _g_GRPCGP
+                                     44 	.globl _g_GRPCOL
+                                     45 	.globl _g_GRPNAM
+                                     46 	.globl _g_T32PAT
+                                     47 	.globl _g_T32ATR
+                                     48 	.globl _g_T32CGP
+                                     49 	.globl _g_T32COL
+                                     50 	.globl _g_T32NAM
+                                     51 	.globl _g_TXTPAT
+                                     52 	.globl _g_TXTATR
+                                     53 	.globl _g_TXTCGP
+                                     54 	.globl _g_TXTCOL
+                                     55 	.globl _g_TXTNAM
+                                     56 	.globl _g_CLMLST
+                                     57 	.globl _g_CRTCNT
+                                     58 	.globl _g_LINLEN
+                                     59 	.globl _g_LINL32
+                                     60 	.globl _g_LINL40
+                                     61 	.globl _g_HexChar
+                                     62 	.globl _g_CHAR_16
+                                     63 	.globl _g_MSXMID
+                                     64 	.globl _g_MSXVER
+                                     65 	.globl _g_ROMVersion
+                                     66 	.globl _g_BASRVN
+                                     67 	.globl _g_VDP_DW
+                                     68 	.globl _g_VDP_DR
+                                     69 	.globl _g_CGTABL
+                                     70 	.globl _g_SVFFFD
+                                     71 	.globl _g_RG27SAV
+                                     72 	.globl _g_RG26SAV
+                                     73 	.globl _g_RG25SAV
+                                     74 	.globl _g_SVFFF8
+                                     75 	.globl _g_MINROM
+                                     76 	.globl _g_RG23SAV
+                                     77 	.globl _g_RG22SAV
+                                     78 	.globl _g_RG21SAV
+                                     79 	.globl _g_RG20SAV
+                                     80 	.globl _g_RG19SAV
+                                     81 	.globl _g_RG18SAV
+                                     82 	.globl _g_RG17SAV
+                                     83 	.globl _g_RG16SAV
+                                     84 	.globl _g_RG15SAV
+                                     85 	.globl _g_RG14SAV
+                                     86 	.globl _g_RG13SAV
+                                     87 	.globl _g_RG12SAV
+                                     88 	.globl _g_RG11SAV
+                                     89 	.globl _g_RG10SAV
+                                     90 	.globl _g_RG09SAV
+                                     91 	.globl _g_RG08SAV
+                                     92 	.globl _g_PROCNM
+                                     93 	.globl _g_SLTWRK
+                                     94 	.globl _g_SLTATR
+                                     95 	.globl _g_SLTTBL
+                                     96 	.globl _g_EXPTBL
+                                     97 	.globl _g_MNROM
+                                     98 	.globl _g_DRWANG
+                                     99 	.globl _g_DRWSCL
+                                    100 	.globl _g_DRWFLG
+                                    101 	.globl _g_GYPOS
+                                    102 	.globl _g_GXPOS
+                                    103 	.globl _g_BRDATR
+                                    104 	.globl _g_CASPRV
+                                    105 	.globl _g_OLDSCR
+                                    106 	.globl _g_SCRMOD
+                                    107 	.globl _g_FLBMEM
+                                    108 	.globl _g_KANAMD
+                                    109 	.globl _g_KANAST
+                                    110 	.globl _g_CAPST
+                                    111 	.globl _g_CSTYLE
+                                    112 	.globl _g_CSRSW
+                                    113 	.globl _g_INSFLG
+                                    114 	.globl _g_ESCCNT
+                                    115 	.globl _g_GRPHED
+                                    116 	.globl _g_WINWID
+                                    117 	.globl _g_LOWLIM
+                                    118 	.globl _g_INTCNT
+                                    119 	.globl _g_INTVAL
+                                    120 	.globl _g_JIFFY
+                                    121 	.globl _g_PADX
+                                    122 	.globl _g_PADY
+                                    123 	.globl _g_INTFLG
+                                    124 	.globl _g_RTYCNT
+                                    125 	.globl _g_TRPTBL
+                                    126 	.globl _g_HIMEM
+                                    127 	.globl _g_BOTTOM
+                                    128 	.globl _g_PATWRK
+                                    129 	.globl _g_LINWRK
+                                    130 	.globl _g_KEYBUF
+                                    131 	.globl _g_NEWKEY
+                                    132 	.globl _g_OLDKEY
+                                    133 	.globl _g_CLIKFL
+                                    134 	.globl _g_ONGSBF
+                                    135 	.globl _g_FNKFLG
+                                    136 	.globl _g_FNKSWI
+                                    137 	.globl _g_CODSAV
+                                    138 	.globl _g_FSTPOS
+                                    139 	.globl _g_LINTTB
+                                    140 	.globl _g_BASROM
+                                    141 	.globl _g_ENSTOP
+                                    142 	.globl _g_VCBC
+                                    143 	.globl _g_VCBB
+                                    144 	.globl _g_VCBA
+                                    145 	.globl _g_PLYCNT
+                                    146 	.globl _g_MUSICF
+                                    147 	.globl _g_QUEUEN
+                                    148 	.globl _g_MCLPTR
+                                    149 	.globl _g_MCLLEN
+                                    150 	.globl _g_SAVVOL
+                                    151 	.globl _g_VOICEN
+                                    152 	.globl _g_SAVSP
+                                    153 	.globl _g_PRSCNT
+                                    154 	.globl _g_LSTMOD
+                                    155 	.globl _g_LSTCOM
+                                    156 	.globl _g_COMMSK
+                                    157 	.globl _g_ESTBLS
+                                    158 	.globl _g_FLAGS
+                                    159 	.globl _g_ERRORS
+                                    160 	.globl _g_DATCNT
+                                    161 	.globl _g_DEVNUM
+                                    162 	.globl _g_OLDINT
+                                    163 	.globl _g_OLDSTT
+                                    164 	.globl _g_MEXBIh
+                                    165 	.globl _g_RSIQLN
+                                    166 	.globl _g_RSFCB
+                                    167 	.globl _g_TOCNT
+                                    168 	.globl _g_RSTMP
+                                    169 	.globl _g_YSAVE
+                                    170 	.globl _g_XSAVE
+                                    171 	.globl _g_NORUSE
+                                    172 	.globl _g_MODE
+                                    173 	.globl _g_ROMA
+                                    174 	.globl _g_CHRCNT
+                                    175 	.globl _g_EXBRSA
+                                    176 	.globl _g_AVCSAV
+                                    177 	.globl _g_ACPAGE
+                                    178 	.globl _g_DPPAGE
+                                    179 	.globl _g_RS2IQ
+                                    180 	.globl _g_VOICCQ
+                                    181 	.globl _g_VOICBQ
+                                    182 	.globl _g_VOICAQ
+                                    183 	.globl _g_QUEBAK
+                                    184 	.globl _g_QUETAB
+                                    185 	.globl _g_ASPCT2
+                                    186 	.globl _g_ASPCT1
+                                    187 	.globl _g_HEADER
+                                    188 	.globl _g_HIGH
+                                    189 	.globl _g_LOW
+                                    190 	.globl _g_CS240
+                                    191 	.globl _g_CS120
+                                    192 	.globl _g_REPCNT
+                                    193 	.globl _g_SCNCNT
+                                    194 	.globl _g_FRCNEW
+                                    195 	.globl _g_QUEUES
+                                    196 	.globl _g_MINUPD
+                                    197 	.globl _g_MAXUPD
+                                    198 	.globl _g_TRGFLG
+                                    199 	.globl _g_STATFL
+                                    200 	.globl _g_RG7SAV
+                                    201 	.globl _g_RG6SAV
+                                    202 	.globl _g_RG5SAV
+                                    203 	.globl _g_RG4SAV
+                                    204 	.globl _g_RG3SAV
+                                    205 	.globl _g_RG2SAV
+                                    206 	.globl _g_RG1SAV
+                                    207 	.globl _g_RG0SAV
+                                    208 	.globl _g_CNSDFG
+                                    209 	.globl _g_USRTAB
+                                    210 	.globl _g_CLPRIM
+                                    211 	.globl _g_WRPRIM
+                                    212 	.globl _g_RDPRIM
+                                    213 	.globl _Print_Initialize
+                                    214 	.globl _Print_SetMode
+                                    215 	.globl _Print_SetFont
+                                    216 	.globl _Print_SetColor
+                                    217 	.globl _Print_SetColorShade
+                                    218 	.globl _Print_SetTextFont
+                                    219 	.globl _DrawChar_Layout
+                                    220 	.globl _Print_Clear
+                                    221 	.globl _Print_Backspace
+                                    222 	.globl _Print_DrawChar
+                                    223 	.globl _Print_DrawCharX
+                                    224 	.globl _Print_DrawText
+                                    225 	.globl _Print_DrawBin8
+                                    226 	.globl _Print_DrawHex8
+                                    227 	.globl _Print_DrawHex16
+                                    228 	.globl _Print_DrawHex32
+                                    229 	.globl _Print_DrawInt
+                                    230 	.globl _Print_DrawFormat
+                                    231 	.globl _Print_DrawLineH
+                                    232 	.globl _Print_DrawLineV
+                                    233 	.globl _Print_DrawBox
+                                    234 ;--------------------------------------------------------
+                                    235 ; special function registers
+                                    236 ;--------------------------------------------------------
+                                    237 ;--------------------------------------------------------
+                                    238 ; ram data
+                                    239 ;--------------------------------------------------------
+                                    240 	.area _DATA
+                         0000F3AE   241 _g_LINL40	=	0xf3ae
+                         0000F3AF   242 _g_LINL32	=	0xf3af
+                         0000F3B0   243 _g_LINLEN	=	0xf3b0
+                         0000F3B1   244 _g_CRTCNT	=	0xf3b1
+                         0000F3B2   245 _g_CLMLST	=	0xf3b2
+                         0000F3B3   246 _g_TXTNAM	=	0xf3b3
+                         0000F3B5   247 _g_TXTCOL	=	0xf3b5
+                         0000F3B7   248 _g_TXTCGP	=	0xf3b7
+                         0000F3B9   249 _g_TXTATR	=	0xf3b9
+                         0000F3BB   250 _g_TXTPAT	=	0xf3bb
+                         0000F3BD   251 _g_T32NAM	=	0xf3bd
+                         0000F3BF   252 _g_T32COL	=	0xf3bf
+                         0000F3C1   253 _g_T32CGP	=	0xf3c1
+                         0000F3C3   254 _g_T32ATR	=	0xf3c3
+                         0000F3C5   255 _g_T32PAT	=	0xf3c5
+                         0000F3C7   256 _g_GRPNAM	=	0xf3c7
+                         0000F3C9   257 _g_GRPCOL	=	0xf3c9
+                         0000F3CB   258 _g_GRPCGP	=	0xf3cb
+                         0000F3CD   259 _g_GRPATR	=	0xf3cd
+                         0000F3CF   260 _g_GRPPAT	=	0xf3cf
+                         0000F3D1   261 _g_MLTNAM	=	0xf3d1
+                         0000F3D3   262 _g_MLTCOL	=	0xf3d3
+                         0000F3D5   263 _g_MLTCGP	=	0xf3d5
+                         0000F3D7   264 _g_MLTATR	=	0xf3d7
+                         0000F3D9   265 _g_MLTPAT	=	0xf3d9
+                         0000F3DB   266 _g_CLIKSW	=	0xf3db
+                         0000F3DC   267 _g_CSRY	=	0xf3dc
+                         0000F3DD   268 _g_CSRX	=	0xf3dd
+                         0000F3E9   269 _g_FORCLR	=	0xf3e9
+                         0000F3EA   270 _g_BAKCLR	=	0xf3ea
+                         0000F3EB   271 _g_BDRCLR	=	0xf3eb
+                         0000F3F2   272 _g_ATRBYT	=	0xf3f2
+                         0000F3F8   273 _g_PUTPNT	=	0xf3f8
+                         0000F3FA   274 _g_GETPNT	=	0xf3fa
+                         0000F87F   275 _g_FNKSTR	=	0xf87f
+                         0000F92A   276 _g_CLOC	=	0xf92a
+                         0000F92C   277 _g_CMASK	=	0xf92c
+                         0000FB02   278 _g_LOGOPR	=	0xfb02
+                         0000FCB7   279 _g_GRPACX	=	0xfcb7
+                         0000FCB9   280 _g_GRPACY	=	0xfcb9
+                         0000FFFF   281 _g_SLTSL	=	0xffff
+    00000000                        282 _g_PrintData::
+    00000000                        283 	.ds 46
+                                    284 ;--------------------------------------------------------
+                                    285 ; ram data
+                                    286 ;--------------------------------------------------------
+                                    287 	.area _INITIALIZED
+    00000000                        288 _g_PrintInvalid::
+    00000000                        289 	.ds 8
+                                    290 ;--------------------------------------------------------
+                                    291 ; absolute ram data
+                                    292 ;--------------------------------------------------------
+                                    293 	.area _DABS (ABS)
+                                    294 	.area _DABS (ABS)
+                                    295 ;--------------------------------------------------------
+                                    296 ; global & static initialisations
+                                    297 ;--------------------------------------------------------
+                                    298 	.area _HOME
+                                    299 	.area _GSINIT
+                                    300 	.area _GSFINAL
+                                    301 	.area _GSINIT
+                                    302 ;--------------------------------------------------------
+                                    303 ; Home
+                                    304 ;--------------------------------------------------------
+                                    305 	.area _HOME
+                                    306 	.area _HOME
+                                    307 ;--------------------------------------------------------
+                                    308 ; code
+                                    309 ;--------------------------------------------------------
+                                    310 	.area _CODE
+                                    311 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:158: bool Print_Initialize()
+                                    312 ;	---------------------------------
+                                    313 ; Function Print_Initialize
+                                    314 ; ---------------------------------
+    00000000                        315 _Print_Initialize::
+                                    316 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:160: Print_SetColor(0xF, 0x0);
+    00000000 2E 00            [ 7]  317 	ld	l, #0x00
+    00000002 3E 0F            [ 7]  318 	ld	a, #0x0f
+    00000004 CDr54r01         [17]  319 	call	_Print_SetColor
+                                    320 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:268: PRINT_DATA.CursorX = x;
+    00000007 21r05r00         [10]  321 	ld	hl, #_g_PrintData + 5
+    0000000A 36 00            [10]  322 	ld	(hl), #0x00
+                                    323 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:269: PRINT_DATA.CursorY = y;
+    0000000C 21r06r00         [10]  324 	ld	hl, #_g_PrintData + 6
+    0000000F 36 00            [10]  325 	ld	(hl), #0x00
+                                    326 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/vdp.h:483: inline u8 VDP_GetMode() { return g_VDP_Data.Mode; }
+    00000011 3Ar00r00         [13]  327 	ld	a, (#_g_VDP_Data + 0)
+                                    328 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:169: switch (VDP_GetMode()) // Screen mode specific initialization
+    00000014 B7               [ 4]  329 	or	a, a
+    00000015 28 0F            [12]  330 	jr	z, 00101$
+    00000017 FE 01            [ 7]  331 	cp	a, #0x01
+    00000019 28 37            [12]  332 	jr	z, 00106$
+    0000001B FE 02            [ 7]  333 	cp	a, #0x02
+    0000001D 28 15            [12]  334 	jr	z, 00103$
+    0000001F FE 03            [ 7]  335 	cp	a, #0x03
+    00000021 28 1F            [12]  336 	jr	z, 00104$
+    00000023 C3r50r00         [10]  337 	jp	00105$
+                                    338 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:172: case VDP_MODE_TEXT1:		// 40 characters per line of text, one colour for each character
+    00000026                        339 00101$:
+                                    340 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:303: inline void Print_SetTabSize(u8 size) { PRINT_DATA.TabSize = size; }
+    00000026 21r04r00         [10]  341 	ld	hl, #_g_PrintData + 4
+    00000029 36 03            [10]  342 	ld	(hl), #0x03
+                                    343 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:174: PRINT_DATA.ScreenWidth = 40;
+    0000002B 21 28 00         [10]  344 	ld	hl, #0x0028
+    0000002E 22r16r00         [16]  345 	ld	((_g_PrintData + 22)), hl
+                                    346 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:175: break;
+    00000031 C3r52r00         [10]  347 	jp	00106$
+                                    348 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:182: case VDP_MODE_GRAPHIC1:		// 32 characters per one line of text, the COLOURed character available
+    00000034                        349 00103$:
+                                    350 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:303: inline void Print_SetTabSize(u8 size) { PRINT_DATA.TabSize = size; }
+    00000034 21r04r00         [10]  351 	ld	hl, #(_g_PrintData + 4)
+    00000037 36 03            [10]  352 	ld	(hl), #0x03
+                                    353 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:184: PRINT_DATA.ScreenWidth = 32;
+    00000039 21 20 00         [10]  354 	ld	hl, #0x0020
+    0000003C 22r16r00         [16]  355 	ld	((_g_PrintData + 22)), hl
+                                    356 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:185: break;
+    0000003F C3r52r00         [10]  357 	jp	00106$
+                                    358 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:188: case VDP_MODE_GRAPHIC2:		// 256 x 192, the colour is specififed for each 8 dots
+    00000042                        359 00104$:
+                                    360 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:303: inline void Print_SetTabSize(u8 size) { PRINT_DATA.TabSize = size; }
+    00000042 21r04r00         [10]  361 	ld	hl, #_g_PrintData + 4
+    00000045 36 03            [10]  362 	ld	(hl), #0x03
+                                    363 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:190: PRINT_DATA.ScreenWidth = 32;
+    00000047 21 20 00         [10]  364 	ld	hl, #0x0020
+    0000004A 22r16r00         [16]  365 	ld	((_g_PrintData + 22)), hl
+                                    366 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:191: break;
+    0000004D C3r52r00         [10]  367 	jp	00106$
+                                    368 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:236: default:
+    00000050                        369 00105$:
+                                    370 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:238: return FALSE;
+    00000050 AF               [ 4]  371 	xor	a, a
+    00000051 C9               [10]  372 	ret
+                                    373 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:239: }
+    00000052                        374 00106$:
+                                    375 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:243: return TRUE;
+    00000052 3E 01            [ 7]  376 	ld	a, #0x01
+                                    377 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:244: }
+    00000054 C9               [10]  378 	ret
+                         0000F380   379 _g_RDPRIM	=	0xf380
+                         0000F385   380 _g_WRPRIM	=	0xf385
+                         0000F38C   381 _g_CLPRIM	=	0xf38c
+                         0000F39A   382 _g_USRTAB	=	0xf39a
+                         0000F3DE   383 _g_CNSDFG	=	0xf3de
+                         0000F3DF   384 _g_RG0SAV	=	0xf3df
+                         0000F3E0   385 _g_RG1SAV	=	0xf3e0
+                         0000F3E1   386 _g_RG2SAV	=	0xf3e1
+                         0000F3E2   387 _g_RG3SAV	=	0xf3e2
+                         0000F3E3   388 _g_RG4SAV	=	0xf3e3
+                         0000F3E4   389 _g_RG5SAV	=	0xf3e4
+                         0000F3E5   390 _g_RG6SAV	=	0xf3e5
+                         0000F3E6   391 _g_RG7SAV	=	0xf3e6
+                         0000F3E7   392 _g_STATFL	=	0xf3e7
+                         0000F3E8   393 _g_TRGFLG	=	0xf3e8
+                         0000F3EC   394 _g_MAXUPD	=	0xf3ec
+                         0000F3EF   395 _g_MINUPD	=	0xf3ef
+                         0000F3F3   396 _g_QUEUES	=	0xf3f3
+                         0000F3F5   397 _g_FRCNEW	=	0xf3f5
+                         0000F3F6   398 _g_SCNCNT	=	0xf3f6
+                         0000F3F7   399 _g_REPCNT	=	0xf3f7
+                         0000F3FC   400 _g_CS120	=	0xf3fc
+                         0000F401   401 _g_CS240	=	0xf401
+                         0000F406   402 _g_LOW	=	0xf406
+                         0000F408   403 _g_HIGH	=	0xf408
+                         0000F40A   404 _g_HEADER	=	0xf40a
+                         0000F40B   405 _g_ASPCT1	=	0xf40b
+                         0000F40D   406 _g_ASPCT2	=	0xf40d
+                         0000F959   407 _g_QUETAB	=	0xf959
+                         0000F971   408 _g_QUEBAK	=	0xf971
+                         0000F975   409 _g_VOICAQ	=	0xf975
+                         0000F9F5   410 _g_VOICBQ	=	0xf9f5
+                         0000FA75   411 _g_VOICCQ	=	0xfa75
+                         0000FAF5   412 _g_RS2IQ	=	0xfaf5
+                         0000FAF5   413 _g_DPPAGE	=	0xfaf5
+                         0000FAF6   414 _g_ACPAGE	=	0xfaf6
+                         0000FAF7   415 _g_AVCSAV	=	0xfaf7
+                         0000FAF8   416 _g_EXBRSA	=	0xfaf8
+                         0000FAF9   417 _g_CHRCNT	=	0xfaf9
+                         0000FAFA   418 _g_ROMA	=	0xfafa
+                         0000FAFC   419 _g_MODE	=	0xfafc
+                         0000FAFD   420 _g_NORUSE	=	0xfafd
+                         0000FAFE   421 _g_XSAVE	=	0xfafe
+                         0000FB00   422 _g_YSAVE	=	0xfb00
+                         0000FB03   423 _g_RSTMP	=	0xfb03
+                         0000FB03   424 _g_TOCNT	=	0xfb03
+                         0000FB04   425 _g_RSFCB	=	0xfb04
+                         0000FB06   426 _g_RSIQLN	=	0xfb06
+                         0000FB07   427 _g_MEXBIh	=	0xfb07
+                         0000FB0C   428 _g_OLDSTT	=	0xfb0c
+                         0000FB0C   429 _g_OLDINT	=	0xfb0c
+                         0000FB16   430 _g_DEVNUM	=	0xfb16
+                         0000FB17   431 _g_DATCNT	=	0xfb17
+                         0000FB1A   432 _g_ERRORS	=	0xfb1a
+                         0000FB1B   433 _g_FLAGS	=	0xfb1b
+                         0000FB1C   434 _g_ESTBLS	=	0xfb1c
+                         0000FB1D   435 _g_COMMSK	=	0xfb1d
+                         0000FB1E   436 _g_LSTCOM	=	0xfb1e
+                         0000FB1F   437 _g_LSTMOD	=	0xfb1f
+                         0000FB35   438 _g_PRSCNT	=	0xfb35
+                         0000FB36   439 _g_SAVSP	=	0xfb36
+                         0000FB38   440 _g_VOICEN	=	0xfb38
+                         0000FB39   441 _g_SAVVOL	=	0xfb39
+                         0000FB3B   442 _g_MCLLEN	=	0xfb3b
+                         0000FB3C   443 _g_MCLPTR	=	0xfb3c
+                         0000FB3E   444 _g_QUEUEN	=	0xfb3e
+                         0000FB3F   445 _g_MUSICF	=	0xfb3f
+                         0000FB40   446 _g_PLYCNT	=	0xfb40
+                         0000FB41   447 _g_VCBA	=	0xfb41
+                         0000FB66   448 _g_VCBB	=	0xfb66
+                         0000FB8B   449 _g_VCBC	=	0xfb8b
+                         0000FBB0   450 _g_ENSTOP	=	0xfbb0
+                         0000FBB1   451 _g_BASROM	=	0xfbb1
+                         0000FBB2   452 _g_LINTTB	=	0xfbb2
+                         0000FBCA   453 _g_FSTPOS	=	0xfbca
+                         0000FBCC   454 _g_CODSAV	=	0xfbcc
+                         0000FBCD   455 _g_FNKSWI	=	0xfbcd
+                         0000FBCE   456 _g_FNKFLG	=	0xfbce
+                         0000FBD8   457 _g_ONGSBF	=	0xfbd8
+                         0000FBD9   458 _g_CLIKFL	=	0xfbd9
+                         0000FBDA   459 _g_OLDKEY	=	0xfbda
+                         0000FBE5   460 _g_NEWKEY	=	0xfbe5
+                         0000FBF0   461 _g_KEYBUF	=	0xfbf0
+                         0000FC18   462 _g_LINWRK	=	0xfc18
+                         0000FC40   463 _g_PATWRK	=	0xfc40
+                         0000FC48   464 _g_BOTTOM	=	0xfc48
+                         0000FC4A   465 _g_HIMEM	=	0xfc4a
+                         0000FC4C   466 _g_TRPTBL	=	0xfc4c
+                         0000FC9A   467 _g_RTYCNT	=	0xfc9a
+                         0000FC9B   468 _g_INTFLG	=	0xfc9b
+                         0000FC9C   469 _g_PADY	=	0xfc9c
+                         0000FC9D   470 _g_PADX	=	0xfc9d
+                         0000FC9E   471 _g_JIFFY	=	0xfc9e
+                         0000FCA0   472 _g_INTVAL	=	0xfca0
+                         0000FCA2   473 _g_INTCNT	=	0xfca2
+                         0000FCA4   474 _g_LOWLIM	=	0xfca4
+                         0000FCA5   475 _g_WINWID	=	0xfca5
+                         0000FCA6   476 _g_GRPHED	=	0xfca6
+                         0000FCA7   477 _g_ESCCNT	=	0xfca7
+                         0000FCA8   478 _g_INSFLG	=	0xfca8
+                         0000FCA9   479 _g_CSRSW	=	0xfca9
+                         0000FCAA   480 _g_CSTYLE	=	0xfcaa
+                         0000FCAB   481 _g_CAPST	=	0xfcab
+                         0000FCAC   482 _g_KANAST	=	0xfcac
+                         0000FCAD   483 _g_KANAMD	=	0xfcad
+                         0000FCAE   484 _g_FLBMEM	=	0xfcae
+                         0000FCAF   485 _g_SCRMOD	=	0xfcaf
+                         0000FCB0   486 _g_OLDSCR	=	0xfcb0
+                         0000FCB1   487 _g_CASPRV	=	0xfcb1
+                         0000FCB2   488 _g_BRDATR	=	0xfcb2
+                         0000FCB3   489 _g_GXPOS	=	0xfcb3
+                         0000FCB5   490 _g_GYPOS	=	0xfcb5
+                         0000FCBB   491 _g_DRWFLG	=	0xfcbb
+                         0000FCBC   492 _g_DRWSCL	=	0xfcbc
+                         0000FCBD   493 _g_DRWANG	=	0xfcbd
+                         0000FCC1   494 _g_MNROM	=	0xfcc1
+                         0000FCC1   495 _g_EXPTBL	=	0xfcc1
+                         0000FCC5   496 _g_SLTTBL	=	0xfcc5
+                         0000FCC9   497 _g_SLTATR	=	0xfcc9
+                         0000FD09   498 _g_SLTWRK	=	0xfd09
+                         0000FD89   499 _g_PROCNM	=	0xfd89
+                         0000FFE7   500 _g_RG08SAV	=	0xffe7
+                         0000FFE8   501 _g_RG09SAV	=	0xffe8
+                         0000FFE9   502 _g_RG10SAV	=	0xffe9
+                         0000FFEA   503 _g_RG11SAV	=	0xffea
+                         0000FFEB   504 _g_RG12SAV	=	0xffeb
+                         0000FFEC   505 _g_RG13SAV	=	0xffec
+                         0000FFED   506 _g_RG14SAV	=	0xffed
+                         0000FFEE   507 _g_RG15SAV	=	0xffee
+                         0000FFEF   508 _g_RG16SAV	=	0xffef
+                         0000FFF0   509 _g_RG17SAV	=	0xfff0
+                         0000FFF1   510 _g_RG18SAV	=	0xfff1
+                         0000FFF2   511 _g_RG19SAV	=	0xfff2
+                         0000FFF3   512 _g_RG20SAV	=	0xfff3
+                         0000FFF4   513 _g_RG21SAV	=	0xfff4
+                         0000FFF5   514 _g_RG22SAV	=	0xfff5
+                         0000FFF6   515 _g_RG23SAV	=	0xfff6
+                         0000FFF7   516 _g_MINROM	=	0xfff7
+                         0000FFF8   517 _g_SVFFF8	=	0xfff8
+                         0000FFFA   518 _g_RG25SAV	=	0xfffa
+                         0000FFFB   519 _g_RG26SAV	=	0xfffb
+                         0000FFFC   520 _g_RG27SAV	=	0xfffc
+                         0000FFFD   521 _g_SVFFFD	=	0xfffd
+                         00000004   522 _g_CGTABL	=	0x0004
+                         00000006   523 _g_VDP_DR	=	0x0006
+                         00000007   524 _g_VDP_DW	=	0x0007
+                         0000002B   525 _g_BASRVN	=	0x002b
+                         0000002B   526 _g_ROMVersion	=	0x002b
+                         0000002D   527 _g_MSXVER	=	0x002d
+                         0000002E   528 _g_MSXMID	=	0x002e
+                         00000034   529 _g_CHAR_16	=	0x0034
+    00000055                        530 _g_HexChar:
+    00000055 30                     531 	.db #0x30	; 48	'0'
+    00000056 31                     532 	.db #0x31	; 49	'1'
+    00000057 32                     533 	.db #0x32	; 50	'2'
+    00000058 33                     534 	.db #0x33	; 51	'3'
+    00000059 34                     535 	.db #0x34	; 52	'4'
+    0000005A 35                     536 	.db #0x35	; 53	'5'
+    0000005B 36                     537 	.db #0x36	; 54	'6'
+    0000005C 37                     538 	.db #0x37	; 55	'7'
+    0000005D 38                     539 	.db #0x38	; 56	'8'
+    0000005E 39                     540 	.db #0x39	; 57	'9'
+    0000005F 41                     541 	.db #0x41	; 65	'A'
+    00000060 42                     542 	.db #0x42	; 66	'B'
+    00000061 43                     543 	.db #0x43	; 67	'C'
+    00000062 44                     544 	.db #0x44	; 68	'D'
+    00000063 45                     545 	.db #0x45	; 69	'E'
+    00000064 46                     546 	.db #0x46	; 70	'F'
+                                    547 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:248: void Print_SetMode(u8 mode)
+                                    548 ;	---------------------------------
+                                    549 ; Function Print_SetMode
+                                    550 ; ---------------------------------
+    00000065                        551 _Print_SetMode::
+    00000065 4F               [ 4]  552 	ld	c, a
+                                    553 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:250: PRINT_DATA.SourceMode = mode;
+    00000066 21r15r00         [10]  554 	ld	hl, #_g_PrintData + 21
+    00000069 ED 67            [18]  555 	rrd
+    0000006B 79               [ 4]  556 	ld	a, c
+    0000006C ED 6F            [18]  557 	rld
+                                    558 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:252: switch (PRINT_DATA.SourceMode)
+    0000006E 7E               [ 7]  559 	ld	a, (hl)
+    0000006F E6 0F            [ 7]  560 	and	a, #0x0f
+    00000071 FE 05            [ 7]  561 	cp	a, #0x05
+    00000073 C0               [11]  562 	ret	nz
+                                    563 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:318: PRINT_DATA.DrawChar = DrawChar_Layout;
+    00000074 21r10r05         [10]  564 	ld	hl, #_DrawChar_Layout
+    00000077 22r13r00         [16]  565 	ld	((_g_PrintData + 19)), hl
+                                    566 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:322: };
+                                    567 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:323: }
+    0000007A C9               [10]  568 	ret
+                                    569 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:328: void Print_SetFont(const u8* font)
+                                    570 ;	---------------------------------
+                                    571 ; Function Print_SetFont
+                                    572 ; ---------------------------------
+    0000007B                        573 _Print_SetFont::
+    0000007B DD E5            [15]  574 	push	ix
+    0000007D DD 21 00 00      [14]  575 	ld	ix,	#0
+    00000081 DD 39            [15]  576 	add	ix, sp
+    00000083 F5               [11]  577 	push	af
+    00000084 F5               [11]  578 	push	af
+    00000085 EB               [ 4]  579 	ex	de, hl
+                                    580 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:330: if (font == NULL) // Use Bios font (if any)
+    00000086 7A               [ 4]  581 	ld	a, d
+    00000087 B3               [ 4]  582 	or	a, e
+    00000088 20 40            [12]  583 	jr	nz, 00102$
+                                    584 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:331: Print_SetFontEx(8, 8, 6, 8, 1, 255, (const u8*)g_CGTABL + 8);
+    0000008A ED 4B 04 00      [20]  585 	ld	bc, (_g_CGTABL)
+    0000008E 21 08 00         [10]  586 	ld	hl, #0x0008
+    00000091 09               [11]  587 	add	hl, bc
+    00000092 EB               [ 4]  588 	ex	de, hl
+                                    589 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:242: PRINT_DATA.PatternX     = patternX;
+    00000093 21r00r00         [10]  590 	ld	hl, #_g_PrintData
+    00000096 36 08            [10]  591 	ld	(hl), #0x08
+                                    592 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:243: PRINT_DATA.PatternY     = patternY;
+    00000098 01r01r00         [10]  593 	ld	bc, #_g_PrintData + 1
+    0000009B 3E 08            [ 7]  594 	ld	a, #0x08
+    0000009D 02               [ 7]  595 	ld	(bc), a
+                                    596 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:244: PRINT_DATA.UnitX        = sizeX;
+    0000009E 21r02r00         [10]  597 	ld	hl, #_g_PrintData + 2
+    000000A1 36 06            [10]  598 	ld	(hl), #0x06
+                                    599 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:245: PRINT_DATA.UnitY        = sizeY;
+    000000A3 21r03r00         [10]  600 	ld	hl, #_g_PrintData + 3
+    000000A6 36 08            [10]  601 	ld	(hl), #0x08
+                                    602 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:246: PRINT_DATA.CharFirst    = firstChr;
+    000000A8 21r10r00         [10]  603 	ld	hl, #_g_PrintData + 16
+    000000AB 36 01            [10]  604 	ld	(hl), #0x01
+                                    605 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:247: PRINT_DATA.CharLast     = lastChr;
+    000000AD 21r11r00         [10]  606 	ld	hl, #_g_PrintData + 17
+    000000B0 36 FF            [10]  607 	ld	(hl), #0xff
+                                    608 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:248: PRINT_DATA.CharCount    = lastChr - firstChr + 1;
+    000000B2 21r12r00         [10]  609 	ld	hl, #_g_PrintData + 18
+    000000B5 36 FF            [10]  610 	ld	(hl), #0xff
+                                    611 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:249: PRINT_DATA.FontPatterns = patterns;
+    000000B7 ED 53r18r00      [20]  612 	ld	((_g_PrintData + 24)), de
+                                    613 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:250: PRINT_DATA.FontAddr     = PRINT_DATA.FontPatterns - (firstChr * PRINT_DATA.PatternY); // pre-compute address of the virtual index 0 character (used to quick drawing in PutChar_GX functions)
+    000000BB 0A               [ 7]  614 	ld	a, (bc)
+    000000BC 4F               [ 4]  615 	ld	c, a
+    000000BD 7B               [ 4]  616 	ld	a, e
+    000000BE 91               [ 4]  617 	sub	a, c
+    000000BF 6F               [ 4]  618 	ld	l, a
+    000000C0 7A               [ 4]  619 	ld	a, d
+    000000C1 DE 00            [ 7]  620 	sbc	a, #0x00
+    000000C3 67               [ 4]  621 	ld	h, a
+    000000C4 22r1Ar00         [16]  622 	ld	((_g_PrintData + 26)), hl
+                                    623 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:331: Print_SetFontEx(8, 8, 6, 8, 1, 255, (const u8*)g_CGTABL + 8);
+    000000C7 C3r4Fr01         [10]  624 	jp	00106$
+    000000CA                        625 00102$:
+                                    626 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:333: Print_SetFontEx(font[0] >> 4, font[0] & 0x0F, font[1] >> 4, font[1] & 0x0F, font[2], font[3], font+4);
+    000000CA 21 04 00         [10]  627 	ld	hl, #0x0004
+    000000CD 19               [11]  628 	add	hl, de
+    000000CE 4D               [ 4]  629 	ld	c, l
+    000000CF 44               [ 4]  630 	ld	b, h
+    000000D0 6B               [ 4]  631 	ld	l, e
+    000000D1 62               [ 4]  632 	ld	h, d
+    000000D2 23               [ 6]  633 	inc	hl
+    000000D3 23               [ 6]  634 	inc	hl
+    000000D4 23               [ 6]  635 	inc	hl
+    000000D5 7E               [ 7]  636 	ld	a, (hl)
+    000000D6 DD 77 FC         [19]  637 	ld	-4 (ix), a
+    000000D9 6B               [ 4]  638 	ld	l, e
+    000000DA 62               [ 4]  639 	ld	h, d
+    000000DB 23               [ 6]  640 	inc	hl
+    000000DC 23               [ 6]  641 	inc	hl
+    000000DD 7E               [ 7]  642 	ld	a, (hl)
+    000000DE DD 77 FD         [19]  643 	ld	-3 (ix), a
+    000000E1 6B               [ 4]  644 	ld	l, e
+    000000E2 62               [ 4]  645 	ld	h, d
+    000000E3 23               [ 6]  646 	inc	hl
+    000000E4 6E               [ 7]  647 	ld	l, (hl)
+    000000E5 7D               [ 4]  648 	ld	a, l
+    000000E6 E6 0F            [ 7]  649 	and	a, #0x0f
+    000000E8 DD 77 FE         [19]  650 	ld	-2 (ix), a
+    000000EB 7D               [ 4]  651 	ld	a, l
+    000000EC 07               [ 4]  652 	rlca
+    000000ED 07               [ 4]  653 	rlca
+    000000EE 07               [ 4]  654 	rlca
+    000000EF 07               [ 4]  655 	rlca
+    000000F0 E6 0F            [ 7]  656 	and	a, #0x0f
+    000000F2 DD 77 FF         [19]  657 	ld	-1 (ix), a
+    000000F5 1A               [ 7]  658 	ld	a, (de)
+    000000F6 F5               [11]  659 	push	af
+    000000F7 E6 0F            [ 7]  660 	and	a, #0x0f
+    000000F9 5F               [ 4]  661 	ld	e, a
+    000000FA F1               [10]  662 	pop	af
+    000000FB 07               [ 4]  663 	rlca
+    000000FC 07               [ 4]  664 	rlca
+    000000FD 07               [ 4]  665 	rlca
+    000000FE 07               [ 4]  666 	rlca
+    000000FF E6 0F            [ 7]  667 	and	a, #0x0f
+    00000101 57               [ 4]  668 	ld	d, a
+                                    669 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:242: PRINT_DATA.PatternX     = patternX;
+    00000102 21r00r00         [10]  670 	ld	hl, #_g_PrintData
+    00000105 72               [ 7]  671 	ld	(hl), d
+                                    672 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:243: PRINT_DATA.PatternY     = patternY;
+    00000106 21r01r00         [10]  673 	ld	hl, #_g_PrintData + 1
+    00000109 73               [ 7]  674 	ld	(hl), e
+                                    675 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:244: PRINT_DATA.UnitX        = sizeX;
+    0000010A 11r02r00         [10]  676 	ld	de, #_g_PrintData + 2
+    0000010D DD 7E FF         [19]  677 	ld	a, -1 (ix)
+    00000110 12               [ 7]  678 	ld	(de), a
+                                    679 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:245: PRINT_DATA.UnitY        = sizeY;
+    00000111 11r03r00         [10]  680 	ld	de, #_g_PrintData + 3
+    00000114 DD 7E FE         [19]  681 	ld	a, -2 (ix)
+    00000117 12               [ 7]  682 	ld	(de), a
+                                    683 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:246: PRINT_DATA.CharFirst    = firstChr;
+    00000118 11r10r00         [10]  684 	ld	de, #_g_PrintData + 16
+    0000011B DD 7E FD         [19]  685 	ld	a, -3 (ix)
+    0000011E 12               [ 7]  686 	ld	(de), a
+                                    687 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:247: PRINT_DATA.CharLast     = lastChr;
+    0000011F 11r11r00         [10]  688 	ld	de, #_g_PrintData + 17
+    00000122 DD 7E FC         [19]  689 	ld	a, -4 (ix)
+    00000125 12               [ 7]  690 	ld	(de), a
+                                    691 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:248: PRINT_DATA.CharCount    = lastChr - firstChr + 1;
+    00000126 11r12r00         [10]  692 	ld	de, #_g_PrintData + 18
+    00000129 DD 7E FC         [19]  693 	ld	a, -4 (ix)
+    0000012C DD 96 FD         [19]  694 	sub	a, -3 (ix)
+    0000012F 3C               [ 4]  695 	inc	a
+    00000130 12               [ 7]  696 	ld	(de), a
+                                    697 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:249: PRINT_DATA.FontPatterns = patterns;
+    00000131 ED 43r18r00      [20]  698 	ld	((_g_PrintData + 24)), bc
+                                    699 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:250: PRINT_DATA.FontAddr     = PRINT_DATA.FontPatterns - (firstChr * PRINT_DATA.PatternY); // pre-compute address of the virtual index 0 character (used to quick drawing in PutChar_GX functions)
+    00000135 5E               [ 7]  700 	ld	e, (hl)
+    00000136 C5               [11]  701 	push	bc
+    00000137 DD 66 FD         [19]  702 	ld	h, -3 (ix)
+    0000013A 2E 00            [ 7]  703 	ld	l, #0x00
+    0000013C 55               [ 4]  704 	ld	d, l
+    0000013D 06 08            [ 7]  705 	ld	b, #0x08
+    0000013F                        706 00116$:
+    0000013F 29               [11]  707 	add	hl, hl
+    00000140 30 01            [12]  708 	jr	nc, 00117$
+    00000142 19               [11]  709 	add	hl, de
+    00000143                        710 00117$:
+    00000143 10 FA            [13]  711 	djnz	00116$
+    00000145 C1               [10]  712 	pop	bc
+    00000146 79               [ 4]  713 	ld	a, c
+    00000147 95               [ 4]  714 	sub	a, l
+    00000148 6F               [ 4]  715 	ld	l, a
+    00000149 78               [ 4]  716 	ld	a, b
+    0000014A 9C               [ 4]  717 	sbc	a, h
+    0000014B 67               [ 4]  718 	ld	h, a
+    0000014C 22r1Ar00         [16]  719 	ld	((_g_PrintData + 26)), hl
+                                    720 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:333: Print_SetFontEx(font[0] >> 4, font[0] & 0x0F, font[1] >> 4, font[1] & 0x0F, font[2], font[3], font+4);
+    0000014F                        721 00106$:
+                                    722 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:334: }
+    0000014F DD F9            [10]  723 	ld	sp, ix
+    00000151 DD E1            [14]  724 	pop	ix
+    00000153 C9               [10]  725 	ret
+                                    726 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:397: void Print_SetColor(u8 text, u8 bg)
+                                    727 ;	---------------------------------
+                                    728 ; Function Print_SetColor
+                                    729 ; ---------------------------------
+    00000154                        730 _Print_SetColor::
+                                    731 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:427: u8 col = text << 4 | bg;
+    00000154 87               [ 4]  732 	add	a, a
+    00000155 87               [ 4]  733 	add	a, a
+    00000156 87               [ 4]  734 	add	a, a
+    00000157 87               [ 4]  735 	add	a, a
+    00000158 B5               [ 4]  736 	or	a, l
+    00000159 4F               [ 4]  737 	ld	c, a
+                                    738 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/vdp.h:483: inline u8 VDP_GetMode() { return g_VDP_Data.Mode; }
+    0000015A 3Ar00r00         [13]  739 	ld	a, (#_g_VDP_Data + 0)
+                                    740 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:428: switch (VDP_GetMode())
+    0000015D B7               [ 4]  741 	or	a, a
+    0000015E 28 09            [12]  742 	jr	z, 00101$
+    00000160 FE 02            [ 7]  743 	cp	a, #0x02
+    00000162 28 0B            [12]  744 	jr	z, 00102$
+    00000164 FE 03            [ 7]  745 	cp	a, #0x03
+    00000166 28 14            [12]  746 	jr	z, 00103$
+    00000168 C9               [10]  747 	ret
+                                    748 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:431: case VDP_MODE_TEXT1:		// 40 characters per line of text, one colour for each character
+    00000169                        749 00101$:
+                                    750 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/vdp.h:724: inline void VDP_SetColor(u8 color) { VDP_RegWrite(7, color); }
+    00000169 69               [ 4]  751 	ld	l, c
+                                    752 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:438: break;
+    0000016A 3E 07            [ 7]  753 	ld	a, #0x07
+    0000016C C3r00r00         [10]  754 	jp	_VDP_RegWrite
+                                    755 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:441: case VDP_MODE_GRAPHIC1:		// 32 characters per one line of text, the COLOURed character available
+    0000016F                        756 00102$:
+                                    757 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:442: VDP_FillVRAM(col, g_ScreenColorLow, 0, 32);
+    0000016F 21 20 00         [10]  758 	ld	hl, #0x0020
+    00000172 E5               [11]  759 	push	hl
+    00000173 ED 5Br00r00      [20]  760 	ld	de, (_g_ScreenColorLow)
+    00000177 79               [ 4]  761 	ld	a, c
+    00000178 CDr00r00         [17]  762 	call	_VDP_FillVRAM_16K
+                                    763 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:443: break;
+    0000017B C9               [10]  764 	ret
+                                    765 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:446: case VDP_MODE_GRAPHIC2:		// 256 x 192, the colour is specififed for each 8 dots
+    0000017C                        766 00103$:
+                                    767 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:453: u16 dst = (u16)g_ScreenColorLow + PRINT_DATA.PatternOffset * 8;
+    0000017C 21r1Cr00         [10]  768 	ld	hl, #_g_PrintData + 28
+    0000017F 6E               [ 7]  769 	ld	l, (hl)
+    00000180 26 00            [ 7]  770 	ld	h, #0x00
+    00000182 29               [11]  771 	add	hl, hl
+    00000183 29               [11]  772 	add	hl, hl
+    00000184 29               [11]  773 	add	hl, hl
+    00000185 ED 5Br00r00      [20]  774 	ld	de, (_g_ScreenColorLow)
+    00000189 19               [11]  775 	add	hl, de
+    0000018A EB               [ 4]  776 	ex	de, hl
+                                    777 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:454: VDP_FillVRAM(col, dst, 0, PRINT_DATA.CharCount * 8);
+    0000018B 21r12r00         [10]  778 	ld	hl, #(_g_PrintData + 18)
+    0000018E 6E               [ 7]  779 	ld	l, (hl)
+    0000018F 26 00            [ 7]  780 	ld	h, #0x00
+    00000191 29               [11]  781 	add	hl, hl
+    00000192 29               [11]  782 	add	hl, hl
+    00000193 29               [11]  783 	add	hl, hl
+    00000194 C5               [11]  784 	push	bc
+    00000195 D5               [11]  785 	push	de
+    00000196 E5               [11]  786 	push	hl
+    00000197 79               [ 4]  787 	ld	a, c
+    00000198 CDr00r00         [17]  788 	call	_VDP_FillVRAM_16K
+    0000019B D1               [10]  789 	pop	de
+    0000019C C1               [10]  790 	pop	bc
+                                    791 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:455: dst += 256 * 8;
+    0000019D 21 00 08         [10]  792 	ld	hl, #0x0800
+    000001A0 19               [11]  793 	add	hl, de
+    000001A1 EB               [ 4]  794 	ex	de, hl
+                                    795 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:456: VDP_FillVRAM(col, dst, 0, PRINT_DATA.CharCount * 8);
+    000001A2 21r12r00         [10]  796 	ld	hl, #(_g_PrintData + 18)
+    000001A5 6E               [ 7]  797 	ld	l, (hl)
+    000001A6 26 00            [ 7]  798 	ld	h, #0x00
+    000001A8 29               [11]  799 	add	hl, hl
+    000001A9 29               [11]  800 	add	hl, hl
+    000001AA 29               [11]  801 	add	hl, hl
+    000001AB C5               [11]  802 	push	bc
+    000001AC D5               [11]  803 	push	de
+    000001AD E5               [11]  804 	push	hl
+    000001AE 79               [ 4]  805 	ld	a, c
+    000001AF CDr00r00         [17]  806 	call	_VDP_FillVRAM_16K
+    000001B2 D1               [10]  807 	pop	de
+    000001B3 C1               [10]  808 	pop	bc
+                                    809 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:457: dst += 256 * 8;
+    000001B4 21 00 08         [10]  810 	ld	hl, #0x0800
+    000001B7 19               [11]  811 	add	hl, de
+    000001B8 EB               [ 4]  812 	ex	de, hl
+                                    813 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:458: VDP_FillVRAM(col, dst, 0, PRINT_DATA.CharCount * 8);
+    000001B9 21r12r00         [10]  814 	ld	hl, #(_g_PrintData + 18)
+    000001BC 6E               [ 7]  815 	ld	l, (hl)
+    000001BD 26 00            [ 7]  816 	ld	h, #0x00
+    000001BF 29               [11]  817 	add	hl, hl
+    000001C0 29               [11]  818 	add	hl, hl
+    000001C1 29               [11]  819 	add	hl, hl
+    000001C2 E5               [11]  820 	push	hl
+    000001C3 79               [ 4]  821 	ld	a, c
+    000001C4 CDr00r00         [17]  822 	call	_VDP_FillVRAM_16K
+                                    823 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:462: };
+                                    824 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:465: }
+    000001C7 C9               [10]  825 	ret
+                                    826 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:470: void Print_SetColorShade(const u8* shade)
+                                    827 ;	---------------------------------
+                                    828 ; Function Print_SetColorShade
+                                    829 ; ---------------------------------
+    000001C8                        830 _Print_SetColorShade::
+    000001C8 DD E5            [15]  831 	push	ix
+    000001CA DD 21 00 00      [14]  832 	ld	ix,	#0
+    000001CE DD 39            [15]  833 	add	ix, sp
+    000001D0 3B               [ 6]  834 	dec	sp
+    000001D1 4D               [ 4]  835 	ld	c, l
+    000001D2 44               [ 4]  836 	ld	b, h
+                                    837 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/vdp.h:483: inline u8 VDP_GetMode() { return g_VDP_Data.Mode; }
+    000001D3 3Ar00r00         [13]  838 	ld	a, (#_g_VDP_Data + 0)
+                                    839 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:488: switch (VDP_GetMode())
+    000001D6 FE 03            [ 7]  840 	cp	a, #0x03
+    000001D8 20 59            [12]  841 	jr	nz, 00113$
+                                    842 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:498: u16 dst = (u16)g_ScreenColorLow + PRINT_DATA.PatternOffset * 8;
+    000001DA 21r1Cr00         [10]  843 	ld	hl, #_g_PrintData + 28
+    000001DD 6E               [ 7]  844 	ld	l, (hl)
+    000001DE 26 00            [ 7]  845 	ld	h, #0x00
+    000001E0 29               [11]  846 	add	hl, hl
+    000001E1 29               [11]  847 	add	hl, hl
+    000001E2 29               [11]  848 	add	hl, hl
+    000001E3 ED 5Br00r00      [20]  849 	ld	de, (_g_ScreenColorLow)
+    000001E7 19               [11]  850 	add	hl, de
+    000001E8 EB               [ 4]  851 	ex	de, hl
+                                    852 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:499: for (u8 i = 0; i < PRINT_DATA.CharCount; ++i)
+    000001E9 DD 36 FF 00      [19]  853 	ld	-1 (ix), #0x00
+    000001ED                        854 00111$:
+    000001ED 21r12r00         [10]  855 	ld	hl, #_g_PrintData + 18
+    000001F0 DD 7E FF         [19]  856 	ld	a,-1 (ix)
+    000001F3 96               [ 7]  857 	sub	a,(hl)
+    000001F4 30 3D            [12]  858 	jr	nc, 00113$
+                                    859 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:501: VDP_WriteVRAM(shade, dst,           0, 8);
+    000001F6 C5               [11]  860 	push	bc
+    000001F7 D5               [11]  861 	push	de
+    000001F8 21 08 00         [10]  862 	ld	hl, #0x0008
+    000001FB E5               [11]  863 	push	hl
+    000001FC 69               [ 4]  864 	ld	l, c
+    000001FD 60               [ 4]  865 	ld	h, b
+    000001FE CDr00r00         [17]  866 	call	_VDP_WriteVRAM_16K
+    00000201 D1               [10]  867 	pop	de
+    00000202 C1               [10]  868 	pop	bc
+                                    869 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:502: VDP_WriteVRAM(shade, dst + 256 * 8, 0, 8);
+    00000203 EB               [ 4]  870 	ex	de, hl
+    00000204 5D               [ 4]  871 	ld	e, l
+    00000205 7C               [ 4]  872 	ld	a, h
+    00000206 C6 08            [ 7]  873 	add	a, #0x08
+    00000208 E5               [11]  874 	push	hl
+    00000209 C5               [11]  875 	push	bc
+    0000020A 21 08 00         [10]  876 	ld	hl, #0x0008
+    0000020D E5               [11]  877 	push	hl
+    0000020E 57               [ 4]  878 	ld	d, a
+    0000020F 69               [ 4]  879 	ld	l, c
+    00000210 60               [ 4]  880 	ld	h, b
+    00000211 CDr00r00         [17]  881 	call	_VDP_WriteVRAM_16K
+    00000214 C1               [10]  882 	pop	bc
+    00000215 E1               [10]  883 	pop	hl
+                                    884 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:503: VDP_WriteVRAM(shade, dst + 512 * 8, 0, 8);
+    00000216 5D               [ 4]  885 	ld	e, l
+    00000217 7C               [ 4]  886 	ld	a, h
+    00000218 C6 10            [ 7]  887 	add	a, #0x10
+    0000021A E5               [11]  888 	push	hl
+    0000021B C5               [11]  889 	push	bc
+    0000021C 21 08 00         [10]  890 	ld	hl, #0x0008
+    0000021F E5               [11]  891 	push	hl
+    00000220 57               [ 4]  892 	ld	d, a
+    00000221 69               [ 4]  893 	ld	l, c
+    00000222 60               [ 4]  894 	ld	h, b
+    00000223 CDr00r00         [17]  895 	call	_VDP_WriteVRAM_16K
+    00000226 C1               [10]  896 	pop	bc
+    00000227 E1               [10]  897 	pop	hl
+                                    898 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:504: dst += 8;
+    00000228 11 08 00         [10]  899 	ld	de, #0x0008
+    0000022B 19               [11]  900 	add	hl, de
+    0000022C EB               [ 4]  901 	ex	de, hl
+                                    902 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:499: for (u8 i = 0; i < PRINT_DATA.CharCount; ++i)
+    0000022D DD 34 FF         [23]  903 	inc	-1 (ix)
+    00000230 C3rEDr01         [10]  904 	jp	00111$
+                                    905 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:509: };
+    00000233                        906 00113$:
+                                    907 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:512: }
+    00000233 33               [ 6]  908 	inc	sp
+    00000234 DD E1            [14]  909 	pop	ix
+    00000236 C9               [10]  910 	ret
+                                    911 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:526: u8 Print_ValidateChar(u8 chr)
+                                    912 ;	---------------------------------
+                                    913 ; Function Print_ValidateChar
+                                    914 ; ---------------------------------
+    00000237                        915 _Print_ValidateChar::
+    00000237 4F               [ 4]  916 	ld	c, a
+                                    917 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:528: if ((chr < PRINT_DATA.CharFirst) || (chr > PRINT_DATA.CharLast))
+    00000238 21r10r00         [10]  918 	ld	hl, #_g_PrintData + 16
+    0000023B 46               [ 7]  919 	ld	b, (hl)
+    0000023C 79               [ 4]  920 	ld	a, c
+    0000023D 90               [ 4]  921 	sub	a, b
+    0000023E 38 06            [12]  922 	jr	c, 00113$
+    00000240 3Ar11r00         [13]  923 	ld	a, (#_g_PrintData + 17)
+    00000243 91               [ 4]  924 	sub	a, c
+    00000244 30 3B            [12]  925 	jr	nc, 00114$
+    00000246                        926 00113$:
+                                    927 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:530: if ((chr >= 'a') && (chr <= 'z') && (PRINT_DATA.CharFirst <= 'A') && (PRINT_DATA.CharLast >= 'Z')) // try to remap to upper case letter
+    00000246 79               [ 4]  928 	ld	a, c
+    00000247 D6 61            [ 7]  929 	sub	a, #0x61
+    00000249 38 18            [12]  930 	jr	c, 00108$
+    0000024B 3E 7A            [ 7]  931 	ld	a, #0x7a
+    0000024D 91               [ 4]  932 	sub	a, c
+    0000024E 38 13            [12]  933 	jr	c, 00108$
+    00000250 3E 41            [ 7]  934 	ld	a, #0x41
+    00000252 90               [ 4]  935 	sub	a, b
+    00000253 38 0E            [12]  936 	jr	c, 00108$
+    00000255 3Ar11r00         [13]  937 	ld	a, (#_g_PrintData + 17)
+    00000258 D6 5A            [ 7]  938 	sub	a, #0x5a
+    0000025A 38 07            [12]  939 	jr	c, 00108$
+                                    940 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:532: chr = chr - 'a' + 'A';
+    0000025C 79               [ 4]  941 	ld	a, c
+    0000025D C6 E0            [ 7]  942 	add	a, #0xe0
+    0000025F 4F               [ 4]  943 	ld	c, a
+    00000260 C3r81r02         [10]  944 	jp	00114$
+    00000263                        945 00108$:
+                                    946 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:534: else if ((chr >= 'A') && (chr <= 'Z') && (PRINT_DATA.CharFirst <= 'a') && (PRINT_DATA.CharLast >= 'z')) // try to remap to lower case letter
+    00000263 79               [ 4]  947 	ld	a, c
+    00000264 D6 41            [ 7]  948 	sub	a, #0x41
+    00000266 38 18            [12]  949 	jr	c, 00102$
+    00000268 3E 5A            [ 7]  950 	ld	a, #0x5a
+    0000026A 91               [ 4]  951 	sub	a, c
+    0000026B 38 13            [12]  952 	jr	c, 00102$
+    0000026D 3E 61            [ 7]  953 	ld	a, #0x61
+    0000026F 90               [ 4]  954 	sub	a, b
+    00000270 38 0E            [12]  955 	jr	c, 00102$
+    00000272 3Ar11r00         [13]  956 	ld	a, (#_g_PrintData + 17)
+    00000275 D6 7A            [ 7]  957 	sub	a, #0x7a
+    00000277 38 07            [12]  958 	jr	c, 00102$
+                                    959 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:536: chr = chr - 'A' + 'a';
+    00000279 79               [ 4]  960 	ld	a, c
+    0000027A C6 20            [ 7]  961 	add	a, #0x20
+    0000027C 4F               [ 4]  962 	ld	c, a
+    0000027D C3r81r02         [10]  963 	jp	00114$
+    00000280                        964 00102$:
+                                    965 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:539: chr = PRINT_DATA.CharFirst;
+    00000280 48               [ 4]  966 	ld	c, b
+    00000281                        967 00114$:
+                                    968 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:541: return chr;
+    00000281 79               [ 4]  969 	ld	a, c
+                                    970 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:542: }
+    00000282 C9               [10]  971 	ret
+                                    972 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:547: u8 Print_ValidatePattern(u8 chr, const c8** patterns)
+                                    973 ;	---------------------------------
+                                    974 ; Function Print_ValidatePattern
+                                    975 ; ---------------------------------
+    00000283                        976 _Print_ValidatePattern::
+    00000283 DD E5            [15]  977 	push	ix
+    00000285 DD 21 00 00      [14]  978 	ld	ix,	#0
+    00000289 DD 39            [15]  979 	add	ix, sp
+    0000028B F5               [11]  980 	push	af
+    0000028C 47               [ 4]  981 	ld	b, a
+    0000028D E1               [10]  982 	pop	hl
+    0000028E D5               [11]  983 	push	de
+                                    984 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:549: if ((chr < PRINT_DATA.CharFirst) || (chr > PRINT_DATA.CharLast))
+    0000028F 21r10r00         [10]  985 	ld	hl, #_g_PrintData + 16
+    00000292 4E               [ 7]  986 	ld	c, (hl)
+    00000293 78               [ 4]  987 	ld	a, b
+    00000294 91               [ 4]  988 	sub	a, c
+    00000295 38 07            [12]  989 	jr	c, 00113$
+    00000297 3Ar11r00         [13]  990 	ld	a, (#_g_PrintData + 17)
+    0000029A 90               [ 4]  991 	sub	a, b
+    0000029B D2r23r03         [10]  992 	jp	nc, 00114$
+    0000029E                        993 00113$:
+                                    994 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:551: if ((chr >= 'a') && (chr <= 'z') && (PRINT_DATA.CharFirst <= 'A') && (PRINT_DATA.CharLast >= 'Z')) // try to remap to upper case letter
+    0000029E 78               [ 4]  995 	ld	a, b
+    0000029F D6 61            [ 7]  996 	sub	a, #0x61
+    000002A1 38 3A            [12]  997 	jr	c, 00108$
+    000002A3 3E 7A            [ 7]  998 	ld	a, #0x7a
+    000002A5 90               [ 4]  999 	sub	a, b
+    000002A6 38 35            [12] 1000 	jr	c, 00108$
+    000002A8 3E 41            [ 7] 1001 	ld	a, #0x41
+    000002AA 91               [ 4] 1002 	sub	a, c
+    000002AB 38 30            [12] 1003 	jr	c, 00108$
+    000002AD 3Ar11r00         [13] 1004 	ld	a, (#_g_PrintData + 17)
+    000002B0 D6 5A            [ 7] 1005 	sub	a, #0x5a
+    000002B2 38 29            [12] 1006 	jr	c, 00108$
+                                   1007 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:553: chr = chr - 'a' + 'A';
+    000002B4 78               [ 4] 1008 	ld	a, b
+    000002B5 C6 E0            [ 7] 1009 	add	a, #0xe0
+    000002B7 47               [ 4] 1010 	ld	b, a
+                                   1011 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:554: *patterns = PRINT_DATA.FontPatterns + PRINT_DATA.PatternY * (chr - PRINT_DATA.CharFirst);
+    000002B8 ED 5Br18r00      [20] 1012 	ld	de, (#_g_PrintData + 24)
+    000002BC 21r01r00         [10] 1013 	ld	hl, #_g_PrintData + 1
+    000002BF 6E               [ 7] 1014 	ld	l, (hl)
+    000002C0 78               [ 4] 1015 	ld	a, b
+    000002C1 91               [ 4] 1016 	sub	a, c
+    000002C2 D5               [11] 1017 	push	de
+    000002C3 C5               [11] 1018 	push	bc
+    000002C4 5F               [ 4] 1019 	ld	e, a
+    000002C5 65               [ 4] 1020 	ld	h, l
+    000002C6 2E 00            [ 7] 1021 	ld	l, #0x00
+    000002C8 55               [ 4] 1022 	ld	d, l
+    000002C9 06 08            [ 7] 1023 	ld	b, #0x08
+    000002CB                       1024 00190$:
+    000002CB 29               [11] 1025 	add	hl, hl
+    000002CC 30 01            [12] 1026 	jr	nc, 00191$
+    000002CE 19               [11] 1027 	add	hl, de
+    000002CF                       1028 00191$:
+    000002CF 10 FA            [13] 1029 	djnz	00190$
+    000002D1 C1               [10] 1030 	pop	bc
+    000002D2 D1               [10] 1031 	pop	de
+    000002D3 19               [11] 1032 	add	hl, de
+    000002D4 EB               [ 4] 1033 	ex	de, hl
+    000002D5 E1               [10] 1034 	pop	hl
+    000002D6 E5               [11] 1035 	push	hl
+    000002D7 73               [ 7] 1036 	ld	(hl), e
+    000002D8 23               [ 6] 1037 	inc	hl
+    000002D9 72               [ 7] 1038 	ld	(hl), d
+    000002DA C3r23r03         [10] 1039 	jp	00114$
+    000002DD                       1040 00108$:
+                                   1041 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:556: else if ((chr >= 'A') && (chr <= 'Z') && (PRINT_DATA.CharFirst <= 'a') && (PRINT_DATA.CharLast >= 'z')) // try to remap to lower case letter
+    000002DD 78               [ 4] 1042 	ld	a, b
+    000002DE D6 41            [ 7] 1043 	sub	a, #0x41
+    000002E0 38 3A            [12] 1044 	jr	c, 00102$
+    000002E2 3E 5A            [ 7] 1045 	ld	a, #0x5a
+    000002E4 90               [ 4] 1046 	sub	a, b
+    000002E5 38 35            [12] 1047 	jr	c, 00102$
+    000002E7 3E 61            [ 7] 1048 	ld	a, #0x61
+    000002E9 91               [ 4] 1049 	sub	a, c
+    000002EA 38 30            [12] 1050 	jr	c, 00102$
+    000002EC 3Ar11r00         [13] 1051 	ld	a, (#_g_PrintData + 17)
+    000002EF D6 7A            [ 7] 1052 	sub	a, #0x7a
+    000002F1 38 29            [12] 1053 	jr	c, 00102$
+                                   1054 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:558: chr = chr - 'A' + 'a';
+    000002F3 78               [ 4] 1055 	ld	a, b
+    000002F4 C6 20            [ 7] 1056 	add	a, #0x20
+    000002F6 47               [ 4] 1057 	ld	b, a
+                                   1058 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:559: *patterns = PRINT_DATA.FontPatterns + PRINT_DATA.PatternY * (chr - PRINT_DATA.CharFirst);
+    000002F7 ED 5Br18r00      [20] 1059 	ld	de, (#_g_PrintData + 24)
+    000002FB 21r01r00         [10] 1060 	ld	hl, #_g_PrintData + 1
+    000002FE 6E               [ 7] 1061 	ld	l, (hl)
+    000002FF 78               [ 4] 1062 	ld	a, b
+    00000300 91               [ 4] 1063 	sub	a, c
+    00000301 D5               [11] 1064 	push	de
+    00000302 C5               [11] 1065 	push	bc
+    00000303 5F               [ 4] 1066 	ld	e, a
+    00000304 65               [ 4] 1067 	ld	h, l
+    00000305 2E 00            [ 7] 1068 	ld	l, #0x00
+    00000307 55               [ 4] 1069 	ld	d, l
+    00000308 06 08            [ 7] 1070 	ld	b, #0x08
+    0000030A                       1071 00192$:
+    0000030A 29               [11] 1072 	add	hl, hl
+    0000030B 30 01            [12] 1073 	jr	nc, 00193$
+    0000030D 19               [11] 1074 	add	hl, de
+    0000030E                       1075 00193$:
+    0000030E 10 FA            [13] 1076 	djnz	00192$
+    00000310 C1               [10] 1077 	pop	bc
+    00000311 D1               [10] 1078 	pop	de
+    00000312 19               [11] 1079 	add	hl, de
+    00000313 EB               [ 4] 1080 	ex	de, hl
+    00000314 E1               [10] 1081 	pop	hl
+    00000315 E5               [11] 1082 	push	hl
+    00000316 73               [ 7] 1083 	ld	(hl), e
+    00000317 23               [ 6] 1084 	inc	hl
+    00000318 72               [ 7] 1085 	ld	(hl), d
+    00000319 C3r23r03         [10] 1086 	jp	00114$
+    0000031C                       1087 00102$:
+                                   1088 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:562: *patterns = g_PrintInvalid;
+    0000031C E1               [10] 1089 	pop	hl
+    0000031D 36r00            [10] 1090 	ld	(hl), #<(_g_PrintInvalid)
+    0000031F E5               [11] 1091 	push	hl
+    00000320 23               [ 6] 1092 	inc	hl
+    00000321 36s00            [10] 1093 	ld	(hl), #>(_g_PrintInvalid)
+    00000323                       1094 00114$:
+                                   1095 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:564: return chr;
+    00000323 78               [ 4] 1096 	ld	a, b
+                                   1097 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:565: }
+    00000324 DD F9            [10] 1098 	ld	sp, ix
+    00000326 DD E1            [14] 1099 	pop	ix
+    00000328 C9               [10] 1100 	ret
+                                   1101 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:856: void CopyNo8HeightFontData(const u8* src, u16 dst, u8 height)
+                                   1102 ;	---------------------------------
+                                   1103 ; Function CopyNo8HeightFontData
+                                   1104 ; ---------------------------------
+    00000329                       1105 _CopyNo8HeightFontData::
+    00000329 DD E5            [15] 1106 	push	ix
+    0000032B DD 21 00 00      [14] 1107 	ld	ix,	#0
+    0000032F DD 39            [15] 1108 	add	ix, sp
+    00000331 3B               [ 6] 1109 	dec	sp
+    00000332 4D               [ 4] 1110 	ld	c, l
+    00000333 44               [ 4] 1111 	ld	b, h
+                                   1112 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:858: for (u8 i = 0; i < PRINT_DATA.CharCount; ++i)
+    00000334 DD 36 FF 00      [19] 1113 	ld	-1 (ix), #0x00
+    00000338                       1114 00103$:
+    00000338 21r12r00         [10] 1115 	ld	hl, #(_g_PrintData + 18)
+    0000033B DD 7E FF         [19] 1116 	ld	a,-1 (ix)
+    0000033E 96               [ 7] 1117 	sub	a,(hl)
+    0000033F 30 2E            [12] 1118 	jr	nc, 00105$
+                                   1119 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:860: VDP_FillVRAM(0, dst, 0, 8);
+    00000341 C5               [11] 1120 	push	bc
+    00000342 D5               [11] 1121 	push	de
+    00000343 21 08 00         [10] 1122 	ld	hl, #0x0008
+    00000346 E5               [11] 1123 	push	hl
+    00000347 AF               [ 4] 1124 	xor	a, a
+    00000348 CDr00r00         [17] 1125 	call	_VDP_FillVRAM_16K
+    0000034B D1               [10] 1126 	pop	de
+    0000034C C1               [10] 1127 	pop	bc
+                                   1128 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:861: VDP_WriteVRAM(src, dst, 0, height);
+    0000034D DD 6E 04         [19] 1129 	ld	l, 4 (ix)
+    00000350 26 00            [ 7] 1130 	ld	h, #0x00
+    00000352 C5               [11] 1131 	push	bc
+    00000353 D5               [11] 1132 	push	de
+    00000354 E5               [11] 1133 	push	hl
+    00000355 69               [ 4] 1134 	ld	l, c
+    00000356 60               [ 4] 1135 	ld	h, b
+    00000357 CDr00r00         [17] 1136 	call	_VDP_WriteVRAM_16K
+    0000035A D1               [10] 1137 	pop	de
+    0000035B C1               [10] 1138 	pop	bc
+                                   1139 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:862: src += height;
+    0000035C 79               [ 4] 1140 	ld	a, c
+    0000035D DD 86 04         [19] 1141 	add	a, 4 (ix)
+    00000360 4F               [ 4] 1142 	ld	c, a
+    00000361 30 01            [12] 1143 	jr	nc, 00124$
+    00000363 04               [ 4] 1144 	inc	b
+    00000364                       1145 00124$:
+                                   1146 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:863: dst += 8;
+    00000364 21 08 00         [10] 1147 	ld	hl, #0x0008
+    00000367 19               [11] 1148 	add	hl, de
+    00000368 EB               [ 4] 1149 	ex	de, hl
+                                   1150 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:858: for (u8 i = 0; i < PRINT_DATA.CharCount; ++i)
+    00000369 DD 34 FF         [23] 1151 	inc	-1 (ix)
+    0000036C C3r38r03         [10] 1152 	jp	00103$
+    0000036F                       1153 00105$:
+                                   1154 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:865: }
+    0000036F 33               [ 6] 1155 	inc	sp
+    00000370 DD E1            [14] 1156 	pop	ix
+    00000372 E1               [10] 1157 	pop	hl
+    00000373 33               [ 6] 1158 	inc	sp
+    00000374 E9               [ 4] 1159 	jp	(hl)
+                                   1160 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:870: void Print_SetTextFont(const u8* fontData, u8 offset)
+                                   1161 ;	---------------------------------
+                                   1162 ; Function Print_SetTextFont
+                                   1163 ; ---------------------------------
+    00000375                       1164 _Print_SetTextFont::
+    00000375 DD E5            [15] 1165 	push	ix
+    00000377 DD 21 00 00      [14] 1166 	ld	ix,	#0
+    0000037B DD 39            [15] 1167 	add	ix, sp
+    0000037D F5               [11] 1168 	push	af
+    0000037E F5               [11] 1169 	push	af
+    0000037F F5               [11] 1170 	push	af
+    00000380 4D               [ 4] 1171 	ld	c, l
+    00000381 44               [ 4] 1172 	ld	b, h
+                                   1173 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:872: PRINT_DATA.PatternOffset = offset;
+    00000382 21r1Cr00         [10] 1174 	ld	hl, #(_g_PrintData + 28)
+    00000385 DD 7E 04         [19] 1175 	ld	a, 4 (ix)
+    00000388 77               [ 7] 1176 	ld	(hl), a
+                                   1177 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:875: if (fontData == NULL) // Use Bios font (if any)
+    00000389 78               [ 4] 1178 	ld	a, b
+    0000038A B1               [ 4] 1179 	or	a, c
+    0000038B 20 4C            [12] 1180 	jr	nz, 00102$
+                                   1181 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:876: Print_SetFontEx(8, 8, 1, 1, 1, 255, (const u8*)g_CGTABL + 8); // @todo Should be [1, 255] to include all characters
+    0000038D ED 5B 04 00      [20] 1182 	ld	de, (_g_CGTABL)
+    00000391 21 08 00         [10] 1183 	ld	hl, #0x0008
+    00000394 19               [11] 1184 	add	hl, de
+    00000395 EB               [ 4] 1185 	ex	de, hl
+                                   1186 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:242: PRINT_DATA.PatternX     = patternX;
+    00000396 21r00r00         [10] 1187 	ld	hl, #_g_PrintData
+    00000399 36 08            [10] 1188 	ld	(hl), #0x08
+                                   1189 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:243: PRINT_DATA.PatternY     = patternY;
+    0000039B 23               [ 6] 1190 	inc	hl
+    0000039C 36 08            [10] 1191 	ld	(hl), #0x08
+                                   1192 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:244: PRINT_DATA.UnitX        = sizeX;
+    0000039E 21r02r00         [10] 1193 	ld	hl, #_g_PrintData + 2
+    000003A1 36 01            [10] 1194 	ld	(hl), #0x01
+                                   1195 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:245: PRINT_DATA.UnitY        = sizeY;
+    000003A3 21r03r00         [10] 1196 	ld	hl, #_g_PrintData + 3
+    000003A6 36 01            [10] 1197 	ld	(hl), #0x01
+                                   1198 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:246: PRINT_DATA.CharFirst    = firstChr;
+    000003A8 21r10r00         [10] 1199 	ld	hl, #_g_PrintData + 16
+    000003AB 36 01            [10] 1200 	ld	(hl), #0x01
+                                   1201 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:247: PRINT_DATA.CharLast     = lastChr;
+    000003AD 21r11r00         [10] 1202 	ld	hl, #_g_PrintData + 17
+    000003B0 36 FF            [10] 1203 	ld	(hl), #0xff
+                                   1204 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:248: PRINT_DATA.CharCount    = lastChr - firstChr + 1;
+    000003B2 21r12r00         [10] 1205 	ld	hl, #_g_PrintData + 18
+    000003B5 DD 75 FC         [19] 1206 	ld	-4 (ix), l
+    000003B8 DD 74 FD         [19] 1207 	ld	-3 (ix), h
+    000003BB 36 FF            [10] 1208 	ld	(hl), #0xff
+                                   1209 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:249: PRINT_DATA.FontPatterns = patterns;
+    000003BD 21r18r00         [10] 1210 	ld	hl, #_g_PrintData + 24
+    000003C0 DD 75 FE         [19] 1211 	ld	-2 (ix), l
+    000003C3 DD 74 FF         [19] 1212 	ld	-1 (ix), h
+    000003C6 73               [ 7] 1213 	ld	(hl), e
+    000003C7 23               [ 6] 1214 	inc	hl
+    000003C8 72               [ 7] 1215 	ld	(hl), d
+                                   1216 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:250: PRINT_DATA.FontAddr     = PRINT_DATA.FontPatterns - (firstChr * PRINT_DATA.PatternY); // pre-compute address of the virtual index 0 character (used to quick drawing in PutChar_GX functions)
+    000003C9 21r01r00         [10] 1217 	ld	hl, #(_g_PrintData + 1)
+    000003CC 7B               [ 4] 1218 	ld	a, e
+    000003CD 96               [ 7] 1219 	sub	a, (hl)
+    000003CE 6F               [ 4] 1220 	ld	l, a
+    000003CF 7A               [ 4] 1221 	ld	a, d
+    000003D0 DE 00            [ 7] 1222 	sbc	a, #0x00
+    000003D2 67               [ 4] 1223 	ld	h, a
+    000003D3 22r1Ar00         [16] 1224 	ld	((_g_PrintData + 26)), hl
+                                   1225 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:876: Print_SetFontEx(8, 8, 1, 1, 1, 255, (const u8*)g_CGTABL + 8); // @todo Should be [1, 255] to include all characters
+    000003D6 C3r43r04         [10] 1226 	jp	00103$
+    000003D9                       1227 00102$:
+                                   1228 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:878: Print_SetFontEx(8, 8, 1, 1, fontData[2], fontData[3], fontData+4);
+    000003D9 21 04 00         [10] 1229 	ld	hl, #0x0004
+    000003DC 09               [11] 1230 	add	hl, bc
+    000003DD E3               [19] 1231 	ex	(sp), hl
+    000003DE 69               [ 4] 1232 	ld	l, c
+    000003DF 60               [ 4] 1233 	ld	h, b
+    000003E0 23               [ 6] 1234 	inc	hl
+    000003E1 23               [ 6] 1235 	inc	hl
+    000003E2 23               [ 6] 1236 	inc	hl
+    000003E3 5E               [ 7] 1237 	ld	e, (hl)
+    000003E4 69               [ 4] 1238 	ld	l, c
+    000003E5 60               [ 4] 1239 	ld	h, b
+    000003E6 23               [ 6] 1240 	inc	hl
+    000003E7 23               [ 6] 1241 	inc	hl
+    000003E8 56               [ 7] 1242 	ld	d, (hl)
+                                   1243 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:242: PRINT_DATA.PatternX     = patternX;
+    000003E9 21r00r00         [10] 1244 	ld	hl, #_g_PrintData
+    000003EC 36 08            [10] 1245 	ld	(hl), #0x08
+                                   1246 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:243: PRINT_DATA.PatternY     = patternY;
+    000003EE 23               [ 6] 1247 	inc	hl
+    000003EF 36 08            [10] 1248 	ld	(hl), #0x08
+                                   1249 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:244: PRINT_DATA.UnitX        = sizeX;
+    000003F1 21r02r00         [10] 1250 	ld	hl, #_g_PrintData + 2
+    000003F4 36 01            [10] 1251 	ld	(hl), #0x01
+                                   1252 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:245: PRINT_DATA.UnitY        = sizeY;
+    000003F6 21r03r00         [10] 1253 	ld	hl, #_g_PrintData + 3
+    000003F9 36 01            [10] 1254 	ld	(hl), #0x01
+                                   1255 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:246: PRINT_DATA.CharFirst    = firstChr;
+    000003FB 21r10r00         [10] 1256 	ld	hl, #(_g_PrintData + 16)
+    000003FE 72               [ 7] 1257 	ld	(hl), d
+                                   1258 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:247: PRINT_DATA.CharLast     = lastChr;
+    000003FF 23               [ 6] 1259 	inc	hl
+    00000400 73               [ 7] 1260 	ld	(hl), e
+                                   1261 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:248: PRINT_DATA.CharCount    = lastChr - firstChr + 1;
+    00000401 23               [ 6] 1262 	inc	hl
+    00000402 DD 75 FC         [19] 1263 	ld	-4 (ix), l
+    00000405 DD 74 FD         [19] 1264 	ld	-3 (ix), h
+    00000408 7B               [ 4] 1265 	ld	a, e
+    00000409 92               [ 4] 1266 	sub	a, d
+    0000040A 3C               [ 4] 1267 	inc	a
+    0000040B DD 6E FC         [19] 1268 	ld	l, -4 (ix)
+    0000040E DD 66 FD         [19] 1269 	ld	h, -3 (ix)
+    00000411 77               [ 7] 1270 	ld	(hl), a
+                                   1271 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:249: PRINT_DATA.FontPatterns = patterns;
+    00000412 21r18r00         [10] 1272 	ld	hl, #_g_PrintData + 24
+    00000415 DD 75 FE         [19] 1273 	ld	-2 (ix), l
+    00000418 DD 74 FF         [19] 1274 	ld	-1 (ix), h
+    0000041B DD 7E FA         [19] 1275 	ld	a, -6 (ix)
+    0000041E 77               [ 7] 1276 	ld	(hl), a
+    0000041F 23               [ 6] 1277 	inc	hl
+    00000420 DD 7E FB         [19] 1278 	ld	a, -5 (ix)
+    00000423 77               [ 7] 1279 	ld	(hl), a
+                                   1280 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:250: PRINT_DATA.FontAddr     = PRINT_DATA.FontPatterns - (firstChr * PRINT_DATA.PatternY); // pre-compute address of the virtual index 0 character (used to quick drawing in PutChar_GX functions)
+    00000424 21r01r00         [10] 1281 	ld	hl, #(_g_PrintData + 1)
+    00000427 5E               [ 7] 1282 	ld	e, (hl)
+    00000428 C5               [11] 1283 	push	bc
+    00000429 62               [ 4] 1284 	ld	h, d
+    0000042A 2E 00            [ 7] 1285 	ld	l, #0x00
+    0000042C 55               [ 4] 1286 	ld	d, l
+    0000042D 06 08            [ 7] 1287 	ld	b, #0x08
+    0000042F                       1288 00160$:
+    0000042F 29               [11] 1289 	add	hl, hl
+    00000430 30 01            [12] 1290 	jr	nc, 00161$
+    00000432 19               [11] 1291 	add	hl, de
+    00000433                       1292 00161$:
+    00000433 10 FA            [13] 1293 	djnz	00160$
+    00000435 C1               [10] 1294 	pop	bc
+    00000436 DD 7E FA         [19] 1295 	ld	a, -6 (ix)
+    00000439 95               [ 4] 1296 	sub	a, l
+    0000043A 6F               [ 4] 1297 	ld	l, a
+    0000043B DD 7E FB         [19] 1298 	ld	a, -5 (ix)
+    0000043E 9C               [ 4] 1299 	sbc	a, h
+    0000043F 67               [ 4] 1300 	ld	h, a
+    00000440 22r1Ar00         [16] 1301 	ld	((_g_PrintData + 26)), hl
+                                   1302 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:878: Print_SetFontEx(8, 8, 1, 1, fontData[2], fontData[3], fontData+4);
+    00000443                       1303 00103$:
+                                   1304 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:879: Print_Initialize();
+    00000443 C5               [11] 1305 	push	bc
+    00000444 CDr00r00         [17] 1306 	call	_Print_Initialize
+                                   1307 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:880: Print_SetMode(PRINT_MODE_TEXT);
+    00000447 3E 05            [ 7] 1308 	ld	a, #0x05
+    00000449 CDr65r00         [17] 1309 	call	_Print_SetMode
+    0000044C C1               [10] 1310 	pop	bc
+                                   1311 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:883: const u8* src = PRINT_DATA.FontPatterns;
+    0000044D DD 6E FE         [19] 1312 	ld	l, -2 (ix)
+    00000450 DD 66 FF         [19] 1313 	ld	h, -1 (ix)
+    00000453 7E               [ 7] 1314 	ld	a, (hl)
+    00000454 DD 77 FE         [19] 1315 	ld	-2 (ix), a
+    00000457 23               [ 6] 1316 	inc	hl
+    00000458 7E               [ 7] 1317 	ld	a, (hl)
+    00000459 DD 77 FF         [19] 1318 	ld	-1 (ix), a
+                                   1319 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:884: u16 dst = (u16)g_ScreenPatternLow + (offset * 8);
+    0000045C DD 6E 04         [19] 1320 	ld	l, 4 (ix)
+    0000045F 26 00            [ 7] 1321 	ld	h, #0x00
+    00000461 29               [11] 1322 	add	hl, hl
+    00000462 29               [11] 1323 	add	hl, hl
+    00000463 29               [11] 1324 	add	hl, hl
+    00000464 ED 5Br00r00      [20] 1325 	ld	de, (_g_ScreenPatternLow)
+    00000468 19               [11] 1326 	add	hl, de
+    00000469 EB               [ 4] 1327 	ex	de, hl
+                                   1328 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:886: if (fontData != NULL)
+    0000046A 78               [ 4] 1329 	ld	a, b
+    0000046B B1               [ 4] 1330 	or	a, c
+    0000046C 28 15            [12] 1331 	jr	z, 00105$
+                                   1332 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:887: CopyNo8HeightFontData(src, dst, fontData[0] & 0x0F);
+    0000046E 0A               [ 7] 1333 	ld	a, (bc)
+    0000046F E6 0F            [ 7] 1334 	and	a, #0x0f
+    00000471 C5               [11] 1335 	push	bc
+    00000472 D5               [11] 1336 	push	de
+    00000473 F5               [11] 1337 	push	af
+    00000474 33               [ 6] 1338 	inc	sp
+    00000475 DD 6E FE         [19] 1339 	ld	l, -2 (ix)
+    00000478 DD 66 FF         [19] 1340 	ld	h, -1 (ix)
+    0000047B CDr29r03         [17] 1341 	call	_CopyNo8HeightFontData
+    0000047E D1               [10] 1342 	pop	de
+    0000047F C1               [10] 1343 	pop	bc
+    00000480 C3r9Dr04         [10] 1344 	jp	00106$
+    00000483                       1345 00105$:
+                                   1346 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:890: VDP_WriteVRAM(src, dst, 0, PRINT_DATA.CharCount * 8);
+    00000483 DD 6E FC         [19] 1347 	ld	l, -4 (ix)
+    00000486 DD 66 FD         [19] 1348 	ld	h, -3 (ix)
+    00000489 6E               [ 7] 1349 	ld	l, (hl)
+    0000048A 26 00            [ 7] 1350 	ld	h, #0x00
+    0000048C 29               [11] 1351 	add	hl, hl
+    0000048D 29               [11] 1352 	add	hl, hl
+    0000048E 29               [11] 1353 	add	hl, hl
+    0000048F C5               [11] 1354 	push	bc
+    00000490 D5               [11] 1355 	push	de
+    00000491 E5               [11] 1356 	push	hl
+    00000492 DD 6E FE         [19] 1357 	ld	l, -2 (ix)
+    00000495 DD 66 FF         [19] 1358 	ld	h, -1 (ix)
+    00000498 CDr00r00         [17] 1359 	call	_VDP_WriteVRAM_16K
+    0000049B D1               [10] 1360 	pop	de
+    0000049C C1               [10] 1361 	pop	bc
+    0000049D                       1362 00106$:
+                                   1363 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/vdp.h:483: inline u8 VDP_GetMode() { return g_VDP_Data.Mode; }
+    0000049D 3Ar00r00         [13] 1364 	ld	a, (#_g_VDP_Data + 0)
+                                   1365 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:892: switch (VDP_GetMode())
+    000004A0 FE 03            [ 7] 1366 	cp	a, #0x03
+    000004A2 20 65            [12] 1367 	jr	nz, 00118$
+                                   1368 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:901: dst += 256 * 8;
+    000004A4 21 00 08         [10] 1369 	ld	hl, #0x0800
+    000004A7 19               [11] 1370 	add	hl, de
+    000004A8 EB               [ 4] 1371 	ex	de, hl
+                                   1372 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:903: if (fontData != NULL)
+    000004A9 78               [ 4] 1373 	ld	a, b
+    000004AA B1               [ 4] 1374 	or	a, c
+    000004AB 28 15            [12] 1375 	jr	z, 00109$
+                                   1376 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:904: CopyNo8HeightFontData(src, dst, fontData[0] & 0x0F);
+    000004AD 0A               [ 7] 1377 	ld	a, (bc)
+    000004AE E6 0F            [ 7] 1378 	and	a, #0x0f
+    000004B0 C5               [11] 1379 	push	bc
+    000004B1 D5               [11] 1380 	push	de
+    000004B2 F5               [11] 1381 	push	af
+    000004B3 33               [ 6] 1382 	inc	sp
+    000004B4 DD 6E FE         [19] 1383 	ld	l, -2 (ix)
+    000004B7 DD 66 FF         [19] 1384 	ld	h, -1 (ix)
+    000004BA CDr29r03         [17] 1385 	call	_CopyNo8HeightFontData
+    000004BD D1               [10] 1386 	pop	de
+    000004BE C1               [10] 1387 	pop	bc
+    000004BF C3rDCr04         [10] 1388 	jp	00110$
+    000004C2                       1389 00109$:
+                                   1390 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:907: VDP_WriteVRAM(src, dst, 0, PRINT_DATA.CharCount * 8);
+    000004C2 DD 6E FC         [19] 1391 	ld	l, -4 (ix)
+    000004C5 DD 66 FD         [19] 1392 	ld	h, -3 (ix)
+    000004C8 6E               [ 7] 1393 	ld	l, (hl)
+    000004C9 26 00            [ 7] 1394 	ld	h, #0x00
+    000004CB 29               [11] 1395 	add	hl, hl
+    000004CC 29               [11] 1396 	add	hl, hl
+    000004CD 29               [11] 1397 	add	hl, hl
+    000004CE C5               [11] 1398 	push	bc
+    000004CF D5               [11] 1399 	push	de
+    000004D0 E5               [11] 1400 	push	hl
+    000004D1 DD 6E FE         [19] 1401 	ld	l, -2 (ix)
+    000004D4 DD 66 FF         [19] 1402 	ld	h, -1 (ix)
+    000004D7 CDr00r00         [17] 1403 	call	_VDP_WriteVRAM_16K
+    000004DA D1               [10] 1404 	pop	de
+    000004DB C1               [10] 1405 	pop	bc
+    000004DC                       1406 00110$:
+                                   1407 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:908: dst += 256 * 8;
+    000004DC 7A               [ 4] 1408 	ld	a, d
+    000004DD C6 08            [ 7] 1409 	add	a, #0x08
+    000004DF 57               [ 4] 1410 	ld	d, a
+                                   1411 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:910: if (fontData != NULL)
+    000004E0 78               [ 4] 1412 	ld	a, b
+    000004E1 B1               [ 4] 1413 	or	a, c
+    000004E2 28 11            [12] 1414 	jr	z, 00112$
+                                   1415 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:911: CopyNo8HeightFontData(src, dst, fontData[0] & 0x0F);
+    000004E4 0A               [ 7] 1416 	ld	a, (bc)
+    000004E5 E6 0F            [ 7] 1417 	and	a, #0x0f
+    000004E7 F5               [11] 1418 	push	af
+    000004E8 33               [ 6] 1419 	inc	sp
+    000004E9 DD 6E FE         [19] 1420 	ld	l, -2 (ix)
+    000004EC DD 66 FF         [19] 1421 	ld	h, -1 (ix)
+    000004EF CDr29r03         [17] 1422 	call	_CopyNo8HeightFontData
+    000004F2 C3r09r05         [10] 1423 	jp	00118$
+    000004F5                       1424 00112$:
+                                   1425 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:914: VDP_WriteVRAM(src, dst, 0, PRINT_DATA.CharCount * 8);
+    000004F5 C1               [10] 1426 	pop	bc
+    000004F6 E1               [10] 1427 	pop	hl
+    000004F7 E5               [11] 1428 	push	hl
+    000004F8 C5               [11] 1429 	push	bc
+    000004F9 6E               [ 7] 1430 	ld	l, (hl)
+    000004FA 26 00            [ 7] 1431 	ld	h, #0x00
+    000004FC 29               [11] 1432 	add	hl, hl
+    000004FD 29               [11] 1433 	add	hl, hl
+    000004FE 29               [11] 1434 	add	hl, hl
+    000004FF E5               [11] 1435 	push	hl
+    00000500 DD 6E FE         [19] 1436 	ld	l, -2 (ix)
+    00000503 DD 66 FF         [19] 1437 	ld	h, -1 (ix)
+    00000506 CDr00r00         [17] 1438 	call	_VDP_WriteVRAM_16K
+                                   1439 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:917: };
+    00000509                       1440 00118$:
+                                   1441 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:918: }
+    00000509 DD F9            [10] 1442 	ld	sp, ix
+    0000050B DD E1            [14] 1443 	pop	ix
+    0000050D E1               [10] 1444 	pop	hl
+    0000050E 33               [ 6] 1445 	inc	sp
+    0000050F E9               [ 4] 1446 	jp	(hl)
+                                   1447 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:923: void DrawChar_Layout(u8 chr)
+                                   1448 ;	---------------------------------
+                                   1449 ; Function DrawChar_Layout
+                                   1450 ; ---------------------------------
+    00000510                       1451 _DrawChar_Layout::
+    00000510 DD E5            [15] 1452 	push	ix
+    00000512 DD 21 00 00      [14] 1453 	ld	ix,	#0
+    00000516 DD 39            [15] 1454 	add	ix, sp
+    00000518 3B               [ 6] 1455 	dec	sp
+                                   1456 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:926: chr = Print_ValidateChar(chr);
+    00000519 CDr37r02         [17] 1457 	call	_Print_ValidateChar
+    0000051C 4F               [ 4] 1458 	ld	c, a
+                                   1459 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:928: u8 shape = chr - PRINT_DATA.CharFirst + PRINT_DATA.PatternOffset;
+    0000051D 21r10r00         [10] 1460 	ld	hl, #_g_PrintData + 16
+    00000520 79               [ 4] 1461 	ld	a, c
+    00000521 96               [ 7] 1462 	sub	a, (hl)
+    00000522 21r1Cr00         [10] 1463 	ld	hl, #_g_PrintData + 28
+    00000525 86               [ 7] 1464 	add	a, (hl)
+    00000526 DD 77 FF         [19] 1465 	ld	-1 (ix), a
+                                   1466 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:929: u16 dst = (u16)g_ScreenLayoutLow + (PRINT_DATA.CursorY * PRINT_DATA.ScreenWidth) + PRINT_DATA.CursorX;
+    00000529 3Ar06r00         [13] 1467 	ld	a, (#_g_PrintData + 6)
+    0000052C ED 5Br16r00      [20] 1468 	ld	de, (#_g_PrintData + 22)
+    00000530 26 00            [ 7] 1469 	ld	h, #0x00
+    00000532 6F               [ 4] 1470 	ld	l, a
+    00000533 CDr00r00         [17] 1471 	call	__mulint
+    00000536 7B               [ 4] 1472 	ld	a, e
+    00000537 21r00r00         [10] 1473 	ld	hl, #_g_ScreenLayoutLow
+    0000053A 86               [ 7] 1474 	add	a, (hl)
+    0000053B 23               [ 6] 1475 	inc	hl
+    0000053C 4F               [ 4] 1476 	ld	c, a
+    0000053D 7A               [ 4] 1477 	ld	a, d
+    0000053E 8E               [ 7] 1478 	adc	a, (hl)
+    0000053F 47               [ 4] 1479 	ld	b, a
+    00000540 21r05r00         [10] 1480 	ld	hl, #_g_PrintData + 5
+    00000543 6E               [ 7] 1481 	ld	l, (hl)
+    00000544 26 00            [ 7] 1482 	ld	h, #0x00
+    00000546 09               [11] 1483 	add	hl, bc
+    00000547 EB               [ 4] 1484 	ex	de, hl
+                                   1485 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:930: VDP_Poke(shape, dst, g_ScreenLayoutHigh);
+    00000548 DD 7E FF         [19] 1486 	ld	a, -1 (ix)
+    0000054B CDr00r00         [17] 1487 	call	_VDP_Poke_16K
+                                   1488 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:931: }
+    0000054E 33               [ 6] 1489 	inc	sp
+    0000054F DD E1            [14] 1490 	pop	ix
+    00000551 C9               [10] 1491 	ret
+                                   1492 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1096: void Print_Clear()
+                                   1493 ;	---------------------------------
+                                   1494 ; Function Print_Clear
+                                   1495 ; ---------------------------------
+    00000552                       1496 _Print_Clear::
+                                   1497 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1109: VDP_FillVRAM(0, g_ScreenLayoutLow, g_ScreenLayoutHigh, 24 * PRINT_DATA.ScreenWidth);
+    00000552 2Ar16r00         [16] 1498 	ld	hl, (#(_g_PrintData + 22) + 0)
+    00000555 4D               [ 4] 1499 	ld	c, l
+    00000556 44               [ 4] 1500 	ld	b, h
+    00000557 29               [11] 1501 	add	hl, hl
+    00000558 09               [11] 1502 	add	hl, bc
+    00000559 29               [11] 1503 	add	hl, hl
+    0000055A 29               [11] 1504 	add	hl, hl
+    0000055B 29               [11] 1505 	add	hl, hl
+    0000055C E5               [11] 1506 	push	hl
+    0000055D ED 5Br00r00      [20] 1507 	ld	de, (_g_ScreenLayoutLow)
+    00000561 AF               [ 4] 1508 	xor	a, a
+    00000562 CDr00r00         [17] 1509 	call	_VDP_FillVRAM_16K
+                                   1510 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1112: }
+    00000565 C9               [10] 1511 	ret
+                                   1512 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1117: void Print_Backspace(u8 num)
+                                   1513 ;	---------------------------------
+                                   1514 ; Function Print_Backspace
+                                   1515 ; ---------------------------------
+    00000566                       1516 _Print_Backspace::
+    00000566 DD E5            [15] 1517 	push	ix
+    00000568 DD 21 00 00      [14] 1518 	ld	ix,	#0
+    0000056C DD 39            [15] 1519 	add	ix, sp
+    0000056E 3B               [ 6] 1520 	dec	sp
+    0000056F DD 77 FF         [19] 1521 	ld	-1 (ix), a
+                                   1522 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1138: u16 dst = g_ScreenLayoutLow + (PRINT_DATA.CursorY * PRINT_DATA.ScreenWidth) + PRINT_DATA.CursorX - num;
+    00000572 3Ar06r00         [13] 1523 	ld	a, (#_g_PrintData + 6)
+    00000575 ED 5Br16r00      [20] 1524 	ld	de, (#_g_PrintData + 22)
+    00000579 26 00            [ 7] 1525 	ld	h, #0x00
+    0000057B 6F               [ 4] 1526 	ld	l, a
+    0000057C CDr00r00         [17] 1527 	call	__mulint
+    0000057F 2Ar00r00         [16] 1528 	ld	hl, (_g_ScreenLayoutLow)
+    00000582 19               [11] 1529 	add	hl, de
+    00000583 01r05r00         [10] 1530 	ld	bc, #_g_PrintData + 5
+    00000586 0A               [ 7] 1531 	ld	a, (bc)
+    00000587 16 00            [ 7] 1532 	ld	d, #0x00
+    00000589 5F               [ 4] 1533 	ld	e, a
+    0000058A 19               [11] 1534 	add	hl, de
+    0000058B DD 5E FF         [19] 1535 	ld	e, -1 (ix)
+    0000058E 16 00            [ 7] 1536 	ld	d, #0x00
+    00000590 BF               [ 4] 1537 	cp	a, a
+    00000591 ED 52            [15] 1538 	sbc	hl, de
+    00000593 EB               [ 4] 1539 	ex	de, hl
+                                   1540 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1139: VDP_FillVRAM(0, dst, g_ScreenLayoutHigh, num);
+    00000594 DD 6E FF         [19] 1541 	ld	l, -1 (ix)
+    00000597 26 00            [ 7] 1542 	ld	h, #0x00
+    00000599 C5               [11] 1543 	push	bc
+    0000059A E5               [11] 1544 	push	hl
+    0000059B AF               [ 4] 1545 	xor	a, a
+    0000059C CDr00r00         [17] 1546 	call	_VDP_FillVRAM_16K
+    0000059F C1               [10] 1547 	pop	bc
+                                   1548 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1140: PRINT_DATA.CursorX -= num;
+    000005A0 0A               [ 7] 1549 	ld	a, (bc)
+    000005A1 DD 96 FF         [19] 1550 	sub	a, -1 (ix)
+    000005A4 02               [ 7] 1551 	ld	(bc), a
+                                   1552 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1143: }
+    000005A5 33               [ 6] 1553 	inc	sp
+    000005A6 DD E1            [14] 1554 	pop	ix
+    000005A8 C9               [10] 1555 	ret
+                                   1556 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1148: void Print_DrawChar(u8 chr)
+                                   1557 ;	---------------------------------
+                                   1558 ; Function Print_DrawChar
+                                   1559 ; ---------------------------------
+    000005A9                       1560 _Print_DrawChar::
+    000005A9 4F               [ 4] 1561 	ld	c, a
+                                   1562 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1151: if (PRINT_DATA.CursorX + PRINT_W(PRINT_DATA.UnitX) > PRINT_DATA.ScreenWidth) // Handle automatic new-line when 
+    000005AA 21r05r00         [10] 1563 	ld	hl, #(_g_PrintData + 5)
+    000005AD 5E               [ 7] 1564 	ld	e, (hl)
+    000005AE 16 00            [ 7] 1565 	ld	d, #0x00
+    000005B0 13               [ 6] 1566 	inc	de
+    000005B1 2Ar16r00         [16] 1567 	ld	hl, (#_g_PrintData + 22)
+    000005B4 AF               [ 4] 1568 	xor	a, a
+    000005B5 ED 52            [15] 1569 	sbc	hl, de
+    000005B7 30 09            [12] 1570 	jr	nc, 00102$
+                                   1571 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:500: PRINT_DATA.CursorX = 0;
+    000005B9 21r05r00         [10] 1572 	ld	hl, #(_g_PrintData + 5)
+    000005BC 36 00            [10] 1573 	ld	(hl), #0x00
+                                   1574 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:501: PRINT_DATA.CursorY += PRINT_H(PRINT_DATA.UnitY);
+    000005BE 21r06r00         [10] 1575 	ld	hl, #_g_PrintData + 6
+    000005C1 34               [11] 1576 	inc	(hl)
+                                   1577 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1152: Print_Return();
+    000005C2                       1578 00102$:
+                                   1579 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1157: PRINT_DATA.DrawChar(chr);
+    000005C2 2Ar13r00         [16] 1580 	ld	hl, (#_g_PrintData + 19)
+    000005C5 79               [ 4] 1581 	ld	a, c
+    000005C6 CDr00r00         [17] 1582 	call	___sdcc_call_hl
+                                   1583 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1160: PRINT_DATA.CursorX += PRINT_W(PRINT_DATA.UnitX);
+    000005C9 3Ar05r00         [13] 1584 	ld	a, (#(_g_PrintData + 5) + 0)
+    000005CC 3C               [ 4] 1585 	inc	a
+    000005CD 32r05r00         [13] 1586 	ld	(#(_g_PrintData + 5)), a
+                                   1587 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1161: }
+    000005D0 C9               [10] 1588 	ret
+                                   1589 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1167: void Print_DrawCharX(c8 chr, u8 num)
+                                   1590 ;	---------------------------------
+                                   1591 ; Function Print_DrawCharX
+                                   1592 ; ---------------------------------
+    000005D1                       1593 _Print_DrawCharX::
+    000005D1 4F               [ 4] 1594 	ld	c, a
+                                   1595 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1169: for (u8 i = 0; i < num; ++i)
+    000005D2 06 00            [ 7] 1596 	ld	b, #0x00
+    000005D4                       1597 00103$:
+    000005D4 78               [ 4] 1598 	ld	a, b
+    000005D5 95               [ 4] 1599 	sub	a, l
+    000005D6 D0               [11] 1600 	ret	nc
+                                   1601 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1170: Print_DrawChar(chr);
+    000005D7 E5               [11] 1602 	push	hl
+    000005D8 C5               [11] 1603 	push	bc
+    000005D9 79               [ 4] 1604 	ld	a, c
+    000005DA CDrA9r05         [17] 1605 	call	_Print_DrawChar
+    000005DD C1               [10] 1606 	pop	bc
+    000005DE E1               [10] 1607 	pop	hl
+                                   1608 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1169: for (u8 i = 0; i < num; ++i)
+    000005DF 04               [ 4] 1609 	inc	b
+                                   1610 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1171: }
+    000005E0 C3rD4r05         [10] 1611 	jp	00103$
+                                   1612 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1176: void Print_DrawText(const c8* str)
+                                   1613 ;	---------------------------------
+                                   1614 ; Function Print_DrawText
+                                   1615 ; ---------------------------------
+    000005E3                       1616 _Print_DrawText::
+    000005E3 EB               [ 4] 1617 	ex	de, hl
+                                   1618 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1178: while (*str != 0)
+    000005E4                       1619 00107$:
+    000005E4 1A               [ 7] 1620 	ld	a, (de)
+    000005E5 B7               [ 4] 1621 	or	a, a
+    000005E6 C8               [11] 1622 	ret	z
+                                   1623 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1180: if (*str == '\t')
+    000005E7 FE 09            [ 7] 1624 	cp	a, #0x09
+    000005E9 20 16            [12] 1625 	jr	nz, 00105$
+                                   1626 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:492: PRINT_DATA.CursorX += PRINT_W(PRINT_DATA.UnitX) + PRINT_DATA.TabSize - 1;
+    000005EB 3Ar05r00         [13] 1627 	ld	a, (#(_g_PrintData + 5) + 0)
+    000005EE 21r04r00         [10] 1628 	ld	hl, #(_g_PrintData + 4)
+    000005F1 86               [ 7] 1629 	add	a, (hl)
+    000005F2 4F               [ 4] 1630 	ld	c, a
+    000005F3 21r05r00         [10] 1631 	ld	hl, #(_g_PrintData + 5)
+    000005F6 71               [ 7] 1632 	ld	(hl), c
+                                   1633 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:493: PRINT_DATA.CursorX &= ~(PRINT_DATA.TabSize - 1);
+    000005F7 3Ar04r00         [13] 1634 	ld	a, (#(_g_PrintData + 4) + 0)
+    000005FA 3D               [ 4] 1635 	dec	a
+    000005FB 2F               [ 4] 1636 	cpl
+    000005FC A1               [ 4] 1637 	and	a, c
+    000005FD 77               [ 7] 1638 	ld	(hl), a
+                                   1639 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1181: Print_Tab();
+    000005FE C3r16r06         [10] 1640 	jp	00106$
+    00000601                       1641 00105$:
+                                   1642 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1182: else if (*str == '\n')
+    00000601 FE 0A            [ 7] 1643 	cp	a, #0x0a
+    00000603 20 0C            [12] 1644 	jr	nz, 00102$
+                                   1645 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:500: PRINT_DATA.CursorX = 0;
+    00000605 21r05r00         [10] 1646 	ld	hl, #_g_PrintData + 5
+    00000608 36 00            [10] 1647 	ld	(hl), #0x00
+                                   1648 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:501: PRINT_DATA.CursorY += PRINT_H(PRINT_DATA.UnitY);
+    0000060A 21r06r00         [10] 1649 	ld	hl, #_g_PrintData + 6
+    0000060D 34               [11] 1650 	inc	(hl)
+                                   1651 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1183: Print_Return();
+    0000060E C3r16r06         [10] 1652 	jp	00106$
+    00000611                       1653 00102$:
+                                   1654 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1189: Print_DrawChar(*str);
+    00000611 D5               [11] 1655 	push	de
+    00000612 CDrA9r05         [17] 1656 	call	_Print_DrawChar
+    00000615 D1               [10] 1657 	pop	de
+    00000616                       1658 00106$:
+                                   1659 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1190: str++;
+    00000616 13               [ 6] 1660 	inc	de
+                                   1661 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1192: }
+    00000617 C3rE4r05         [10] 1662 	jp	00107$
+                                   1663 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1197: void Print_DrawBin8(u8 value)
+                                   1664 ;	---------------------------------
+                                   1665 ; Function Print_DrawBin8
+                                   1666 ; ---------------------------------
+    0000061A                       1667 _Print_DrawBin8::
+    0000061A 5F               [ 4] 1668 	ld	e, a
+                                   1669 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1199: u8 flag = (u8)(1 << 7);
+                                   1670 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1200: for (u8 i = 0; i < 8; ++i)
+    0000061B 01 80 00         [10] 1671 	ld	bc, #0x80
+    0000061E                       1672 00103$:
+    0000061E 78               [ 4] 1673 	ld	a, b
+    0000061F D6 08            [ 7] 1674 	sub	a, #0x08
+    00000621 D0               [11] 1675 	ret	nc
+                                   1676 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1202: Print_DrawChar((value & flag) ? '1' : '0');
+    00000622 7B               [ 4] 1677 	ld	a, e
+    00000623 A1               [ 4] 1678 	and	a, c
+    00000624 3E 31            [ 7] 1679 	ld	a, #0x31
+    00000626 20 02            [12] 1680 	jr	nz, 00108$
+    00000628 3E 30            [ 7] 1681 	ld	a, #0x30
+    0000062A                       1682 00108$:
+    0000062A C5               [11] 1683 	push	bc
+    0000062B D5               [11] 1684 	push	de
+    0000062C CDrA9r05         [17] 1685 	call	_Print_DrawChar
+    0000062F D1               [10] 1686 	pop	de
+    00000630 C1               [10] 1687 	pop	bc
+                                   1688 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1203: flag >>= 1;
+    00000631 CB 39            [ 8] 1689 	srl	c
+                                   1690 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1200: for (u8 i = 0; i < 8; ++i)
+    00000633 04               [ 4] 1691 	inc	b
+                                   1692 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1208: }
+    00000634 C3r1Er06         [10] 1693 	jp	00103$
+                                   1694 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1213: void Print_DrawHex8(u8 value)
+                                   1695 ;	---------------------------------
+                                   1696 ; Function Print_DrawHex8
+                                   1697 ; ---------------------------------
+    00000637                       1698 _Print_DrawHex8::
+                                   1699 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1215: Print_DrawChar(g_HexChar[(value >> 4) & 0x000F]);
+    00000637 4F               [ 4] 1700 	ld	c, a
+    00000638 07               [ 4] 1701 	rlca
+    00000639 07               [ 4] 1702 	rlca
+    0000063A 07               [ 4] 1703 	rlca
+    0000063B 07               [ 4] 1704 	rlca
+    0000063C E6 0F            [ 7] 1705 	and	a, #0xf
+    0000063E 6F               [ 4] 1706 	ld	l, a
+    0000063F 26 00            [ 7] 1707 	ld	h, #0x00
+    00000641 11r55r00         [10] 1708 	ld	de, #_g_HexChar
+    00000644 19               [11] 1709 	add	hl, de
+    00000645 7E               [ 7] 1710 	ld	a, (hl)
+    00000646 C5               [11] 1711 	push	bc
+    00000647 CDrA9r05         [17] 1712 	call	_Print_DrawChar
+    0000064A C1               [10] 1713 	pop	bc
+                                   1714 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1216: Print_DrawChar(g_HexChar[value & 0x000F]);
+    0000064B 79               [ 4] 1715 	ld	a, c
+    0000064C E6 0F            [ 7] 1716 	and	a, #0x0f
+    0000064E 6F               [ 4] 1717 	ld	l, a
+    0000064F 26 00            [ 7] 1718 	ld	h, #0x00
+    00000651 11r55r00         [10] 1719 	ld	de, #_g_HexChar
+    00000654 19               [11] 1720 	add	hl, de
+    00000655 7E               [ 7] 1721 	ld	a, (hl)
+                                   1722 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1220: }
+    00000656 C3rA9r05         [10] 1723 	jp	_Print_DrawChar
+                                   1724 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1225: void Print_DrawHex16(u16 value)
+                                   1725 ;	---------------------------------
+                                   1726 ; Function Print_DrawHex16
+                                   1727 ; ---------------------------------
+    00000659                       1728 _Print_DrawHex16::
+                                   1729 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1227: Print_DrawHex8(value >> 8);
+    00000659 7C               [ 4] 1730 	ld	a, h
+    0000065A E5               [11] 1731 	push	hl
+    0000065B CDr37r06         [17] 1732 	call	_Print_DrawHex8
+    0000065E E1               [10] 1733 	pop	hl
+                                   1734 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1228: Print_DrawHex8((u8)value);
+    0000065F 7D               [ 4] 1735 	ld	a, l
+                                   1736 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1229: }
+    00000660 C3r37r06         [10] 1737 	jp	_Print_DrawHex8
+                                   1738 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1235: void Print_DrawHex32(u32 value)
+                                   1739 ;	---------------------------------
+                                   1740 ; Function Print_DrawHex32
+                                   1741 ; ---------------------------------
+    00000663                       1742 _Print_DrawHex32::
+                                   1743 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1237: Print_DrawHex16(value >> 16);
+    00000663 E5               [11] 1744 	push	hl
+    00000664 D5               [11] 1745 	push	de
+    00000665 CDr59r06         [17] 1746 	call	_Print_DrawHex16
+    00000668 D1               [10] 1747 	pop	de
+    00000669 C1               [10] 1748 	pop	bc
+                                   1749 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1238: Print_DrawHex16((u16)value);
+    0000066A EB               [ 4] 1750 	ex	de, hl
+                                   1751 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1239: }
+    0000066B C3r59r06         [10] 1752 	jp	_Print_DrawHex16
+                                   1753 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1246: void Print_DrawInt(i32 value)
+                                   1754 ;	---------------------------------
+                                   1755 ; Function Print_DrawInt
+                                   1756 ; ---------------------------------
+    0000066E                       1757 _Print_DrawInt::
+    0000066E DD E5            [15] 1758 	push	ix
+    00000670 DD 21 00 00      [14] 1759 	ld	ix,	#0
+    00000674 DD 39            [15] 1760 	add	ix, sp
+    00000676 FD 21 F4 FF      [14] 1761 	ld	iy, #-12
+    0000067A FD 39            [15] 1762 	add	iy, sp
+    0000067C FD F9            [10] 1763 	ld	sp, iy
+    0000067E DD 73 FC         [19] 1764 	ld	-4 (ix), e
+    00000681 DD 72 FD         [19] 1765 	ld	-3 (ix), d
+    00000684 DD 75 FE         [19] 1766 	ld	-2 (ix), l
+    00000687 DD 74 FF         [19] 1767 	ld	-1 (ix), h
+                                   1768 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1253: if (value < 0)
+    0000068A DD CB FF 7E      [20] 1769 	bit	7, -1 (ix)
+    0000068E 28 23            [12] 1770 	jr	z, 00102$
+                                   1771 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1255: Print_DrawChar('-');
+    00000690 3E 2D            [ 7] 1772 	ld	a, #0x2d
+    00000692 CDrA9r05         [17] 1773 	call	_Print_DrawChar
+                                   1774 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1256: value = -value;
+    00000695 AF               [ 4] 1775 	xor	a, a
+    00000696 DD 96 FC         [19] 1776 	sub	a, -4 (ix)
+    00000699 DD 77 FC         [19] 1777 	ld	-4 (ix), a
+    0000069C 3E 00            [ 7] 1778 	ld	a, #0x00
+    0000069E DD 9E FD         [19] 1779 	sbc	a, -3 (ix)
+    000006A1 DD 77 FD         [19] 1780 	ld	-3 (ix), a
+    000006A4 3E 00            [ 7] 1781 	ld	a, #0x00
+    000006A6 DD 9E FE         [19] 1782 	sbc	a, -2 (ix)
+    000006A9 DD 77 FE         [19] 1783 	ld	-2 (ix), a
+    000006AC 9F               [ 4] 1784 	sbc	a, a
+    000006AD DD 96 FF         [19] 1785 	sub	a, -1 (ix)
+    000006B0 DD 77 FF         [19] 1786 	ld	-1 (ix), a
+    000006B3                       1787 00102$:
+                                   1788 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1260: c8* ptr = str;
+    000006B3 21 00 00         [10] 1789 	ld	hl, #0
+    000006B6 39               [11] 1790 	add	hl, sp
+                                   1791 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1261: *ptr = 0;
+    000006B7 36 00            [10] 1792 	ld	(hl), #0x00
+                                   1793 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1262: while (value >= 10)
+    000006B9                       1794 00103$:
+                                   1795 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1264: *++ptr = '0' + (value % 10);
+    000006B9 23               [ 6] 1796 	inc	hl
+    000006BA 4D               [ 4] 1797 	ld	c, l
+    000006BB 44               [ 4] 1798 	ld	b, h
+                                   1799 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1262: while (value >= 10)
+    000006BC DD 7E FC         [19] 1800 	ld	a, -4 (ix)
+    000006BF D6 0A            [ 7] 1801 	sub	a, #0x0a
+    000006C1 DD 7E FD         [19] 1802 	ld	a, -3 (ix)
+    000006C4 DE 00            [ 7] 1803 	sbc	a, #0x00
+    000006C6 DD 7E FE         [19] 1804 	ld	a, -2 (ix)
+    000006C9 DE 00            [ 7] 1805 	sbc	a, #0x00
+    000006CB DD 7E FF         [19] 1806 	ld	a, -1 (ix)
+    000006CE 17               [ 4] 1807 	rla
+    000006CF 3F               [ 4] 1808 	ccf
+    000006D0 1F               [ 4] 1809 	rra
+    000006D1 DE 80            [ 7] 1810 	sbc	a, #0x80
+    000006D3 38 4B            [12] 1811 	jr	c, 00105$
+                                   1812 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1264: *++ptr = '0' + (value % 10);
+    000006D5 C5               [11] 1813 	push	bc
+    000006D6 C5               [11] 1814 	push	bc
+    000006D7 11 00 00         [10] 1815 	ld	de, #0x0000
+    000006DA D5               [11] 1816 	push	de
+    000006DB 1E 0A            [ 7] 1817 	ld	e, #0x0a
+    000006DD D5               [11] 1818 	push	de
+    000006DE DD 5E FC         [19] 1819 	ld	e, -4 (ix)
+    000006E1 DD 56 FD         [19] 1820 	ld	d, -3 (ix)
+    000006E4 DD 6E FE         [19] 1821 	ld	l, -2 (ix)
+    000006E7 DD 66 FF         [19] 1822 	ld	h, -1 (ix)
+    000006EA CDr00r00         [17] 1823 	call	__modslong
+    000006ED F1               [10] 1824 	pop	af
+    000006EE E3               [19] 1825 	ex	(sp),hl
+    000006EF FD E1            [14] 1826 	pop	iy
+    000006F1 C1               [10] 1827 	pop	bc
+    000006F2 E1               [10] 1828 	pop	hl
+    000006F3 7B               [ 4] 1829 	ld	a, e
+    000006F4 C6 30            [ 7] 1830 	add	a, #0x30
+    000006F6 02               [ 7] 1831 	ld	(bc), a
+                                   1832 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1265: value /= 10;
+    000006F7 E5               [11] 1833 	push	hl
+    000006F8 11 00 00         [10] 1834 	ld	de, #0x0000
+    000006FB D5               [11] 1835 	push	de
+    000006FC 1E 0A            [ 7] 1836 	ld	e, #0x0a
+    000006FE D5               [11] 1837 	push	de
+    000006FF DD 5E FC         [19] 1838 	ld	e, -4 (ix)
+    00000702 DD 56 FD         [19] 1839 	ld	d, -3 (ix)
+    00000705 DD 6E FE         [19] 1840 	ld	l, -2 (ix)
+    00000708 DD 66 FF         [19] 1841 	ld	h, -1 (ix)
+    0000070B CDr00r00         [17] 1842 	call	__divslong
+    0000070E F1               [10] 1843 	pop	af
+    0000070F F1               [10] 1844 	pop	af
+    00000710 DD 73 FC         [19] 1845 	ld	-4 (ix), e
+    00000713 DD 72 FD         [19] 1846 	ld	-3 (ix), d
+    00000716 DD 75 FE         [19] 1847 	ld	-2 (ix), l
+    00000719 DD 74 FF         [19] 1848 	ld	-1 (ix), h
+    0000071C E1               [10] 1849 	pop	hl
+    0000071D C3rB9r06         [10] 1850 	jp	00103$
+    00000720                       1851 00105$:
+                                   1852 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1267: *++ptr = '0' + value;
+    00000720 DD 7E FC         [19] 1853 	ld	a, -4 (ix)
+    00000723 C6 30            [ 7] 1854 	add	a, #0x30
+    00000725 02               [ 7] 1855 	ld	(bc), a
+                                   1856 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1268: while (*ptr != 0)
+    00000726                       1857 00106$:
+    00000726 0A               [ 7] 1858 	ld	a, (bc)
+    00000727 B7               [ 4] 1859 	or	a, a
+    00000728 28 09            [12] 1860 	jr	z, 00109$
+                                   1861 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1269: Print_DrawChar(*ptr--);	
+    0000072A 0B               [ 6] 1862 	dec	bc
+    0000072B C5               [11] 1863 	push	bc
+    0000072C CDrA9r05         [17] 1864 	call	_Print_DrawChar
+    0000072F C1               [10] 1865 	pop	bc
+    00000730 C3r26r07         [10] 1866 	jp	00106$
+    00000733                       1867 00109$:
+                                   1868 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1270: }
+    00000733 DD F9            [10] 1869 	ld	sp, ix
+    00000735 DD E1            [14] 1870 	pop	ix
+    00000737 C9               [10] 1871 	ret
+                                   1872 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1279: void Print_DrawFormat(const c8* format, ...)
+                                   1873 ;	---------------------------------
+                                   1874 ; Function Print_DrawFormat
+                                   1875 ; ---------------------------------
+    00000738                       1876 _Print_DrawFormat::
+    00000738 DD E5            [15] 1877 	push	ix
+    0000073A DD 21 00 00      [14] 1878 	ld	ix,	#0
+    0000073E DD 39            [15] 1879 	add	ix, sp
+    00000740 21 ED FF         [10] 1880 	ld	hl, #-19
+    00000743 39               [11] 1881 	add	hl, sp
+    00000744 F9               [ 6] 1882 	ld	sp, hl
+                                   1883 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1284: va_start(args, format);
+    00000745 21 19 00         [10] 1884 	ld	hl, #25
+    00000748 39               [11] 1885 	add	hl, sp
+    00000749 DD 75 F5         [19] 1886 	ld	-11 (ix), l
+    0000074C DD 74 F6         [19] 1887 	ld	-10 (ix), h
+                                   1888 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1286: const c8* ptr = format;
+    0000074F DD 7E 04         [19] 1889 	ld	a, 4 (ix)
+    00000752 DD 77 FE         [19] 1890 	ld	-2 (ix), a
+    00000755 DD 7E 05         [19] 1891 	ld	a, 5 (ix)
+    00000758 DD 77 FF         [19] 1892 	ld	-1 (ix), a
+                                   1893 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1287: while (*ptr != 0)
+    0000075B                       1894 00191$:
+    0000075B DD 6E FE         [19] 1895 	ld	l, -2 (ix)
+    0000075E DD 66 FF         [19] 1896 	ld	h, -1 (ix)
+    00000761 7E               [ 7] 1897 	ld	a, (hl)
+    00000762 DD 77 FD         [19] 1898 	ld	-3 (ix), a
+    00000765 B7               [ 4] 1899 	or	a, a
+    00000766 CAr34r0E         [10] 1900 	jp	z, 00196$
+                                   1901 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1289: if (*ptr == '%')
+    00000769 DD 7E FD         [19] 1902 	ld	a, -3 (ix)
+    0000076C D6 25            [ 7] 1903 	sub	a, #0x25
+    0000076E C2rF4r0D         [10] 1904 	jp	nz, 00189$
+                                   1905 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1291: ptr++;
+    00000771 DD 4E FE         [19] 1906 	ld	c, -2 (ix)
+    00000774 DD 46 FF         [19] 1907 	ld	b, -1 (ix)
+    00000777 03               [ 6] 1908 	inc	bc
+                                   1909 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1294: u8 len = 0;
+    00000778 DD 36 F7 00      [19] 1910 	ld	-9 (ix), #0x00
+                                   1911 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1295: if ((*ptr >= '0') && (*ptr <= '9'))
+    0000077C 0A               [ 7] 1912 	ld	a, (bc)
+    0000077D FE 30            [ 7] 1913 	cp	a, #0x30
+    0000077F 38 0A            [12] 1914 	jr	c, 00245$
+    00000781 FE 3A            [ 7] 1915 	cp	a, #0x3a
+    00000783 30 06            [12] 1916 	jr	nc, 00245$
+                                   1917 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1297: len = *ptr - '0';
+    00000785 C6 D0            [ 7] 1918 	add	a, #0xd0
+    00000787 DD 77 F7         [19] 1919 	ld	-9 (ix), a
+                                   1920 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1298: ptr++;
+    0000078A 03               [ 6] 1921 	inc	bc
+                                   1922 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1300: while ((*ptr >= '0') && (*ptr <= '9'))
+    0000078B                       1923 00245$:
+    0000078B DD 71 FE         [19] 1924 	ld	-2 (ix), c
+    0000078E DD 70 FF         [19] 1925 	ld	-1 (ix), b
+    00000791                       1926 00105$:
+    00000791 DD 6E FE         [19] 1927 	ld	l, -2 (ix)
+    00000794 DD 66 FF         [19] 1928 	ld	h, -1 (ix)
+    00000797 7E               [ 7] 1929 	ld	a, (hl)
+    00000798 DD 77 FD         [19] 1930 	ld	-3 (ix), a
+    0000079B D6 30            [ 7] 1931 	sub	a, #0x30
+    0000079D 38 24            [12] 1932 	jr	c, 00280$
+    0000079F 3E 39            [ 7] 1933 	ld	a, #0x39
+    000007A1 DD 96 FD         [19] 1934 	sub	a, -3 (ix)
+    000007A4 38 1D            [12] 1935 	jr	c, 00280$
+                                   1936 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1302: len *= 10;
+    000007A6 DD 7E F7         [19] 1937 	ld	a, -9 (ix)
+    000007A9 4F               [ 4] 1938 	ld	c, a
+    000007AA 87               [ 4] 1939 	add	a, a
+    000007AB 87               [ 4] 1940 	add	a, a
+    000007AC 81               [ 4] 1941 	add	a, c
+    000007AD 87               [ 4] 1942 	add	a, a
+    000007AE 4F               [ 4] 1943 	ld	c, a
+                                   1944 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1303: len += *ptr - '0';
+    000007AF DD 7E FD         [19] 1945 	ld	a, -3 (ix)
+    000007B2 C6 D0            [ 7] 1946 	add	a, #0xd0
+    000007B4 81               [ 4] 1947 	add	a, c
+    000007B5 DD 77 F7         [19] 1948 	ld	-9 (ix), a
+                                   1949 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1304: ptr++;
+    000007B8 DD 34 FE         [23] 1950 	inc	-2 (ix)
+    000007BB 20 D4            [12] 1951 	jr	nz, 00105$
+    000007BD DD 34 FF         [23] 1952 	inc	-1 (ix)
+    000007C0 C3r91r07         [10] 1953 	jp	00105$
+    000007C3                       1954 00280$:
+                                   1955 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1308: if ((*ptr == 'i') || (*ptr == 'd'))
+    000007C3 DD 7E FD         [19] 1956 	ld	a, -3 (ix)
+    000007C6 D6 69            [ 7] 1957 	sub	a, #0x69
+    000007C8 28 07            [12] 1958 	jr	z, 00178$
+    000007CA DD 7E FD         [19] 1959 	ld	a, -3 (ix)
+    000007CD D6 64            [ 7] 1960 	sub	a, #0x64
+    000007CF 20 59            [12] 1961 	jr	nz, 00179$
+    000007D1                       1962 00178$:
+                                   1963 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1310: i16 val = (i16)va_arg(args, i16);
+    000007D1 DD 6E F5         [19] 1964 	ld	l, -11 (ix)
+    000007D4 DD 66 F6         [19] 1965 	ld	h, -10 (ix)
+    000007D7 23               [ 6] 1966 	inc	hl
+    000007D8 23               [ 6] 1967 	inc	hl
+    000007D9 DD 75 FA         [19] 1968 	ld	-6 (ix), l
+    000007DC DD 74 FB         [19] 1969 	ld	-5 (ix), h
+    000007DF DD 7E FA         [19] 1970 	ld	a, -6 (ix)
+    000007E2 DD 77 F5         [19] 1971 	ld	-11 (ix), a
+    000007E5 DD 7E FB         [19] 1972 	ld	a, -5 (ix)
+    000007E8 DD 77 F6         [19] 1973 	ld	-10 (ix), a
+    000007EB DD 4E FA         [19] 1974 	ld	c, -6 (ix)
+    000007EE DD 46 FB         [19] 1975 	ld	b, -5 (ix)
+    000007F1 0B               [ 6] 1976 	dec	bc
+    000007F2 0B               [ 6] 1977 	dec	bc
+    000007F3 DD 71 FC         [19] 1978 	ld	-4 (ix), c
+    000007F6 DD 70 FD         [19] 1979 	ld	-3 (ix), b
+    000007F9 69               [ 4] 1980 	ld	l, c
+    000007FA 60               [ 4] 1981 	ld	h, b
+    000007FB 7E               [ 7] 1982 	ld	a, (hl)
+    000007FC DD 77 FC         [19] 1983 	ld	-4 (ix), a
+    000007FF 23               [ 6] 1984 	inc	hl
+    00000800 7E               [ 7] 1985 	ld	a, (hl)
+    00000801 DD 77 FD         [19] 1986 	ld	-3 (ix), a
+                                   1987 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1311: Print_DrawInt(val);
+    00000804 DD 7E FC         [19] 1988 	ld	a, -4 (ix)
+    00000807 DD 77 FA         [19] 1989 	ld	-6 (ix), a
+    0000080A DD 7E FD         [19] 1990 	ld	a, -3 (ix)
+    0000080D DD 77 FB         [19] 1991 	ld	-5 (ix), a
+    00000810 07               [ 4] 1992 	rlca
+    00000811 9F               [ 4] 1993 	sbc	a, a
+    00000812 DD 77 FC         [19] 1994 	ld	-4 (ix), a
+    00000815 DD 77 FD         [19] 1995 	ld	-3 (ix), a
+    00000818 DD 5E FA         [19] 1996 	ld	e, -6 (ix)
+    0000081B DD 56 FB         [19] 1997 	ld	d, -5 (ix)
+    0000081E DD 6E FC         [19] 1998 	ld	l, -4 (ix)
+    00000821 DD 66 FD         [19] 1999 	ld	h, -3 (ix)
+    00000824 CDr6Er06         [17] 2000 	call	_Print_DrawInt
+    00000827 C3r28r0E         [10] 2001 	jp	00190$
+    0000082A                       2002 00179$:
+                                   2003 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1313: else if (*ptr == 'u')
+    0000082A DD 7E FD         [19] 2004 	ld	a, -3 (ix)
+    0000082D D6 75            [ 7] 2005 	sub	a, #0x75
+    0000082F 20 55            [12] 2006 	jr	nz, 00176$
+                                   2007 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1315: u16 val = (u16)va_arg(args, u16);
+    00000831 DD 6E F5         [19] 2008 	ld	l, -11 (ix)
+    00000834 DD 66 F6         [19] 2009 	ld	h, -10 (ix)
+    00000837 23               [ 6] 2010 	inc	hl
+    00000838 23               [ 6] 2011 	inc	hl
+    00000839 DD 75 FA         [19] 2012 	ld	-6 (ix), l
+    0000083C DD 74 FB         [19] 2013 	ld	-5 (ix), h
+    0000083F DD 7E FA         [19] 2014 	ld	a, -6 (ix)
+    00000842 DD 77 F5         [19] 2015 	ld	-11 (ix), a
+    00000845 DD 7E FB         [19] 2016 	ld	a, -5 (ix)
+    00000848 DD 77 F6         [19] 2017 	ld	-10 (ix), a
+    0000084B DD 4E FA         [19] 2018 	ld	c, -6 (ix)
+    0000084E DD 46 FB         [19] 2019 	ld	b, -5 (ix)
+    00000851 0B               [ 6] 2020 	dec	bc
+    00000852 0B               [ 6] 2021 	dec	bc
+    00000853 DD 71 FC         [19] 2022 	ld	-4 (ix), c
+    00000856 DD 70 FD         [19] 2023 	ld	-3 (ix), b
+    00000859 69               [ 4] 2024 	ld	l, c
+    0000085A 60               [ 4] 2025 	ld	h, b
+    0000085B 7E               [ 7] 2026 	ld	a, (hl)
+    0000085C DD 77 FC         [19] 2027 	ld	-4 (ix), a
+    0000085F 23               [ 6] 2028 	inc	hl
+    00000860 7E               [ 7] 2029 	ld	a, (hl)
+    00000861 DD 77 FD         [19] 2030 	ld	-3 (ix), a
+                                   2031 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1316: Print_DrawInt(val);
+    00000864 DD 7E FC         [19] 2032 	ld	a, -4 (ix)
+    00000867 DD 77 FA         [19] 2033 	ld	-6 (ix), a
+    0000086A DD 7E FD         [19] 2034 	ld	a, -3 (ix)
+    0000086D DD 77 FB         [19] 2035 	ld	-5 (ix), a
+    00000870 AF               [ 4] 2036 	xor	a, a
+    00000871 DD 77 FC         [19] 2037 	ld	-4 (ix), a
+    00000874 DD 77 FD         [19] 2038 	ld	-3 (ix), a
+    00000877 DD 5E FA         [19] 2039 	ld	e, -6 (ix)
+    0000087A DD 56 FB         [19] 2040 	ld	d, -5 (ix)
+    0000087D 21 00 00         [10] 2041 	ld	hl, #0x0
+    00000880 CDr6Er06         [17] 2042 	call	_Print_DrawInt
+    00000883 C3r28r0E         [10] 2043 	jp	00190$
+    00000886                       2044 00176$:
+                                   2045 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1318: else if (*ptr == 'x')
+    00000886 DD 7E FD         [19] 2046 	ld	a, -3 (ix)
+    00000889 D6 78            [ 7] 2047 	sub	a, #0x78
+    0000088B C2rB3r09         [10] 2048 	jp	nz, 00173$
+                                   2049 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1320: if (len == 0)
+    0000088E DD 7E F7         [19] 2050 	ld	a, -9 (ix)
+    00000891 B7               [ 4] 2051 	or	a, a
+    00000892 20 04            [12] 2052 	jr	nz, 00109$
+                                   2053 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1321: len = 4;
+    00000894 DD 36 F7 04      [19] 2054 	ld	-9 (ix), #0x04
+    00000898                       2055 00109$:
+                                   2056 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1322: u16 val = (u16)va_arg(args, u16);
+    00000898 DD 6E F5         [19] 2057 	ld	l, -11 (ix)
+    0000089B DD 66 F6         [19] 2058 	ld	h, -10 (ix)
+    0000089E 23               [ 6] 2059 	inc	hl
+    0000089F 23               [ 6] 2060 	inc	hl
+    000008A0 DD 75 FA         [19] 2061 	ld	-6 (ix), l
+    000008A3 DD 74 FB         [19] 2062 	ld	-5 (ix), h
+    000008A6 DD 7E FA         [19] 2063 	ld	a, -6 (ix)
+    000008A9 DD 77 F5         [19] 2064 	ld	-11 (ix), a
+    000008AC DD 7E FB         [19] 2065 	ld	a, -5 (ix)
+    000008AF DD 77 F6         [19] 2066 	ld	-10 (ix), a
+    000008B2 DD 4E FA         [19] 2067 	ld	c, -6 (ix)
+    000008B5 DD 46 FB         [19] 2068 	ld	b, -5 (ix)
+    000008B8 0B               [ 6] 2069 	dec	bc
+    000008B9 0B               [ 6] 2070 	dec	bc
+    000008BA DD 71 FC         [19] 2071 	ld	-4 (ix), c
+    000008BD DD 70 FD         [19] 2072 	ld	-3 (ix), b
+    000008C0 69               [ 4] 2073 	ld	l, c
+    000008C1 60               [ 4] 2074 	ld	h, b
+    000008C2 7E               [ 7] 2075 	ld	a, (hl)
+    000008C3 DD 77 FA         [19] 2076 	ld	-6 (ix), a
+    000008C6 23               [ 6] 2077 	inc	hl
+    000008C7 7E               [ 7] 2078 	ld	a, (hl)
+    000008C8 DD 77 FB         [19] 2079 	ld	-5 (ix), a
+                                   2080 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1323: if (len > 3)
+    000008CB 3E 03            [ 7] 2081 	ld	a, #0x03
+    000008CD DD 96 F7         [19] 2082 	sub	a, -9 (ix)
+    000008D0 30 2E            [12] 2083 	jr	nc, 00111$
+                                   2084 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1324: Print_DrawChar(g_HexChar[(val >> 12) & 0x000F]);
+    000008D2 DD 7E FB         [19] 2085 	ld	a, -5 (ix)
+    000008D5 07               [ 4] 2086 	rlca
+    000008D6 07               [ 4] 2087 	rlca
+    000008D7 07               [ 4] 2088 	rlca
+    000008D8 07               [ 4] 2089 	rlca
+    000008D9 E6 0F            [ 7] 2090 	and	a, #0x0f
+    000008DB DD 77 FC         [19] 2091 	ld	-4 (ix), a
+    000008DE DD 36 FD 00      [19] 2092 	ld	-3 (ix), #0x00
+    000008E2 DD 7E FC         [19] 2093 	ld	a, -4 (ix)
+    000008E5 DD 77 FD         [19] 2094 	ld	-3 (ix), a
+    000008E8 E6 0F            [ 7] 2095 	and	a, #0x0f
+    000008EA DD 77 FD         [19] 2096 	ld	-3 (ix), a
+    000008ED 11r55r00         [10] 2097 	ld	de, #_g_HexChar
+    000008F0 DD 6E FD         [19] 2098 	ld	l, -3 (ix)
+    000008F3 26 00            [ 7] 2099 	ld	h, #0x00
+    000008F5 19               [11] 2100 	add	hl, de
+    000008F6 DD 75 FC         [19] 2101 	ld	-4 (ix), l
+    000008F9 DD 74 FD         [19] 2102 	ld	-3 (ix), h
+    000008FC 7E               [ 7] 2103 	ld	a, (hl)
+    000008FD CDrA9r05         [17] 2104 	call	_Print_DrawChar
+    00000900                       2105 00111$:
+                                   2106 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1325: if (len > 2)
+    00000900 3E 02            [ 7] 2107 	ld	a, #0x02
+    00000902 DD 96 F7         [19] 2108 	sub	a, -9 (ix)
+    00000905 30 1E            [12] 2109 	jr	nc, 00113$
+                                   2110 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1326: Print_DrawChar(g_HexChar[(val >> 8) & 0x000F]);
+    00000907 DD 7E FB         [19] 2111 	ld	a, -5 (ix)
+    0000090A DD 77 FD         [19] 2112 	ld	-3 (ix), a
+    0000090D E6 0F            [ 7] 2113 	and	a, #0x0f
+    0000090F DD 77 FD         [19] 2114 	ld	-3 (ix), a
+    00000912 11r55r00         [10] 2115 	ld	de, #_g_HexChar
+    00000915 DD 6E FD         [19] 2116 	ld	l, -3 (ix)
+    00000918 26 00            [ 7] 2117 	ld	h, #0x00
+    0000091A 19               [11] 2118 	add	hl, de
+    0000091B DD 75 FC         [19] 2119 	ld	-4 (ix), l
+    0000091E DD 74 FD         [19] 2120 	ld	-3 (ix), h
+    00000921 7E               [ 7] 2121 	ld	a, (hl)
+    00000922 CDrA9r05         [17] 2122 	call	_Print_DrawChar
+    00000925                       2123 00113$:
+                                   2124 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1327: if (len > 1)
+    00000925 3E 01            [ 7] 2125 	ld	a, #0x01
+    00000927 DD 96 F7         [19] 2126 	sub	a, -9 (ix)
+    0000092A 30 52            [12] 2127 	jr	nc, 00115$
+                                   2128 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1328: Print_DrawChar(g_HexChar[(val >> 4) & 0x000F]);
+    0000092C DD 7E FA         [19] 2129 	ld	a, -6 (ix)
+    0000092F DD 77 FC         [19] 2130 	ld	-4 (ix), a
+    00000932 DD 7E FB         [19] 2131 	ld	a, -5 (ix)
+    00000935 DD 77 FD         [19] 2132 	ld	-3 (ix), a
+    00000938 DD CB FD 3E      [23] 2133 	srl	-3 (ix)
+    0000093C DD CB FC 1E      [23] 2134 	rr	-4 (ix)
+    00000940 DD CB FD 3E      [23] 2135 	srl	-3 (ix)
+    00000944 DD CB FC 1E      [23] 2136 	rr	-4 (ix)
+    00000948 DD CB FD 3E      [23] 2137 	srl	-3 (ix)
+    0000094C DD CB FC 1E      [23] 2138 	rr	-4 (ix)
+    00000950 DD CB FD 3E      [23] 2139 	srl	-3 (ix)
+    00000954 DD CB FC 1E      [23] 2140 	rr	-4 (ix)
+    00000958 DD 7E FC         [19] 2141 	ld	a, -4 (ix)
+    0000095B E6 0F            [ 7] 2142 	and	a, #0x0f
+    0000095D DD 77 F8         [19] 2143 	ld	-8 (ix), a
+    00000960 DD 36 F9 00      [19] 2144 	ld	-7 (ix), #0x00
+    00000964 3Er55            [ 7] 2145 	ld	a, #<(_g_HexChar)
+    00000966 DD 86 F8         [19] 2146 	add	a, -8 (ix)
+    00000969 DD 77 FC         [19] 2147 	ld	-4 (ix), a
+    0000096C 3Es00            [ 7] 2148 	ld	a, #>(_g_HexChar)
+    0000096E DD 8E F9         [19] 2149 	adc	a, -7 (ix)
+    00000971 DD 77 FD         [19] 2150 	ld	-3 (ix), a
+    00000974 DD 6E FC         [19] 2151 	ld	l, -4 (ix)
+    00000977 DD 66 FD         [19] 2152 	ld	h, -3 (ix)
+    0000097A 7E               [ 7] 2153 	ld	a, (hl)
+    0000097B CDrA9r05         [17] 2154 	call	_Print_DrawChar
+    0000097E                       2155 00115$:
+                                   2156 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1329: Print_DrawChar(g_HexChar[val & 0x000F]);
+    0000097E DD 7E FA         [19] 2157 	ld	a, -6 (ix)
+    00000981 DD 77 FC         [19] 2158 	ld	-4 (ix), a
+    00000984 DD 7E FB         [19] 2159 	ld	a, -5 (ix)
+    00000987 DD 77 FD         [19] 2160 	ld	-3 (ix), a
+    0000098A DD 7E FC         [19] 2161 	ld	a, -4 (ix)
+    0000098D E6 0F            [ 7] 2162 	and	a, #0x0f
+    0000098F DD 77 FA         [19] 2163 	ld	-6 (ix), a
+    00000992 DD 36 FB 00      [19] 2164 	ld	-5 (ix), #0x00
+    00000996 3Er55            [ 7] 2165 	ld	a, #<(_g_HexChar)
+    00000998 DD 86 FA         [19] 2166 	add	a, -6 (ix)
+    0000099B DD 77 FC         [19] 2167 	ld	-4 (ix), a
+    0000099E 3Es00            [ 7] 2168 	ld	a, #>(_g_HexChar)
+    000009A0 DD 8E FB         [19] 2169 	adc	a, -5 (ix)
+    000009A3 DD 77 FD         [19] 2170 	ld	-3 (ix), a
+    000009A6 DD 6E FC         [19] 2171 	ld	l, -4 (ix)
+    000009A9 DD 66 FD         [19] 2172 	ld	h, -3 (ix)
+    000009AC 7E               [ 7] 2173 	ld	a, (hl)
+    000009AD CDrA9r05         [17] 2174 	call	_Print_DrawChar
+    000009B0 C3r28r0E         [10] 2175 	jp	00190$
+    000009B3                       2176 00173$:
+                                   2177 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1331: else if (*ptr == 'b')
+    000009B3 DD 7E FD         [19] 2178 	ld	a, -3 (ix)
+    000009B6 D6 62            [ 7] 2179 	sub	a, #0x62
+    000009B8 C2r4Er0A         [10] 2180 	jp	nz, 00170$
+                                   2181 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1333: if (len == 0)
+    000009BB DD 7E F7         [19] 2182 	ld	a, -9 (ix)
+    000009BE B7               [ 4] 2183 	or	a, a
+    000009BF 20 04            [12] 2184 	jr	nz, 00117$
+                                   2185 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1334: len = 16;
+    000009C1 DD 36 F7 10      [19] 2186 	ld	-9 (ix), #0x10
+    000009C5                       2187 00117$:
+                                   2188 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1335: u16 val = (u16)va_arg(args, u16);
+    000009C5 DD 6E F5         [19] 2189 	ld	l, -11 (ix)
+    000009C8 DD 66 F6         [19] 2190 	ld	h, -10 (ix)
+    000009CB 23               [ 6] 2191 	inc	hl
+    000009CC 23               [ 6] 2192 	inc	hl
+    000009CD DD 75 FA         [19] 2193 	ld	-6 (ix), l
+    000009D0 DD 74 FB         [19] 2194 	ld	-5 (ix), h
+    000009D3 DD 7E FA         [19] 2195 	ld	a, -6 (ix)
+    000009D6 DD 77 F5         [19] 2196 	ld	-11 (ix), a
+    000009D9 DD 7E FB         [19] 2197 	ld	a, -5 (ix)
+    000009DC DD 77 F6         [19] 2198 	ld	-10 (ix), a
+    000009DF DD 4E FA         [19] 2199 	ld	c, -6 (ix)
+    000009E2 DD 46 FB         [19] 2200 	ld	b, -5 (ix)
+    000009E5 0B               [ 6] 2201 	dec	bc
+    000009E6 0B               [ 6] 2202 	dec	bc
+    000009E7 DD 71 FC         [19] 2203 	ld	-4 (ix), c
+    000009EA DD 70 FD         [19] 2204 	ld	-3 (ix), b
+    000009ED 69               [ 4] 2205 	ld	l, c
+    000009EE 60               [ 4] 2206 	ld	h, b
+    000009EF 7E               [ 7] 2207 	ld	a, (hl)
+    000009F0 DD 77 FA         [19] 2208 	ld	-6 (ix), a
+    000009F3 23               [ 6] 2209 	inc	hl
+    000009F4 7E               [ 7] 2210 	ld	a, (hl)
+    000009F5 DD 77 FB         [19] 2211 	ld	-5 (ix), a
+                                   2212 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1336: u16 bit = 1 << (len - 1);
+    000009F8 DD 7E F7         [19] 2213 	ld	a, -9 (ix)
+    000009FB 3D               [ 4] 2214 	dec	a
+    000009FC DD 77 FD         [19] 2215 	ld	-3 (ix), a
+    000009FF 47               [ 4] 2216 	ld	b, a
+    00000A00 DD 36 FC 01      [19] 2217 	ld	-4 (ix), #0x01
+    00000A04 DD 36 FD 00      [19] 2218 	ld	-3 (ix), #0
+    00000A08 04               [ 4] 2219 	inc	b
+    00000A09 C3r14r0A         [10] 2220 	jp	00540$
+    00000A0C                       2221 00539$:
+    00000A0C DD CB FC 26      [23] 2222 	sla	-4 (ix)
+    00000A10 DD CB FD 16      [23] 2223 	rl	-3 (ix)
+    00000A14                       2224 00540$:
+    00000A14 10 F6            [13] 2225 	djnz	00539$
+                                   2226 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1337: while (bit)
+    00000A16                       2227 00121$:
+    00000A16 DD 7E FD         [19] 2228 	ld	a, -3 (ix)
+    00000A19 DD B6 FC         [19] 2229 	or	a, -4 (ix)
+    00000A1C CAr28r0E         [10] 2230 	jp	z, 00190$
+                                   2231 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1339: if (val & bit)
+    00000A1F DD 7E FA         [19] 2232 	ld	a, -6 (ix)
+    00000A22 DD A6 FC         [19] 2233 	and	a, -4 (ix)
+    00000A25 DD 77 F8         [19] 2234 	ld	-8 (ix), a
+    00000A28 DD 7E FB         [19] 2235 	ld	a, -5 (ix)
+    00000A2B DD A6 FD         [19] 2236 	and	a, -3 (ix)
+    00000A2E DD 77 F9         [19] 2237 	ld	-7 (ix), a
+    00000A31 DD B6 F8         [19] 2238 	or	a, -8 (ix)
+    00000A34 28 08            [12] 2239 	jr	z, 00119$
+                                   2240 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1340: Print_DrawChar('1');
+    00000A36 3E 31            [ 7] 2241 	ld	a, #0x31
+    00000A38 CDrA9r05         [17] 2242 	call	_Print_DrawChar
+    00000A3B C3r43r0A         [10] 2243 	jp	00120$
+    00000A3E                       2244 00119$:
+                                   2245 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1342: Print_DrawChar('0');
+    00000A3E 3E 30            [ 7] 2246 	ld	a, #0x30
+    00000A40 CDrA9r05         [17] 2247 	call	_Print_DrawChar
+    00000A43                       2248 00120$:
+                                   2249 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1343: bit >>= 1;
+    00000A43 DD CB FD 3E      [23] 2250 	srl	-3 (ix)
+    00000A47 DD CB FC 1E      [23] 2251 	rr	-4 (ix)
+    00000A4B C3r16r0A         [10] 2252 	jp	00121$
+    00000A4E                       2253 00170$:
+                                   2254 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1347: else if ((*ptr == 'I') || (*ptr == 'D'))
+    00000A4E DD 7E FD         [19] 2255 	ld	a, -3 (ix)
+    00000A51 D6 49            [ 7] 2256 	sub	a, #0x49
+    00000A53 28 07            [12] 2257 	jr	z, 00165$
+    00000A55 DD 7E FD         [19] 2258 	ld	a, -3 (ix)
+    00000A58 D6 44            [ 7] 2259 	sub	a, #0x44
+    00000A5A 20 4E            [12] 2260 	jr	nz, 00166$
+    00000A5C                       2261 00165$:
+                                   2262 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1349: i32 val = (i32)va_arg(args, i32);
+    00000A5C 11 04 00         [10] 2263 	ld	de, #0x0004
+    00000A5F DD 6E F5         [19] 2264 	ld	l, -11 (ix)
+    00000A62 DD 66 F6         [19] 2265 	ld	h, -10 (ix)
+    00000A65 19               [11] 2266 	add	hl, de
+    00000A66 DD 75 FA         [19] 2267 	ld	-6 (ix), l
+    00000A69 DD 74 FB         [19] 2268 	ld	-5 (ix), h
+    00000A6C DD 7E FA         [19] 2269 	ld	a, -6 (ix)
+    00000A6F DD 77 F5         [19] 2270 	ld	-11 (ix), a
+    00000A72 DD 7E FB         [19] 2271 	ld	a, -5 (ix)
+    00000A75 DD 77 F6         [19] 2272 	ld	-10 (ix), a
+    00000A78 DD 7E FA         [19] 2273 	ld	a, -6 (ix)
+    00000A7B C6 FC            [ 7] 2274 	add	a, #0xfc
+    00000A7D DD 77 FC         [19] 2275 	ld	-4 (ix), a
+    00000A80 DD 7E FB         [19] 2276 	ld	a, -5 (ix)
+    00000A83 CE FF            [ 7] 2277 	adc	a, #0xff
+    00000A85 DD 77 FD         [19] 2278 	ld	-3 (ix), a
+    00000A88 DD 5E FC         [19] 2279 	ld	e, -4 (ix)
+    00000A8B DD 56 FD         [19] 2280 	ld	d, -3 (ix)
+    00000A8E 21 0D 00         [10] 2281 	ld	hl, #13
+    00000A91 39               [11] 2282 	add	hl, sp
+    00000A92 EB               [ 4] 2283 	ex	de, hl
+    00000A93 01 04 00         [10] 2284 	ld	bc, #0x0004
+    00000A96 ED B0            [21] 2285 	ldir
+                                   2286 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1350: Print_DrawInt(val);
+    00000A98 DD 5E FA         [19] 2287 	ld	e, -6 (ix)
+    00000A9B DD 56 FB         [19] 2288 	ld	d, -5 (ix)
+    00000A9E DD 6E FC         [19] 2289 	ld	l, -4 (ix)
+    00000AA1 DD 66 FD         [19] 2290 	ld	h, -3 (ix)
+    00000AA4 CDr6Er06         [17] 2291 	call	_Print_DrawInt
+    00000AA7 C3r28r0E         [10] 2292 	jp	00190$
+    00000AAA                       2293 00166$:
+                                   2294 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1352: else if (*ptr == 'U')
+    00000AAA DD 7E FD         [19] 2295 	ld	a, -3 (ix)
+    00000AAD D6 55            [ 7] 2296 	sub	a, #0x55
+    00000AAF 20 4E            [12] 2297 	jr	nz, 00163$
+                                   2298 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1354: u32 val = (u32)va_arg(args, u32);
+    00000AB1 11 04 00         [10] 2299 	ld	de, #0x0004
+    00000AB4 DD 6E F5         [19] 2300 	ld	l, -11 (ix)
+    00000AB7 DD 66 F6         [19] 2301 	ld	h, -10 (ix)
+    00000ABA 19               [11] 2302 	add	hl, de
+    00000ABB DD 75 FA         [19] 2303 	ld	-6 (ix), l
+    00000ABE DD 74 FB         [19] 2304 	ld	-5 (ix), h
+    00000AC1 DD 7E FA         [19] 2305 	ld	a, -6 (ix)
+    00000AC4 DD 77 F5         [19] 2306 	ld	-11 (ix), a
+    00000AC7 DD 7E FB         [19] 2307 	ld	a, -5 (ix)
+    00000ACA DD 77 F6         [19] 2308 	ld	-10 (ix), a
+    00000ACD DD 7E FA         [19] 2309 	ld	a, -6 (ix)
+    00000AD0 C6 FC            [ 7] 2310 	add	a, #0xfc
+    00000AD2 DD 77 FC         [19] 2311 	ld	-4 (ix), a
+    00000AD5 DD 7E FB         [19] 2312 	ld	a, -5 (ix)
+    00000AD8 CE FF            [ 7] 2313 	adc	a, #0xff
+    00000ADA DD 77 FD         [19] 2314 	ld	-3 (ix), a
+    00000ADD DD 5E FC         [19] 2315 	ld	e, -4 (ix)
+    00000AE0 DD 56 FD         [19] 2316 	ld	d, -3 (ix)
+    00000AE3 21 0D 00         [10] 2317 	ld	hl, #13
+    00000AE6 39               [11] 2318 	add	hl, sp
+    00000AE7 EB               [ 4] 2319 	ex	de, hl
+    00000AE8 01 04 00         [10] 2320 	ld	bc, #0x0004
+    00000AEB ED B0            [21] 2321 	ldir
+                                   2322 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1355: Print_DrawInt(val);
+    00000AED DD 5E FA         [19] 2323 	ld	e, -6 (ix)
+    00000AF0 DD 56 FB         [19] 2324 	ld	d, -5 (ix)
+    00000AF3 DD 6E FC         [19] 2325 	ld	l, -4 (ix)
+    00000AF6 DD 66 FD         [19] 2326 	ld	h, -3 (ix)
+    00000AF9 CDr6Er06         [17] 2327 	call	_Print_DrawInt
+    00000AFC C3r28r0E         [10] 2328 	jp	00190$
+    00000AFF                       2329 00163$:
+                                   2330 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1357: else if (*ptr == 'X')
+    00000AFF DD 7E FD         [19] 2331 	ld	a, -3 (ix)
+    00000B02 D6 58            [ 7] 2332 	sub	a, #0x58
+    00000B04 C2rFAr0C         [10] 2333 	jp	nz, 00160$
+                                   2334 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1359: if (len == 0)
+    00000B07 DD 7E F7         [19] 2335 	ld	a, -9 (ix)
+    00000B0A B7               [ 4] 2336 	or	a, a
+    00000B0B 20 04            [12] 2337 	jr	nz, 00125$
+                                   2338 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1360: len = 8;
+    00000B0D DD 36 F7 08      [19] 2339 	ld	-9 (ix), #0x08
+    00000B11                       2340 00125$:
+                                   2341 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1361: u32 val = (u32)va_arg(args, u32);
+    00000B11 11 04 00         [10] 2342 	ld	de, #0x0004
+    00000B14 DD 6E F5         [19] 2343 	ld	l, -11 (ix)
+    00000B17 DD 66 F6         [19] 2344 	ld	h, -10 (ix)
+    00000B1A 19               [11] 2345 	add	hl, de
+    00000B1B DD 75 FA         [19] 2346 	ld	-6 (ix), l
+    00000B1E DD 74 FB         [19] 2347 	ld	-5 (ix), h
+    00000B21 DD 7E FA         [19] 2348 	ld	a, -6 (ix)
+    00000B24 DD 77 F5         [19] 2349 	ld	-11 (ix), a
+    00000B27 DD 7E FB         [19] 2350 	ld	a, -5 (ix)
+    00000B2A DD 77 F6         [19] 2351 	ld	-10 (ix), a
+    00000B2D DD 7E FA         [19] 2352 	ld	a, -6 (ix)
+    00000B30 C6 FC            [ 7] 2353 	add	a, #0xfc
+    00000B32 DD 77 FC         [19] 2354 	ld	-4 (ix), a
+    00000B35 DD 7E FB         [19] 2355 	ld	a, -5 (ix)
+    00000B38 CE FF            [ 7] 2356 	adc	a, #0xff
+    00000B3A DD 77 FD         [19] 2357 	ld	-3 (ix), a
+    00000B3D DD 5E FC         [19] 2358 	ld	e, -4 (ix)
+    00000B40 DD 56 FD         [19] 2359 	ld	d, -3 (ix)
+    00000B43 21 0B 00         [10] 2360 	ld	hl, #11
+    00000B46 39               [11] 2361 	add	hl, sp
+    00000B47 EB               [ 4] 2362 	ex	de, hl
+    00000B48 01 04 00         [10] 2363 	ld	bc, #0x0004
+    00000B4B ED B0            [21] 2364 	ldir
+                                   2365 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1363: if (len > 7)
+    00000B4D 3E 07            [ 7] 2366 	ld	a, #0x07
+    00000B4F DD 96 F7         [19] 2367 	sub	a, -9 (ix)
+    00000B52 30 36            [12] 2368 	jr	nc, 00127$
+                                   2369 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1364: Print_DrawChar(g_HexChar[(val >> 28) & 0xF]);
+    00000B54 DD 7E FB         [19] 2370 	ld	a, -5 (ix)
+    00000B57 DD 77 F1         [19] 2371 	ld	-15 (ix), a
+    00000B5A AF               [ 4] 2372 	xor	a, a
+    00000B5B DD 77 F2         [19] 2373 	ld	-14 (ix), a
+    00000B5E DD 77 F3         [19] 2374 	ld	-13 (ix), a
+    00000B61 DD 77 F4         [19] 2375 	ld	-12 (ix), a
+    00000B64 06 04            [ 7] 2376 	ld	b, #0x04
+    00000B66                       2377 00548$:
+    00000B66 DD CB F1 3E      [23] 2378 	srl	-15 (ix)
+    00000B6A 10 FA            [13] 2379 	djnz	00548$
+    00000B6C DD 7E F1         [19] 2380 	ld	a, -15 (ix)
+    00000B6F DD 77 FD         [19] 2381 	ld	-3 (ix), a
+    00000B72 E6 0F            [ 7] 2382 	and	a, #0x0f
+    00000B74 DD 77 FD         [19] 2383 	ld	-3 (ix), a
+    00000B77 11r55r00         [10] 2384 	ld	de, #_g_HexChar
+    00000B7A DD 6E FD         [19] 2385 	ld	l, -3 (ix)
+    00000B7D 26 00            [ 7] 2386 	ld	h, #0x00
+    00000B7F 19               [11] 2387 	add	hl, de
+    00000B80 DD 75 FC         [19] 2388 	ld	-4 (ix), l
+    00000B83 DD 74 FD         [19] 2389 	ld	-3 (ix), h
+    00000B86 7E               [ 7] 2390 	ld	a, (hl)
+    00000B87 CDrA9r05         [17] 2391 	call	_Print_DrawChar
+    00000B8A                       2392 00127$:
+                                   2393 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1365: if (len > 6)
+    00000B8A 3E 06            [ 7] 2394 	ld	a, #0x06
+    00000B8C DD 96 F7         [19] 2395 	sub	a, -9 (ix)
+    00000B8F 30 1E            [12] 2396 	jr	nc, 00129$
+                                   2397 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1366: Print_DrawChar(g_HexChar[(val >> 24) & 0xF]);
+    00000B91 DD 7E FB         [19] 2398 	ld	a, -5 (ix)
+    00000B94 DD 77 FD         [19] 2399 	ld	-3 (ix), a
+    00000B97 E6 0F            [ 7] 2400 	and	a, #0x0f
+    00000B99 DD 77 FD         [19] 2401 	ld	-3 (ix), a
+    00000B9C 11r55r00         [10] 2402 	ld	de, #_g_HexChar
+    00000B9F DD 6E FD         [19] 2403 	ld	l, -3 (ix)
+    00000BA2 26 00            [ 7] 2404 	ld	h, #0x00
+    00000BA4 19               [11] 2405 	add	hl, de
+    00000BA5 DD 75 FC         [19] 2406 	ld	-4 (ix), l
+    00000BA8 DD 74 FD         [19] 2407 	ld	-3 (ix), h
+    00000BAB 7E               [ 7] 2408 	ld	a, (hl)
+    00000BAC CDrA9r05         [17] 2409 	call	_Print_DrawChar
+    00000BAF                       2410 00129$:
+                                   2411 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1367: if (len > 5)
+    00000BAF 3E 05            [ 7] 2412 	ld	a, #0x05
+    00000BB1 DD 96 F7         [19] 2413 	sub	a, -9 (ix)
+    00000BB4 30 4A            [12] 2414 	jr	nc, 00131$
+                                   2415 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1368: Print_DrawChar(g_HexChar[(val >> 20) & 0xF]);
+    00000BB6 DD 7E FA         [19] 2416 	ld	a, -6 (ix)
+    00000BB9 DD 77 F1         [19] 2417 	ld	-15 (ix), a
+    00000BBC DD 7E FB         [19] 2418 	ld	a, -5 (ix)
+    00000BBF DD 77 F2         [19] 2419 	ld	-14 (ix), a
+    00000BC2 AF               [ 4] 2420 	xor	a, a
+    00000BC3 DD 77 F3         [19] 2421 	ld	-13 (ix), a
+    00000BC6 DD 77 F4         [19] 2422 	ld	-12 (ix), a
+    00000BC9 06 04            [ 7] 2423 	ld	b, #0x04
+    00000BCB                       2424 00550$:
+    00000BCB DD CB F2 3E      [23] 2425 	srl	-14 (ix)
+    00000BCF DD CB F1 1E      [23] 2426 	rr	-15 (ix)
+    00000BD3 10 F6            [13] 2427 	djnz	00550$
+    00000BD5 DD 7E F1         [19] 2428 	ld	a, -15 (ix)
+    00000BD8 DD 77 FC         [19] 2429 	ld	-4 (ix), a
+    00000BDB DD 7E F2         [19] 2430 	ld	a, -14 (ix)
+    00000BDE DD 77 FD         [19] 2431 	ld	-3 (ix), a
+    00000BE1 DD 7E FC         [19] 2432 	ld	a, -4 (ix)
+    00000BE4 E6 0F            [ 7] 2433 	and	a, #0x0f
+    00000BE6 DD 77 F3         [19] 2434 	ld	-13 (ix), a
+    00000BE9 DD 36 F4 00      [19] 2435 	ld	-12 (ix), #0x00
+    00000BED 11r55r00         [10] 2436 	ld	de, #_g_HexChar
+    00000BF0 DD 6E F3         [19] 2437 	ld	l, -13 (ix)
+    00000BF3 26 00            [ 7] 2438 	ld	h, #0x00
+    00000BF5 19               [11] 2439 	add	hl, de
+    00000BF6 DD 75 FC         [19] 2440 	ld	-4 (ix), l
+    00000BF9 DD 74 FD         [19] 2441 	ld	-3 (ix), h
+    00000BFC 7E               [ 7] 2442 	ld	a, (hl)
+    00000BFD CDrA9r05         [17] 2443 	call	_Print_DrawChar
+    00000C00                       2444 00131$:
+                                   2445 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1369: if (len > 4)
+    00000C00 3E 04            [ 7] 2446 	ld	a, #0x04
+    00000C02 DD 96 F7         [19] 2447 	sub	a, -9 (ix)
+    00000C05 30 1E            [12] 2448 	jr	nc, 00133$
+                                   2449 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1370: Print_DrawChar(g_HexChar[(val >> 16) & 0xF]);
+    00000C07 DD 7E FA         [19] 2450 	ld	a, -6 (ix)
+    00000C0A DD 77 FD         [19] 2451 	ld	-3 (ix), a
+    00000C0D E6 0F            [ 7] 2452 	and	a, #0x0f
+    00000C0F DD 77 FD         [19] 2453 	ld	-3 (ix), a
+    00000C12 11r55r00         [10] 2454 	ld	de, #_g_HexChar
+    00000C15 DD 6E FD         [19] 2455 	ld	l, -3 (ix)
+    00000C18 26 00            [ 7] 2456 	ld	h, #0x00
+    00000C1A 19               [11] 2457 	add	hl, de
+    00000C1B DD 75 FC         [19] 2458 	ld	-4 (ix), l
+    00000C1E DD 74 FD         [19] 2459 	ld	-3 (ix), h
+    00000C21 7E               [ 7] 2460 	ld	a, (hl)
+    00000C22 CDrA9r05         [17] 2461 	call	_Print_DrawChar
+    00000C25                       2462 00133$:
+                                   2463 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1371: if (len > 3)
+    00000C25 3E 03            [ 7] 2464 	ld	a, #0x03
+    00000C27 DD 96 F7         [19] 2465 	sub	a, -9 (ix)
+    00000C2A 30 21            [12] 2466 	jr	nc, 00135$
+                                   2467 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1372: Print_DrawChar(g_HexChar[(val >> 12) & 0xF]);
+    00000C2C DD 5E F9         [19] 2468 	ld	e, -7 (ix)
+    00000C2F DD 56 FA         [19] 2469 	ld	d, -6 (ix)
+    00000C32 DD 4E FB         [19] 2470 	ld	c, -5 (ix)
+    00000C35 06 04            [ 7] 2471 	ld	b, #0x04
+    00000C37                       2472 00552$:
+    00000C37 CB 39            [ 8] 2473 	srl	c
+    00000C39 CB 1A            [ 8] 2474 	rr	d
+    00000C3B CB 1B            [ 8] 2475 	rr	e
+    00000C3D 10 F8            [13] 2476 	djnz	00552$
+    00000C3F 7B               [ 4] 2477 	ld	a, e
+    00000C40 E6 0F            [ 7] 2478 	and	a, #0x0f
+    00000C42 4F               [ 4] 2479 	ld	c, a
+    00000C43 06 00            [ 7] 2480 	ld	b, #0x00
+    00000C45 21r55r00         [10] 2481 	ld	hl, #_g_HexChar
+    00000C48 09               [11] 2482 	add	hl, bc
+    00000C49 7E               [ 7] 2483 	ld	a, (hl)
+    00000C4A CDrA9r05         [17] 2484 	call	_Print_DrawChar
+    00000C4D                       2485 00135$:
+                                   2486 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1373: if (len > 2)
+    00000C4D 3E 02            [ 7] 2487 	ld	a, #0x02
+    00000C4F DD 96 F7         [19] 2488 	sub	a, -9 (ix)
+    00000C52 30 1E            [12] 2489 	jr	nc, 00137$
+                                   2490 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1374: Print_DrawChar(g_HexChar[(val >> 8) & 0xF]);
+    00000C54 DD 7E F9         [19] 2491 	ld	a, -7 (ix)
+    00000C57 DD 77 FD         [19] 2492 	ld	-3 (ix), a
+    00000C5A E6 0F            [ 7] 2493 	and	a, #0x0f
+    00000C5C DD 77 FD         [19] 2494 	ld	-3 (ix), a
+    00000C5F 11r55r00         [10] 2495 	ld	de, #_g_HexChar
+    00000C62 DD 6E FD         [19] 2496 	ld	l, -3 (ix)
+    00000C65 26 00            [ 7] 2497 	ld	h, #0x00
+    00000C67 19               [11] 2498 	add	hl, de
+    00000C68 DD 75 FC         [19] 2499 	ld	-4 (ix), l
+    00000C6B DD 74 FD         [19] 2500 	ld	-3 (ix), h
+    00000C6E 7E               [ 7] 2501 	ld	a, (hl)
+    00000C6F CDrA9r05         [17] 2502 	call	_Print_DrawChar
+    00000C72                       2503 00137$:
+                                   2504 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1375: if (len > 1)
+    00000C72 3E 01            [ 7] 2505 	ld	a, #0x01
+    00000C74 DD 96 F7         [19] 2506 	sub	a, -9 (ix)
+    00000C77 30 57            [12] 2507 	jr	nc, 00139$
+                                   2508 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1376: Print_DrawChar(g_HexChar[(val >> 4) & 0xF]);
+    00000C79 DD 7E F8         [19] 2509 	ld	a, -8 (ix)
+    00000C7C DD 77 F1         [19] 2510 	ld	-15 (ix), a
+    00000C7F DD 7E F9         [19] 2511 	ld	a, -7 (ix)
+    00000C82 DD 77 F2         [19] 2512 	ld	-14 (ix), a
+    00000C85 DD 7E FA         [19] 2513 	ld	a, -6 (ix)
+    00000C88 DD 77 F3         [19] 2514 	ld	-13 (ix), a
+    00000C8B DD 7E FB         [19] 2515 	ld	a, -5 (ix)
+    00000C8E DD 77 F4         [19] 2516 	ld	-12 (ix), a
+    00000C91 06 04            [ 7] 2517 	ld	b, #0x04
+    00000C93                       2518 00554$:
+    00000C93 DD CB F4 3E      [23] 2519 	srl	-12 (ix)
+    00000C97 DD CB F3 1E      [23] 2520 	rr	-13 (ix)
+    00000C9B DD CB F2 1E      [23] 2521 	rr	-14 (ix)
+    00000C9F DD CB F1 1E      [23] 2522 	rr	-15 (ix)
+    00000CA3 10 EE            [13] 2523 	djnz	00554$
+    00000CA5 DD 7E F1         [19] 2524 	ld	a, -15 (ix)
+    00000CA8 DD 77 FC         [19] 2525 	ld	-4 (ix), a
+    00000CAB DD 7E F2         [19] 2526 	ld	a, -14 (ix)
+    00000CAE DD 77 FD         [19] 2527 	ld	-3 (ix), a
+    00000CB1 DD 7E FC         [19] 2528 	ld	a, -4 (ix)
+    00000CB4 E6 0F            [ 7] 2529 	and	a, #0x0f
+    00000CB6 DD 77 F3         [19] 2530 	ld	-13 (ix), a
+    00000CB9 DD 36 F4 00      [19] 2531 	ld	-12 (ix), #0x00
+    00000CBD 11r55r00         [10] 2532 	ld	de, #_g_HexChar
+    00000CC0 DD 6E F3         [19] 2533 	ld	l, -13 (ix)
+    00000CC3 26 00            [ 7] 2534 	ld	h, #0x00
+    00000CC5 19               [11] 2535 	add	hl, de
+    00000CC6 DD 75 FC         [19] 2536 	ld	-4 (ix), l
+    00000CC9 DD 74 FD         [19] 2537 	ld	-3 (ix), h
+    00000CCC 7E               [ 7] 2538 	ld	a, (hl)
+    00000CCD CDrA9r05         [17] 2539 	call	_Print_DrawChar
+    00000CD0                       2540 00139$:
+                                   2541 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1377: Print_DrawChar(g_HexChar[val & 0xF]);
+    00000CD0 DD 7E F8         [19] 2542 	ld	a, -8 (ix)
+    00000CD3 DD 77 FC         [19] 2543 	ld	-4 (ix), a
+    00000CD6 DD 7E F9         [19] 2544 	ld	a, -7 (ix)
+    00000CD9 DD 77 FD         [19] 2545 	ld	-3 (ix), a
+    00000CDC DD 7E FC         [19] 2546 	ld	a, -4 (ix)
+    00000CDF E6 0F            [ 7] 2547 	and	a, #0x0f
+    00000CE1 DD 77 FA         [19] 2548 	ld	-6 (ix), a
+    00000CE4 DD 36 FB 00      [19] 2549 	ld	-5 (ix), #0x00
+    00000CE8 DD 7E FA         [19] 2550 	ld	a, -6 (ix)
+    00000CEB C6r55            [ 7] 2551 	add	a, #<(_g_HexChar)
+    00000CED 4F               [ 4] 2552 	ld	c, a
+    00000CEE 3E 00            [ 7] 2553 	ld	a, #0x00
+    00000CF0 CEs00            [ 7] 2554 	adc	a, #>(_g_HexChar)
+    00000CF2 47               [ 4] 2555 	ld	b, a
+    00000CF3 0A               [ 7] 2556 	ld	a, (bc)
+    00000CF4 CDrA9r05         [17] 2557 	call	_Print_DrawChar
+    00000CF7 C3r28r0E         [10] 2558 	jp	00190$
+    00000CFA                       2559 00160$:
+                                   2560 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1379: else if (*ptr == 'B')
+    00000CFA DD 7E FD         [19] 2561 	ld	a, -3 (ix)
+    00000CFD D6 42            [ 7] 2562 	sub	a, #0x42
+    00000CFF C2rA6r0D         [10] 2563 	jp	nz, 00157$
+                                   2564 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1381: if (len == 0)
+    00000D02 DD 7E F7         [19] 2565 	ld	a, -9 (ix)
+    00000D05 B7               [ 4] 2566 	or	a, a
+    00000D06 20 04            [12] 2567 	jr	nz, 00141$
+                                   2568 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1382: len = 16;
+    00000D08 DD 36 F7 10      [19] 2569 	ld	-9 (ix), #0x10
+    00000D0C                       2570 00141$:
+                                   2571 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1383: u32 val = (u32)va_arg(args, u32);
+    00000D0C DD 6E F5         [19] 2572 	ld	l, -11 (ix)
+    00000D0F DD 66 F6         [19] 2573 	ld	h, -10 (ix)
+    00000D12 11 04 00         [10] 2574 	ld	de, #0x0004
+    00000D15 19               [11] 2575 	add	hl, de
+    00000D16 DD 75 F5         [19] 2576 	ld	-11 (ix), l
+    00000D19 DD 74 F6         [19] 2577 	ld	-10 (ix), h
+    00000D1C 11 FC FF         [10] 2578 	ld	de, #0xfffc
+    00000D1F 19               [11] 2579 	add	hl, de
+    00000D20 EB               [ 4] 2580 	ex	de, hl
+    00000D21 21 04 00         [10] 2581 	ld	hl, #4
+    00000D24 39               [11] 2582 	add	hl, sp
+    00000D25 EB               [ 4] 2583 	ex	de, hl
+    00000D26 01 04 00         [10] 2584 	ld	bc, #0x0004
+    00000D29 ED B0            [21] 2585 	ldir
+                                   2586 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1384: u32 bit = 1 << (len - 1);
+    00000D2B DD 46 F7         [19] 2587 	ld	b, -9 (ix)
+    00000D2E 05               [ 4] 2588 	dec	b
+    00000D2F 21 01 00         [10] 2589 	ld	hl, #0x0001
+    00000D32 04               [ 4] 2590 	inc	b
+    00000D33 C3r37r0D         [10] 2591 	jp	00559$
+    00000D36                       2592 00558$:
+    00000D36 29               [11] 2593 	add	hl, hl
+    00000D37                       2594 00559$:
+    00000D37 10 FD            [13] 2595 	djnz	00558$
+    00000D39 DD 75 FA         [19] 2596 	ld	-6 (ix), l
+    00000D3C 7C               [ 4] 2597 	ld	a, h
+    00000D3D DD 77 FB         [19] 2598 	ld	-5 (ix), a
+    00000D40 07               [ 4] 2599 	rlca
+    00000D41 9F               [ 4] 2600 	sbc	a, a
+    00000D42 DD 77 FC         [19] 2601 	ld	-4 (ix), a
+    00000D45 DD 77 FD         [19] 2602 	ld	-3 (ix), a
+                                   2603 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1385: while (bit)
+    00000D48                       2604 00145$:
+    00000D48 DD 7E FD         [19] 2605 	ld	a, -3 (ix)
+    00000D4B DD B6 FC         [19] 2606 	or	a, -4 (ix)
+    00000D4E DD B6 FB         [19] 2607 	or	a, -5 (ix)
+    00000D51 DD B6 FA         [19] 2608 	or	a, -6 (ix)
+    00000D54 CAr28r0E         [10] 2609 	jp	z, 00190$
+                                   2610 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1387: if (val & bit)
+    00000D57 DD 7E F1         [19] 2611 	ld	a, -15 (ix)
+    00000D5A DD A6 FA         [19] 2612 	and	a, -6 (ix)
+    00000D5D DD 77 ED         [19] 2613 	ld	-19 (ix), a
+    00000D60 DD 7E F2         [19] 2614 	ld	a, -14 (ix)
+    00000D63 DD A6 FB         [19] 2615 	and	a, -5 (ix)
+    00000D66 DD 77 EE         [19] 2616 	ld	-18 (ix), a
+    00000D69 DD 7E F3         [19] 2617 	ld	a, -13 (ix)
+    00000D6C DD A6 FC         [19] 2618 	and	a, -4 (ix)
+    00000D6F DD 77 EF         [19] 2619 	ld	-17 (ix), a
+    00000D72 DD 7E F4         [19] 2620 	ld	a, -12 (ix)
+    00000D75 DD A6 FD         [19] 2621 	and	a, -3 (ix)
+    00000D78 DD 77 F0         [19] 2622 	ld	-16 (ix), a
+    00000D7B DD B6 EF         [19] 2623 	or	a, -17 (ix)
+    00000D7E DD B6 EE         [19] 2624 	or	a, -18 (ix)
+    00000D81 DD B6 ED         [19] 2625 	or	a, -19 (ix)
+    00000D84 28 08            [12] 2626 	jr	z, 00143$
+                                   2627 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1388: Print_DrawChar('1');
+    00000D86 3E 31            [ 7] 2628 	ld	a, #0x31
+    00000D88 CDrA9r05         [17] 2629 	call	_Print_DrawChar
+    00000D8B C3r93r0D         [10] 2630 	jp	00144$
+    00000D8E                       2631 00143$:
+                                   2632 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1390: Print_DrawChar('0');
+    00000D8E 3E 30            [ 7] 2633 	ld	a, #0x30
+    00000D90 CDrA9r05         [17] 2634 	call	_Print_DrawChar
+    00000D93                       2635 00144$:
+                                   2636 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1391: bit >>= 1;
+    00000D93 DD CB FD 3E      [23] 2637 	srl	-3 (ix)
+    00000D97 DD CB FC 1E      [23] 2638 	rr	-4 (ix)
+    00000D9B DD CB FB 1E      [23] 2639 	rr	-5 (ix)
+    00000D9F DD CB FA 1E      [23] 2640 	rr	-6 (ix)
+    00000DA3 C3r48r0D         [10] 2641 	jp	00145$
+    00000DA6                       2642 00157$:
+                                   2643 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1395: else if (*ptr == 'c')
+    00000DA6 DD 7E FD         [19] 2644 	ld	a, -3 (ix)
+    00000DA9 D6 63            [ 7] 2645 	sub	a, #0x63
+    00000DAB 20 17            [12] 2646 	jr	nz, 00154$
+                                   2647 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1397: c8 val = (c8)va_arg(args, u16);
+    00000DAD DD 4E F5         [19] 2648 	ld	c, -11 (ix)
+    00000DB0 DD 46 F6         [19] 2649 	ld	b, -10 (ix)
+    00000DB3 03               [ 6] 2650 	inc	bc
+    00000DB4 03               [ 6] 2651 	inc	bc
+    00000DB5 DD 71 F5         [19] 2652 	ld	-11 (ix), c
+    00000DB8 DD 70 F6         [19] 2653 	ld	-10 (ix), b
+    00000DBB 0B               [ 6] 2654 	dec	bc
+    00000DBC 0B               [ 6] 2655 	dec	bc
+    00000DBD 0A               [ 7] 2656 	ld	a, (bc)
+                                   2657 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1398: Print_DrawChar(val);
+    00000DBE CDrA9r05         [17] 2658 	call	_Print_DrawChar
+    00000DC1 C3r28r0E         [10] 2659 	jp	00190$
+    00000DC4                       2660 00154$:
+                                   2661 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1400: else if (*ptr == 's')
+    00000DC4 DD 7E FD         [19] 2662 	ld	a, -3 (ix)
+    00000DC7 D6 73            [ 7] 2663 	sub	a, #0x73
+    00000DC9 20 1A            [12] 2664 	jr	nz, 00151$
+                                   2665 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1402: const c8* val = (const c8*)va_arg(args, const c8*);
+    00000DCB DD 6E F5         [19] 2666 	ld	l, -11 (ix)
+    00000DCE DD 66 F6         [19] 2667 	ld	h, -10 (ix)
+    00000DD1 23               [ 6] 2668 	inc	hl
+    00000DD2 23               [ 6] 2669 	inc	hl
+    00000DD3 DD 75 F5         [19] 2670 	ld	-11 (ix), l
+    00000DD6 DD 74 F6         [19] 2671 	ld	-10 (ix), h
+    00000DD9 2B               [ 6] 2672 	dec	hl
+    00000DDA 2B               [ 6] 2673 	dec	hl
+    00000DDB 7E               [ 7] 2674 	ld	a, (hl)
+    00000DDC 23               [ 6] 2675 	inc	hl
+    00000DDD 66               [ 7] 2676 	ld	h, (hl)
+                                   2677 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1403: Print_DrawText(val);
+    00000DDE 6F               [ 4] 2678 	ld	l, a
+    00000DDF CDrE3r05         [17] 2679 	call	_Print_DrawText
+    00000DE2 C3r28r0E         [10] 2680 	jp	00190$
+    00000DE5                       2681 00151$:
+                                   2682 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1405: else if (*ptr == '%')
+    00000DE5 DD 7E FD         [19] 2683 	ld	a, -3 (ix)
+    00000DE8 D6 25            [ 7] 2684 	sub	a, #0x25
+    00000DEA 20 3C            [12] 2685 	jr	nz, 00190$
+                                   2686 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1407: Print_DrawChar('%');
+    00000DEC 3E 25            [ 7] 2687 	ld	a, #0x25
+    00000DEE CDrA9r05         [17] 2688 	call	_Print_DrawChar
+    00000DF1 C3r28r0E         [10] 2689 	jp	00190$
+    00000DF4                       2690 00189$:
+                                   2691 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1411: else if (*ptr == '\t')
+    00000DF4 DD 7E FD         [19] 2692 	ld	a, -3 (ix)
+    00000DF7 D6 09            [ 7] 2693 	sub	a, #0x09
+    00000DF9 20 14            [12] 2694 	jr	nz, 00186$
+                                   2695 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:492: PRINT_DATA.CursorX += PRINT_W(PRINT_DATA.UnitX) + PRINT_DATA.TabSize - 1;
+    00000DFB 01r05r00         [10] 2696 	ld	bc, #_g_PrintData + 5
+    00000DFE 0A               [ 7] 2697 	ld	a, (bc)
+    00000DFF 21r04r00         [10] 2698 	ld	hl, #(_g_PrintData + 4)
+    00000E02 86               [ 7] 2699 	add	a, (hl)
+    00000E03 5F               [ 4] 2700 	ld	e, a
+    00000E04 02               [ 7] 2701 	ld	(bc), a
+                                   2702 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:493: PRINT_DATA.CursorX &= ~(PRINT_DATA.TabSize - 1);
+    00000E05 3Ar04r00         [13] 2703 	ld	a, (#(_g_PrintData + 4) + 0)
+    00000E08 3D               [ 4] 2704 	dec	a
+    00000E09 2F               [ 4] 2705 	cpl
+    00000E0A A3               [ 4] 2706 	and	a, e
+    00000E0B 02               [ 7] 2707 	ld	(bc), a
+                                   2708 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1412: Print_Tab();
+    00000E0C C3r28r0E         [10] 2709 	jp	00190$
+    00000E0F                       2710 00186$:
+                                   2711 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1413: else if (*ptr == '\n')
+    00000E0F DD 7E FD         [19] 2712 	ld	a, -3 (ix)
+    00000E12 D6 0A            [ 7] 2713 	sub	a, #0x0a
+    00000E14 20 0C            [12] 2714 	jr	nz, 00183$
+                                   2715 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:500: PRINT_DATA.CursorX = 0;
+    00000E16 21r05r00         [10] 2716 	ld	hl, #_g_PrintData + 5
+    00000E19 36 00            [10] 2717 	ld	(hl), #0x00
+                                   2718 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:501: PRINT_DATA.CursorY += PRINT_H(PRINT_DATA.UnitY);
+    00000E1B 21r06r00         [10] 2719 	ld	hl, #_g_PrintData + 6
+    00000E1E 34               [11] 2720 	inc	(hl)
+                                   2721 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1414: Print_Return();
+    00000E1F C3r28r0E         [10] 2722 	jp	00190$
+    00000E22                       2723 00183$:
+                                   2724 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1420: Print_DrawChar(*ptr);
+    00000E22 DD 7E FD         [19] 2725 	ld	a, -3 (ix)
+    00000E25 CDrA9r05         [17] 2726 	call	_Print_DrawChar
+    00000E28                       2727 00190$:
+                                   2728 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1422: ptr++;
+    00000E28 DD 34 FE         [23] 2729 	inc	-2 (ix)
+    00000E2B C2r5Br07         [10] 2730 	jp	nz, 00191$
+    00000E2E DD 34 FF         [23] 2731 	inc	-1 (ix)
+    00000E31 C3r5Br07         [10] 2732 	jp	00191$
+                                   2733 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1425: va_end(args);
+    00000E34                       2734 00196$:
+                                   2735 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1426: }
+    00000E34 DD F9            [10] 2736 	ld	sp, ix
+    00000E36 DD E1            [14] 2737 	pop	ix
+    00000E38 C9               [10] 2738 	ret
+                                   2739 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1436: void Print_DrawLineH(UX x, UY y, u8 len)
+                                   2740 ;	---------------------------------
+                                   2741 ; Function Print_DrawLineH
+                                   2742 ; ---------------------------------
+    00000E39                       2743 _Print_DrawLineH::
+    00000E39 DD E5            [15] 2744 	push	ix
+    00000E3B DD 21 00 00      [14] 2745 	ld	ix,	#0
+    00000E3F DD 39            [15] 2746 	add	ix, sp
+    00000E41 47               [ 4] 2747 	ld	b, a
+    00000E42 4D               [ 4] 2748 	ld	c, l
+                                   2749 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:268: PRINT_DATA.CursorX = x;
+    00000E43 21r05r00         [10] 2750 	ld	hl, #(_g_PrintData + 5)
+    00000E46 70               [ 7] 2751 	ld	(hl), b
+                                   2752 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:269: PRINT_DATA.CursorY = y;
+    00000E47 23               [ 6] 2753 	inc	hl
+    00000E48 71               [ 7] 2754 	ld	(hl), c
+                                   2755 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1439: Print_DrawCharX(0x17, len);
+    00000E49 DD 6E 04         [19] 2756 	ld	l, 4 (ix)
+    00000E4C 3E 17            [ 7] 2757 	ld	a, #0x17
+    00000E4E CDrD1r05         [17] 2758 	call	_Print_DrawCharX
+                                   2759 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1440: }
+    00000E51 DD E1            [14] 2760 	pop	ix
+    00000E53 E1               [10] 2761 	pop	hl
+    00000E54 33               [ 6] 2762 	inc	sp
+    00000E55 E9               [ 4] 2763 	jp	(hl)
+                                   2764 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1444: void Print_DrawLineV(UX x, UY y, u8 len)
+                                   2765 ;	---------------------------------
+                                   2766 ; Function Print_DrawLineV
+                                   2767 ; ---------------------------------
+    00000E56                       2768 _Print_DrawLineV::
+    00000E56 DD E5            [15] 2769 	push	ix
+    00000E58 DD 21 00 00      [14] 2770 	ld	ix,	#0
+    00000E5C DD 39            [15] 2771 	add	ix, sp
+    00000E5E 3B               [ 6] 2772 	dec	sp
+    00000E5F 4F               [ 4] 2773 	ld	c, a
+    00000E60 DD 75 FF         [19] 2774 	ld	-1 (ix), l
+                                   2775 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1446: for (u8 i = 0; i < len; i++)
+    00000E63 06 00            [ 7] 2776 	ld	b, #0x00
+    00000E65                       2777 00104$:
+    00000E65 78               [ 4] 2778 	ld	a, b
+    00000E66 DD 96 04         [19] 2779 	sub	a, 4 (ix)
+    00000E69 30 16            [12] 2780 	jr	nc, 00106$
+                                   2781 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1448: Print_SetPosition(x, y + i);
+    00000E6B DD 7E FF         [19] 2782 	ld	a, -1 (ix)
+    00000E6E 80               [ 4] 2783 	add	a, b
+    00000E6F 5F               [ 4] 2784 	ld	e, a
+                                   2785 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:268: PRINT_DATA.CursorX = x;
+    00000E70 21r05r00         [10] 2786 	ld	hl, #(_g_PrintData + 5)
+    00000E73 71               [ 7] 2787 	ld	(hl), c
+                                   2788 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:269: PRINT_DATA.CursorY = y;
+    00000E74 23               [ 6] 2789 	inc	hl
+    00000E75 73               [ 7] 2790 	ld	(hl), e
+                                   2791 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1449: Print_DrawChar(0x16);
+    00000E76 C5               [11] 2792 	push	bc
+    00000E77 3E 16            [ 7] 2793 	ld	a, #0x16
+    00000E79 CDrA9r05         [17] 2794 	call	_Print_DrawChar
+    00000E7C C1               [10] 2795 	pop	bc
+                                   2796 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1446: for (u8 i = 0; i < len; i++)
+    00000E7D 04               [ 4] 2797 	inc	b
+    00000E7E C3r65r0E         [10] 2798 	jp	00104$
+    00000E81                       2799 00106$:
+                                   2800 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1451: }
+    00000E81 33               [ 6] 2801 	inc	sp
+    00000E82 DD E1            [14] 2802 	pop	ix
+    00000E84 E1               [10] 2803 	pop	hl
+    00000E85 33               [ 6] 2804 	inc	sp
+    00000E86 E9               [ 4] 2805 	jp	(hl)
+                                   2806 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1455: void Print_DrawBox(UX x, UY y, u8 width, u8 height)
+                                   2807 ;	---------------------------------
+                                   2808 ; Function Print_DrawBox
+                                   2809 ; ---------------------------------
+    00000E87                       2810 _Print_DrawBox::
+    00000E87 DD E5            [15] 2811 	push	ix
+    00000E89 DD 21 00 00      [14] 2812 	ld	ix,	#0
+    00000E8D DD 39            [15] 2813 	add	ix, sp
+    00000E8F 3B               [ 6] 2814 	dec	sp
+    00000E90 4F               [ 4] 2815 	ld	c, a
+    00000E91 45               [ 4] 2816 	ld	b, l
+                                   2817 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:268: PRINT_DATA.CursorX = x;
+    00000E92 21r05r00         [10] 2818 	ld	hl, #(_g_PrintData + 5)
+    00000E95 71               [ 7] 2819 	ld	(hl), c
+                                   2820 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:269: PRINT_DATA.CursorY = y;
+    00000E96 23               [ 6] 2821 	inc	hl
+    00000E97 70               [ 7] 2822 	ld	(hl), b
+                                   2823 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1459: Print_DrawChar(0x18);
+    00000E98 C5               [11] 2824 	push	bc
+    00000E99 3E 18            [ 7] 2825 	ld	a, #0x18
+    00000E9B CDrA9r05         [17] 2826 	call	_Print_DrawChar
+    00000E9E C1               [10] 2827 	pop	bc
+                                   2828 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1460: Print_SetPosition(x + width - 1, y);
+    00000E9F 79               [ 4] 2829 	ld	a, c
+    00000EA0 DD 86 04         [19] 2830 	add	a, 4 (ix)
+    00000EA3 3D               [ 4] 2831 	dec	a
+    00000EA4 DD 77 FF         [19] 2832 	ld	-1 (ix), a
+                                   2833 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:268: PRINT_DATA.CursorX = x;
+    00000EA7 21r05r00         [10] 2834 	ld	hl, #(_g_PrintData + 5)
+    00000EAA 77               [ 7] 2835 	ld	(hl), a
+                                   2836 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:269: PRINT_DATA.CursorY = y;
+    00000EAB 23               [ 6] 2837 	inc	hl
+    00000EAC 70               [ 7] 2838 	ld	(hl), b
+                                   2839 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1461: Print_DrawChar(0x19);
+    00000EAD C5               [11] 2840 	push	bc
+    00000EAE 3E 19            [ 7] 2841 	ld	a, #0x19
+    00000EB0 CDrA9r05         [17] 2842 	call	_Print_DrawChar
+    00000EB3 C1               [10] 2843 	pop	bc
+                                   2844 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1462: Print_SetPosition(x, y + height - 1);
+    00000EB4 78               [ 4] 2845 	ld	a, b
+    00000EB5 DD 86 05         [19] 2846 	add	a, 5 (ix)
+    00000EB8 3D               [ 4] 2847 	dec	a
+    00000EB9 5F               [ 4] 2848 	ld	e, a
+                                   2849 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:268: PRINT_DATA.CursorX = x;
+    00000EBA 21r05r00         [10] 2850 	ld	hl, #(_g_PrintData + 5)
+    00000EBD 71               [ 7] 2851 	ld	(hl), c
+                                   2852 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:269: PRINT_DATA.CursorY = y;
+    00000EBE 23               [ 6] 2853 	inc	hl
+    00000EBF 77               [ 7] 2854 	ld	(hl), a
+                                   2855 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1463: Print_DrawChar(0x1A);
+    00000EC0 C5               [11] 2856 	push	bc
+    00000EC1 D5               [11] 2857 	push	de
+    00000EC2 3E 1A            [ 7] 2858 	ld	a, #0x1a
+    00000EC4 CDrA9r05         [17] 2859 	call	_Print_DrawChar
+    00000EC7 D1               [10] 2860 	pop	de
+    00000EC8 C1               [10] 2861 	pop	bc
+                                   2862 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:268: PRINT_DATA.CursorX = x;
+    00000EC9 21r05r00         [10] 2863 	ld	hl, #(_g_PrintData + 5)
+    00000ECC DD 7E FF         [19] 2864 	ld	a, -1 (ix)
+    00000ECF 77               [ 7] 2865 	ld	(hl), a
+                                   2866 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.h:269: PRINT_DATA.CursorY = y;
+    00000ED0 23               [ 6] 2867 	inc	hl
+    00000ED1 73               [ 7] 2868 	ld	(hl), e
+                                   2869 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1465: Print_DrawChar(0x1B);
+    00000ED2 C5               [11] 2870 	push	bc
+    00000ED3 D5               [11] 2871 	push	de
+    00000ED4 3E 1B            [ 7] 2872 	ld	a, #0x1b
+    00000ED6 CDrA9r05         [17] 2873 	call	_Print_DrawChar
+    00000ED9 D1               [10] 2874 	pop	de
+    00000EDA C1               [10] 2875 	pop	bc
+                                   2876 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1468: Print_DrawLineH(x + 1, y,              width - 2);
+    00000EDB DD 7E 04         [19] 2877 	ld	a, 4 (ix)
+    00000EDE C6 FE            [ 7] 2878 	add	a, #0xfe
+    00000EE0 67               [ 4] 2879 	ld	h, a
+    00000EE1 51               [ 4] 2880 	ld	d, c
+    00000EE2 14               [ 4] 2881 	inc	d
+    00000EE3 E5               [11] 2882 	push	hl
+    00000EE4 C5               [11] 2883 	push	bc
+    00000EE5 D5               [11] 2884 	push	de
+    00000EE6 E5               [11] 2885 	push	hl
+    00000EE7 33               [ 6] 2886 	inc	sp
+    00000EE8 68               [ 4] 2887 	ld	l, b
+    00000EE9 7A               [ 4] 2888 	ld	a, d
+    00000EEA CDr39r0E         [17] 2889 	call	_Print_DrawLineH
+    00000EED D1               [10] 2890 	pop	de
+    00000EEE C1               [10] 2891 	pop	bc
+    00000EEF E1               [10] 2892 	pop	hl
+                                   2893 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1469: Print_DrawLineH(x + 1, y + height - 1, width - 2);
+    00000EF0 C5               [11] 2894 	push	bc
+    00000EF1 E5               [11] 2895 	push	hl
+    00000EF2 33               [ 6] 2896 	inc	sp
+    00000EF3 6B               [ 4] 2897 	ld	l, e
+    00000EF4 7A               [ 4] 2898 	ld	a, d
+    00000EF5 CDr39r0E         [17] 2899 	call	_Print_DrawLineH
+    00000EF8 C1               [10] 2900 	pop	bc
+                                   2901 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1472: Print_DrawLineV(x,             y + 1, height - 2);
+    00000EF9 DD 66 05         [19] 2902 	ld	h, 5 (ix)
+    00000EFC 25               [ 4] 2903 	dec	h
+    00000EFD 25               [ 4] 2904 	dec	h
+    00000EFE 68               [ 4] 2905 	ld	l, b
+    00000EFF 2C               [ 4] 2906 	inc	l
+    00000F00 E5               [11] 2907 	push	hl
+    00000F01 E5               [11] 2908 	push	hl
+    00000F02 33               [ 6] 2909 	inc	sp
+    00000F03 79               [ 4] 2910 	ld	a, c
+    00000F04 CDr56r0E         [17] 2911 	call	_Print_DrawLineV
+    00000F07 E1               [10] 2912 	pop	hl
+                                   2913 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1473: Print_DrawLineV(x + width - 1, y + 1, height - 2);
+    00000F08 E5               [11] 2914 	push	hl
+    00000F09 33               [ 6] 2915 	inc	sp
+    00000F0A DD 7E FF         [19] 2916 	ld	a, -1 (ix)
+    00000F0D CDr56r0E         [17] 2917 	call	_Print_DrawLineV
+                                   2918 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/print.c:1474: }
+    00000F10 33               [ 6] 2919 	inc	sp
+    00000F11 DD E1            [14] 2920 	pop	ix
+    00000F13 E1               [10] 2921 	pop	hl
+    00000F14 F1               [10] 2922 	pop	af
+    00000F15 E9               [ 4] 2923 	jp	(hl)
+                                   2924 	.area _CODE
+                                   2925 	.area _INITIALIZER
+    00000000                       2926 __xinit__g_PrintInvalid:
+    00000000 FF                    2927 	.db #0xff	; 255
+    00000001 81                    2928 	.db #0x81	; 129
+    00000002 81                    2929 	.db #0x81	; 129
+    00000003 81                    2930 	.db #0x81	; 129
+    00000004 81                    2931 	.db #0x81	; 129
+    00000005 81                    2932 	.db #0x81	; 129
+    00000006 81                    2933 	.db #0x81	; 129
+    00000007 FF                    2934 	.db #0xff	; 255
+                                   2935 	.area _CABS (ABS)

@@ -1,0 +1,12 @@
+-mjwx
+-i C:\Users\Jummy\Downloads\MSXgl-1.5.0b\projects\bluebakassc1/out/bluebakas.ihx
+-b _CODE = 0x4000
+-b _DATA = 0xc000
+-k C:\Users\Jummy\Downloads\MSXgl-1.5.0b\tools/sdcc/lib/z80
+-k C:\Users\Jummy\Downloads\MSXgl-1.5.0b\tools/sdcc/bin\..\lib\z80
+-l C:\Users\Jummy\Downloads\MSXgl-1.5.0b\projects\bluebakassc1/out/msxgl.lib
+-l z80
+C:\Users\Jummy\Downloads\MSXgl-1.5.0b\projects\bluebakassc1/out/crt0_rom32.rel
+C:\Users\Jummy\Downloads\MSXgl-1.5.0b\projects\bluebakassc1/out/bluebakas.rel
+
+-e

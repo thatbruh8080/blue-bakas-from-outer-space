@@ -1,0 +1,98 @@
+ASxxxx Assembler V05.50.4+NoICE+SDCCmods-WIP-R14  (Zilog Z80 / Hitachi HD64180 / ZX-Next / eZ80 / R800)                               Page 1
+Hexadecimal [32-Bits]
+
+Symbol Table
+
+    .__.$$$.                                                    =   00002710 L
+    .__.ABS.                                                    =   00000000 G
+    .__.CPU.                                                    =   00000000 L
+    .__.H$L.                                                    =   00000000 L
+  0 CHANNEL_SWITCH                                                  00000049 R
+  0 CHECK_INDEX                                                     0000000D R
+  0 CHECK_NN                                                        00000062 R
+  0 CHECK_PRIO                                                      00000013 R
+  0 CHK1                                                            00000095 R
+  0 CHK2                                                            000000A4 R
+  0 CHK3                                                            000000B6 R
+  0 CONTINUE                                                        00000070 R
+  0 INIT_END                                                        00000034 R
+  0 PLAY_A                                                          000000B9 R
+  0 PLAY_B                                                          000000A9 R
+  0 PLAY_C                                                          00000097 R
+  0 SETMASKS                                                        00000087 R
+  0 SETMIXER                                                        000000C6 R
+  0 SETPOINTER                                                      00000073 R
+  0 StopCheck1                                                      000000E0 R
+  0 StopCheck2                                                      000000E6 R
+  0 StopCheck3                                                      000000EC R
+  0 TAKECB                                                          00000051 R
+  7 __xinit__ayFX_Channel                                           00000002 R
+  7 __xinit__ayFX_Finish                                            00000003 R
+  7 __xinit__ayFX_Mode                                              00000000 R
+  7 __xinit__ayFX_Priority                                          00000001 R
+  1 _ayFX_Bank                                                      00000000 GR
+  2 _ayFX_Channel                                                   00000002 GR
+  2 _ayFX_Finish                                                    00000003 GR
+  0 _ayFX_InitBank                                                  00000000 GR
+  2 _ayFX_Mode                                                      00000000 GR
+  0 _ayFX_Mute                                                      000000D6 GR
+  1 _ayFX_Noise                                                     00000006 GR
+  0 _ayFX_Play                                                      00000035 GR
+  0 _ayFX_PlayBank                                                  00000004 GR
+  1 _ayFX_Pointer                                                   00000002 GR
+  2 _ayFX_Priority                                                  00000001 GR
+  0 _ayFX_Stop                                                      000000F0 GR
+  1 _ayFX_Tone                                                      00000004 GR
+  0 _ayFX_Update                                                    0000003D GR
+  1 _ayFX_Volume                                                    00000007 GR
+    _g_Kanji_Level1HighPort                                     =   000000D9 
+    _g_Kanji_Level1LowPort                                      =   000000D8 
+    _g_Kanji_Level2HighPort                                     =   000000DB 
+    _g_Kanji_Level2LowPort                                      =   000000DA 
+    _g_MSXAudio_DataPort                                        =   000000C1 
+    _g_MSXAudio_DataPort2                                       =   000000C3 
+    _g_MSXAudio_IndexPort                                       =   000000C0 
+    _g_MSXAudio_IndexPort2                                      =   000000C2 
+    _g_MSXMusic_DataPort                                        =   0000007D 
+    _g_MSXMusic_IndexPort                                       =   0000007C 
+    _g_PSG_DataPort                                             =   000000A1 
+    _g_PSG_Ext_DataPort                                         =   00000011 
+    _g_PSG_Ext_RegPort                                          =   00000010 
+ASxxxx Assembler V05.50.4+NoICE+SDCCmods-WIP-R14  (Zilog Z80 / Hitachi HD64180 / ZX-Next / eZ80 / R800)                               Page 2
+Hexadecimal [32-Bits]
+
+Symbol Table
+
+    _g_PSG_Ext_StatPort                                         =   00000012 
+    _g_PSG_RegPort                                              =   000000A0 
+    _g_PSG_Regs                                                     ******** GX
+    _g_PSG_StatPort                                             =   000000A2 
+    _g_PortAccessKeyboard                                       =   000000AA 
+    _g_PortControl                                              =   000000AB 
+    _g_PortPrimarySlot                                          =   000000A8 
+    _g_PortReadKeyboard                                         =   000000A9 
+    _g_Printer_ControlPort                                      =   00000090 
+    _g_Printer_DataPort                                         =   00000091 
+    _g_RTC_AddrPort                                             =   000000B4 
+    _g_RTC_DataPort                                             =   000000B5 
+    _g_VDP_AddrPort                                             =   00000099 
+    _g_VDP_DataPort                                             =   00000098 
+    _g_VDP_RegPort                                              =   00000099 
+    _g_VDP_StatPort                                             =   00000099 
+
+
+ASxxxx Assembler V05.50.4+NoICE+SDCCmods-WIP-R14  (Zilog Z80 / Hitachi HD64180 / ZX-Next / eZ80 / R800)                               Page 3
+Hexadecimal [32-Bits]
+
+Area Table
+
+   0 _CODE                                      size       F6   flags    0
+   1 _DATA                                      size        8   flags    0
+   2 _INITIALIZED                               size        5   flags    0
+   3 _DABS                                      size        0   flags    8
+   4 _HOME                                      size        0   flags    0
+   5 _GSINIT                                    size        0   flags    0
+   6 _GSFINAL                                   size        0   flags    0
+   7 _INITIALIZER                               size        5   flags    0
+   8 _CABS                                      size        0   flags    8
+

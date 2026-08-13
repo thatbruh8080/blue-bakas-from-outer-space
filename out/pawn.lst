@@ -1,0 +1,2169 @@
+                                      1 ;--------------------------------------------------------
+                                      2 ; File Created by SDCC : free open source ISO C Compiler
+                                      3 ; Version 4.6.0 #16555 (MINGW64)
+                                      4 ;--------------------------------------------------------
+                                      5 	.module pawn
+                                      6 	
+                                      7 	.optsdcc -mz80 sdcccall(1)
+                                      8 ;--------------------------------------------------------
+                                      9 ; Public variables in this module
+                                     10 ;--------------------------------------------------------
+                                     11 	.globl _Pawn_UpdatePhysics
+                                     12 	.globl _Pawn_UpdateAnimation
+                                     13 	.globl _Pawn_ParseSprite
+                                     14 	.globl _PawnSprite_Initialize
+                                     15 	.globl _PawnSprite_Disable
+                                     16 	.globl _PawnSprite_Enable
+                                     17 	.globl _VDP_SetSpriteColorSM1
+                                     18 	.globl _VDP_SetSpritePositionY
+                                     19 	.globl _VDP_Peek_16K
+                                     20 	.globl _VDP_WriteVRAM_16K
+                                     21 	.globl _g_Pawn_FrameOffset
+                                     22 	.globl _g_Pawn_CellY
+                                     23 	.globl _g_Pawn_CellX
+                                     24 	.globl _g_SLTSL
+                                     25 	.globl _g_GRPACY
+                                     26 	.globl _g_GRPACX
+                                     27 	.globl _g_LOGOPR
+                                     28 	.globl _g_CMASK
+                                     29 	.globl _g_CLOC
+                                     30 	.globl _g_FNKSTR
+                                     31 	.globl _g_GETPNT
+                                     32 	.globl _g_PUTPNT
+                                     33 	.globl _g_ATRBYT
+                                     34 	.globl _g_BDRCLR
+                                     35 	.globl _g_BAKCLR
+                                     36 	.globl _g_FORCLR
+                                     37 	.globl _g_CSRX
+                                     38 	.globl _g_CSRY
+                                     39 	.globl _g_CLIKSW
+                                     40 	.globl _g_MLTPAT
+                                     41 	.globl _g_MLTATR
+                                     42 	.globl _g_MLTCGP
+                                     43 	.globl _g_MLTCOL
+                                     44 	.globl _g_MLTNAM
+                                     45 	.globl _g_GRPPAT
+                                     46 	.globl _g_GRPATR
+                                     47 	.globl _g_GRPCGP
+                                     48 	.globl _g_GRPCOL
+                                     49 	.globl _g_GRPNAM
+                                     50 	.globl _g_T32PAT
+                                     51 	.globl _g_T32ATR
+                                     52 	.globl _g_T32CGP
+                                     53 	.globl _g_T32COL
+                                     54 	.globl _g_T32NAM
+                                     55 	.globl _g_TXTPAT
+                                     56 	.globl _g_TXTATR
+                                     57 	.globl _g_TXTCGP
+                                     58 	.globl _g_TXTCOL
+                                     59 	.globl _g_TXTNAM
+                                     60 	.globl _g_CLMLST
+                                     61 	.globl _g_CRTCNT
+                                     62 	.globl _g_LINLEN
+                                     63 	.globl _g_LINL32
+                                     64 	.globl _g_LINL40
+                                     65 	.globl _g_BDOS
+                                     66 	.globl _g_MASTER
+                                     67 	.globl _g_RAMAD3
+                                     68 	.globl _g_RAMAD2
+                                     69 	.globl _g_RAMAD1
+                                     70 	.globl _g_RAMAD0
+                                     71 	.globl _g_BREAKV
+                                     72 	.globl _g_DISKVE
+                                     73 	.globl _g_KANJTABLE
+                                     74 	.globl _g_STRSRC
+                                     75 	.globl _g_SUBRID
+                                     76 	.globl _g_CHAR_16
+                                     77 	.globl _g_MSXMID
+                                     78 	.globl _g_MSXVER
+                                     79 	.globl _g_ROMVersion
+                                     80 	.globl _g_BASRVN
+                                     81 	.globl _g_VDP_DW
+                                     82 	.globl _g_VDP_DR
+                                     83 	.globl _g_CGTABL
+                                     84 	.globl _g_SVFFFD
+                                     85 	.globl _g_RG27SAV
+                                     86 	.globl _g_RG26SAV
+                                     87 	.globl _g_RG25SAV
+                                     88 	.globl _g_SVFFF8
+                                     89 	.globl _g_MINROM
+                                     90 	.globl _g_RG23SAV
+                                     91 	.globl _g_RG22SAV
+                                     92 	.globl _g_RG21SAV
+                                     93 	.globl _g_RG20SAV
+                                     94 	.globl _g_RG19SAV
+                                     95 	.globl _g_RG18SAV
+                                     96 	.globl _g_RG17SAV
+                                     97 	.globl _g_RG16SAV
+                                     98 	.globl _g_RG15SAV
+                                     99 	.globl _g_RG14SAV
+                                    100 	.globl _g_RG13SAV
+                                    101 	.globl _g_RG12SAV
+                                    102 	.globl _g_RG11SAV
+                                    103 	.globl _g_RG10SAV
+                                    104 	.globl _g_RG09SAV
+                                    105 	.globl _g_RG08SAV
+                                    106 	.globl _g_PROCNM
+                                    107 	.globl _g_SLTWRK
+                                    108 	.globl _g_SLTATR
+                                    109 	.globl _g_SLTTBL
+                                    110 	.globl _g_EXPTBL
+                                    111 	.globl _g_MNROM
+                                    112 	.globl _g_DRWANG
+                                    113 	.globl _g_DRWSCL
+                                    114 	.globl _g_DRWFLG
+                                    115 	.globl _g_GYPOS
+                                    116 	.globl _g_GXPOS
+                                    117 	.globl _g_BRDATR
+                                    118 	.globl _g_CASPRV
+                                    119 	.globl _g_OLDSCR
+                                    120 	.globl _g_SCRMOD
+                                    121 	.globl _g_FLBMEM
+                                    122 	.globl _g_KANAMD
+                                    123 	.globl _g_KANAST
+                                    124 	.globl _g_CAPST
+                                    125 	.globl _g_CSTYLE
+                                    126 	.globl _g_CSRSW
+                                    127 	.globl _g_INSFLG
+                                    128 	.globl _g_ESCCNT
+                                    129 	.globl _g_GRPHED
+                                    130 	.globl _g_WINWID
+                                    131 	.globl _g_LOWLIM
+                                    132 	.globl _g_INTCNT
+                                    133 	.globl _g_INTVAL
+                                    134 	.globl _g_JIFFY
+                                    135 	.globl _g_PADX
+                                    136 	.globl _g_PADY
+                                    137 	.globl _g_INTFLG
+                                    138 	.globl _g_RTYCNT
+                                    139 	.globl _g_TRPTBL
+                                    140 	.globl _g_HIMEM
+                                    141 	.globl _g_BOTTOM
+                                    142 	.globl _g_PATWRK
+                                    143 	.globl _g_LINWRK
+                                    144 	.globl _g_KEYBUF
+                                    145 	.globl _g_NEWKEY
+                                    146 	.globl _g_OLDKEY
+                                    147 	.globl _g_CLIKFL
+                                    148 	.globl _g_ONGSBF
+                                    149 	.globl _g_FNKFLG
+                                    150 	.globl _g_FNKSWI
+                                    151 	.globl _g_CODSAV
+                                    152 	.globl _g_FSTPOS
+                                    153 	.globl _g_LINTTB
+                                    154 	.globl _g_BASROM
+                                    155 	.globl _g_ENSTOP
+                                    156 	.globl _g_VCBC
+                                    157 	.globl _g_VCBB
+                                    158 	.globl _g_VCBA
+                                    159 	.globl _g_PLYCNT
+                                    160 	.globl _g_MUSICF
+                                    161 	.globl _g_QUEUEN
+                                    162 	.globl _g_MCLPTR
+                                    163 	.globl _g_MCLLEN
+                                    164 	.globl _g_SAVVOL
+                                    165 	.globl _g_VOICEN
+                                    166 	.globl _g_SAVSP
+                                    167 	.globl _g_PRSCNT
+                                    168 	.globl _g_LSTMOD
+                                    169 	.globl _g_LSTCOM
+                                    170 	.globl _g_COMMSK
+                                    171 	.globl _g_ESTBLS
+                                    172 	.globl _g_FLAGS
+                                    173 	.globl _g_ERRORS
+                                    174 	.globl _g_DATCNT
+                                    175 	.globl _g_DEVNUM
+                                    176 	.globl _g_OLDINT
+                                    177 	.globl _g_OLDSTT
+                                    178 	.globl _g_MEXBIh
+                                    179 	.globl _g_RSIQLN
+                                    180 	.globl _g_RSFCB
+                                    181 	.globl _g_TOCNT
+                                    182 	.globl _g_RSTMP
+                                    183 	.globl _g_YSAVE
+                                    184 	.globl _g_XSAVE
+                                    185 	.globl _g_NORUSE
+                                    186 	.globl _g_MODE
+                                    187 	.globl _g_ROMA
+                                    188 	.globl _g_CHRCNT
+                                    189 	.globl _g_EXBRSA
+                                    190 	.globl _g_AVCSAV
+                                    191 	.globl _g_ACPAGE
+                                    192 	.globl _g_DPPAGE
+                                    193 	.globl _g_RS2IQ
+                                    194 	.globl _g_VOICCQ
+                                    195 	.globl _g_VOICBQ
+                                    196 	.globl _g_VOICAQ
+                                    197 	.globl _g_QUEBAK
+                                    198 	.globl _g_QUETAB
+                                    199 	.globl _g_ASPCT2
+                                    200 	.globl _g_ASPCT1
+                                    201 	.globl _g_HEADER
+                                    202 	.globl _g_HIGH
+                                    203 	.globl _g_LOW
+                                    204 	.globl _g_CS240
+                                    205 	.globl _g_CS120
+                                    206 	.globl _g_REPCNT
+                                    207 	.globl _g_SCNCNT
+                                    208 	.globl _g_FRCNEW
+                                    209 	.globl _g_QUEUES
+                                    210 	.globl _g_MINUPD
+                                    211 	.globl _g_MAXUPD
+                                    212 	.globl _g_TRGFLG
+                                    213 	.globl _g_STATFL
+                                    214 	.globl _g_RG7SAV
+                                    215 	.globl _g_RG6SAV
+                                    216 	.globl _g_RG5SAV
+                                    217 	.globl _g_RG4SAV
+                                    218 	.globl _g_RG3SAV
+                                    219 	.globl _g_RG2SAV
+                                    220 	.globl _g_RG1SAV
+                                    221 	.globl _g_RG0SAV
+                                    222 	.globl _g_CNSDFG
+                                    223 	.globl _g_USRTAB
+                                    224 	.globl _g_CLPRIM
+                                    225 	.globl _g_WRPRIM
+                                    226 	.globl _g_RDPRIM
+                                    227 	.globl _Pawn_Initialize
+                                    228 	.globl _Pawn_SetPosition
+                                    229 	.globl _Pawn_ForceSetAction
+                                    230 	.globl _Pawn_SetAction
+                                    231 	.globl _Pawn_SetEnable
+                                    232 	.globl _Pawn_Update
+                                    233 	.globl _Pawn_Draw
+                                    234 	.globl _Pawn_SetMovement
+                                    235 	.globl _Pawn_InitializePhysics
+                                    236 ;--------------------------------------------------------
+                                    237 ; special function registers
+                                    238 ;--------------------------------------------------------
+                         00000060   239 _g_V9_VRAMPort	=	0x0060
+                         00000061   240 _g_V9_PalettePort	=	0x0061
+                         00000062   241 _g_V9_CmdDataPort	=	0x0062
+                         00000063   242 _g_V9_RegDataPort	=	0x0063
+                         00000064   243 _g_V9_RegSelectPort	=	0x0064
+                         00000065   244 _g_V9_SatusPort	=	0x0065
+                         00000066   245 _g_V9_IntFlagPort	=	0x0066
+                         00000067   246 _g_V9_SysCtrlPort	=	0x0067
+                         00000068   247 _g_V9_KanjiAddrLPort	=	0x0068
+                         00000069   248 _g_V9_KanjiAddrHPort	=	0x0069
+                         00000069   249 _g_V9_KanjiDataPort	=	0x0069
+                         0000006A   250 _g_V9_Kanji2AddrLPort	=	0x006a
+                         0000006B   251 _g_V9_Kanji2AddrHPort	=	0x006b
+                         0000006B   252 _g_V9_Kanji2DataPort	=	0x006b
+                         0000006F   253 _g_V9_OutputCtrPort	=	0x006f
+                         000000A0   254 _g_PSG_RegPort	=	0x00a0
+                         000000A1   255 _g_PSG_DataPort	=	0x00a1
+                         000000A2   256 _g_PSG_StatPort	=	0x00a2
+                         00000010   257 _g_PSG_Ext_RegPort	=	0x0010
+                         00000011   258 _g_PSG_Ext_DataPort	=	0x0011
+                         00000012   259 _g_PSG_Ext_StatPort	=	0x0012
+                         00000090   260 _g_Printer_ControlPort	=	0x0090
+                         00000091   261 _g_Printer_DataPort	=	0x0091
+                         0000007C   262 _g_MSXMusic_IndexPort	=	0x007c
+                         0000007D   263 _g_MSXMusic_DataPort	=	0x007d
+                         00000098   264 _g_VDP_DataPort	=	0x0098
+                         00000099   265 _g_VDP_RegPort	=	0x0099
+                         00000099   266 _g_VDP_AddrPort	=	0x0099
+                         00000099   267 _g_VDP_StatPort	=	0x0099
+                         000000A8   268 _g_PortPrimarySlot	=	0x00a8
+                         000000A9   269 _g_PortReadKeyboard	=	0x00a9
+                         000000AA   270 _g_PortAccessKeyboard	=	0x00aa
+                         000000AB   271 _g_PortControl	=	0x00ab
+                         000000B4   272 _g_RTC_AddrPort	=	0x00b4
+                         000000B5   273 _g_RTC_DataPort	=	0x00b5
+                         000000C0   274 _g_MSXAudio_IndexPort	=	0x00c0
+                         000000C1   275 _g_MSXAudio_DataPort	=	0x00c1
+                         000000C2   276 _g_MSXAudio_IndexPort2	=	0x00c2
+                         000000C3   277 _g_MSXAudio_DataPort2	=	0x00c3
+                         000000D8   278 _g_Kanji_Level1LowPort	=	0x00d8
+                         000000D9   279 _g_Kanji_Level1HighPort	=	0x00d9
+                         000000DA   280 _g_Kanji_Level2LowPort	=	0x00da
+                         000000DB   281 _g_Kanji_Level2HighPort	=	0x00db
+                                    282 ;--------------------------------------------------------
+                                    283 ; ram data
+                                    284 ;--------------------------------------------------------
+                                    285 	.area _DATA
+                         0000F3AE   286 _g_LINL40	=	0xf3ae
+                         0000F3AF   287 _g_LINL32	=	0xf3af
+                         0000F3B0   288 _g_LINLEN	=	0xf3b0
+                         0000F3B1   289 _g_CRTCNT	=	0xf3b1
+                         0000F3B2   290 _g_CLMLST	=	0xf3b2
+                         0000F3B3   291 _g_TXTNAM	=	0xf3b3
+                         0000F3B5   292 _g_TXTCOL	=	0xf3b5
+                         0000F3B7   293 _g_TXTCGP	=	0xf3b7
+                         0000F3B9   294 _g_TXTATR	=	0xf3b9
+                         0000F3BB   295 _g_TXTPAT	=	0xf3bb
+                         0000F3BD   296 _g_T32NAM	=	0xf3bd
+                         0000F3BF   297 _g_T32COL	=	0xf3bf
+                         0000F3C1   298 _g_T32CGP	=	0xf3c1
+                         0000F3C3   299 _g_T32ATR	=	0xf3c3
+                         0000F3C5   300 _g_T32PAT	=	0xf3c5
+                         0000F3C7   301 _g_GRPNAM	=	0xf3c7
+                         0000F3C9   302 _g_GRPCOL	=	0xf3c9
+                         0000F3CB   303 _g_GRPCGP	=	0xf3cb
+                         0000F3CD   304 _g_GRPATR	=	0xf3cd
+                         0000F3CF   305 _g_GRPPAT	=	0xf3cf
+                         0000F3D1   306 _g_MLTNAM	=	0xf3d1
+                         0000F3D3   307 _g_MLTCOL	=	0xf3d3
+                         0000F3D5   308 _g_MLTCGP	=	0xf3d5
+                         0000F3D7   309 _g_MLTATR	=	0xf3d7
+                         0000F3D9   310 _g_MLTPAT	=	0xf3d9
+                         0000F3DB   311 _g_CLIKSW	=	0xf3db
+                         0000F3DC   312 _g_CSRY	=	0xf3dc
+                         0000F3DD   313 _g_CSRX	=	0xf3dd
+                         0000F3E9   314 _g_FORCLR	=	0xf3e9
+                         0000F3EA   315 _g_BAKCLR	=	0xf3ea
+                         0000F3EB   316 _g_BDRCLR	=	0xf3eb
+                         0000F3F2   317 _g_ATRBYT	=	0xf3f2
+                         0000F3F8   318 _g_PUTPNT	=	0xf3f8
+                         0000F3FA   319 _g_GETPNT	=	0xf3fa
+                         0000F87F   320 _g_FNKSTR	=	0xf87f
+                         0000F92A   321 _g_CLOC	=	0xf92a
+                         0000F92C   322 _g_CMASK	=	0xf92c
+                         0000FB02   323 _g_LOGOPR	=	0xfb02
+                         0000FCB7   324 _g_GRPACX	=	0xfcb7
+                         0000FCB9   325 _g_GRPACY	=	0xfcb9
+                         0000FFFF   326 _g_SLTSL	=	0xffff
+    00000000                        327 _g_Pawn_Buffer:
+    00000000                        328 	.ds 4
+    00000004                        329 _g_Pawn:
+    00000004                        330 	.ds 2
+    00000006                        331 _g_Pawn_Sprite:
+    00000006                        332 	.ds 2
+    00000008                        333 _g_Pawn_CellX::
+    00000008                        334 	.ds 1
+    00000009                        335 _g_Pawn_CellY::
+    00000009                        336 	.ds 1
+    0000000A                        337 _g_Pawn_FrameOffset::
+    0000000A                        338 	.ds 1
+                                    339 ;--------------------------------------------------------
+                                    340 ; ram data
+                                    341 ;--------------------------------------------------------
+                                    342 	.area _INITIALIZED
+                                    343 ;--------------------------------------------------------
+                                    344 ; absolute ram data
+                                    345 ;--------------------------------------------------------
+                                    346 	.area _DABS (ABS)
+                                    347 	.area _DABS (ABS)
+                                    348 ;--------------------------------------------------------
+                                    349 ; global & static initialisations
+                                    350 ;--------------------------------------------------------
+                                    351 	.area _HOME
+                                    352 	.area _GSINIT
+                                    353 	.area _GSFINAL
+                                    354 	.area _GSINIT
+                                    355 ;--------------------------------------------------------
+                                    356 ; Home
+                                    357 ;--------------------------------------------------------
+                                    358 	.area _HOME
+                                    359 	.area _HOME
+                                    360 ;--------------------------------------------------------
+                                    361 ; code
+                                    362 ;--------------------------------------------------------
+                                    363 	.area _CODE
+                                    364 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:120: void PawnSprite_Enable(u8 sprtIdx)
+                                    365 ;	---------------------------------
+                                    366 ; Function PawnSprite_Enable
+                                    367 ; ---------------------------------
+    00000000                        368 _PawnSprite_Enable::
+                                    369 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:127: sprtIdx;
+                                    370 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:129: }
+    00000000 C9               [10]  371 	ret
+                         0000F380   372 _g_RDPRIM	=	0xf380
+                         0000F385   373 _g_WRPRIM	=	0xf385
+                         0000F38C   374 _g_CLPRIM	=	0xf38c
+                         0000F39A   375 _g_USRTAB	=	0xf39a
+                         0000F3DE   376 _g_CNSDFG	=	0xf3de
+                         0000F3DF   377 _g_RG0SAV	=	0xf3df
+                         0000F3E0   378 _g_RG1SAV	=	0xf3e0
+                         0000F3E1   379 _g_RG2SAV	=	0xf3e1
+                         0000F3E2   380 _g_RG3SAV	=	0xf3e2
+                         0000F3E3   381 _g_RG4SAV	=	0xf3e3
+                         0000F3E4   382 _g_RG5SAV	=	0xf3e4
+                         0000F3E5   383 _g_RG6SAV	=	0xf3e5
+                         0000F3E6   384 _g_RG7SAV	=	0xf3e6
+                         0000F3E7   385 _g_STATFL	=	0xf3e7
+                         0000F3E8   386 _g_TRGFLG	=	0xf3e8
+                         0000F3EC   387 _g_MAXUPD	=	0xf3ec
+                         0000F3EF   388 _g_MINUPD	=	0xf3ef
+                         0000F3F3   389 _g_QUEUES	=	0xf3f3
+                         0000F3F5   390 _g_FRCNEW	=	0xf3f5
+                         0000F3F6   391 _g_SCNCNT	=	0xf3f6
+                         0000F3F7   392 _g_REPCNT	=	0xf3f7
+                         0000F3FC   393 _g_CS120	=	0xf3fc
+                         0000F401   394 _g_CS240	=	0xf401
+                         0000F406   395 _g_LOW	=	0xf406
+                         0000F408   396 _g_HIGH	=	0xf408
+                         0000F40A   397 _g_HEADER	=	0xf40a
+                         0000F40B   398 _g_ASPCT1	=	0xf40b
+                         0000F40D   399 _g_ASPCT2	=	0xf40d
+                         0000F959   400 _g_QUETAB	=	0xf959
+                         0000F971   401 _g_QUEBAK	=	0xf971
+                         0000F975   402 _g_VOICAQ	=	0xf975
+                         0000F9F5   403 _g_VOICBQ	=	0xf9f5
+                         0000FA75   404 _g_VOICCQ	=	0xfa75
+                         0000FAF5   405 _g_RS2IQ	=	0xfaf5
+                         0000FAF5   406 _g_DPPAGE	=	0xfaf5
+                         0000FAF6   407 _g_ACPAGE	=	0xfaf6
+                         0000FAF7   408 _g_AVCSAV	=	0xfaf7
+                         0000FAF8   409 _g_EXBRSA	=	0xfaf8
+                         0000FAF9   410 _g_CHRCNT	=	0xfaf9
+                         0000FAFA   411 _g_ROMA	=	0xfafa
+                         0000FAFC   412 _g_MODE	=	0xfafc
+                         0000FAFD   413 _g_NORUSE	=	0xfafd
+                         0000FAFE   414 _g_XSAVE	=	0xfafe
+                         0000FB00   415 _g_YSAVE	=	0xfb00
+                         0000FB03   416 _g_RSTMP	=	0xfb03
+                         0000FB03   417 _g_TOCNT	=	0xfb03
+                         0000FB04   418 _g_RSFCB	=	0xfb04
+                         0000FB06   419 _g_RSIQLN	=	0xfb06
+                         0000FB07   420 _g_MEXBIh	=	0xfb07
+                         0000FB0C   421 _g_OLDSTT	=	0xfb0c
+                         0000FB0C   422 _g_OLDINT	=	0xfb0c
+                         0000FB16   423 _g_DEVNUM	=	0xfb16
+                         0000FB17   424 _g_DATCNT	=	0xfb17
+                         0000FB1A   425 _g_ERRORS	=	0xfb1a
+                         0000FB1B   426 _g_FLAGS	=	0xfb1b
+                         0000FB1C   427 _g_ESTBLS	=	0xfb1c
+                         0000FB1D   428 _g_COMMSK	=	0xfb1d
+                         0000FB1E   429 _g_LSTCOM	=	0xfb1e
+                         0000FB1F   430 _g_LSTMOD	=	0xfb1f
+                         0000FB35   431 _g_PRSCNT	=	0xfb35
+                         0000FB36   432 _g_SAVSP	=	0xfb36
+                         0000FB38   433 _g_VOICEN	=	0xfb38
+                         0000FB39   434 _g_SAVVOL	=	0xfb39
+                         0000FB3B   435 _g_MCLLEN	=	0xfb3b
+                         0000FB3C   436 _g_MCLPTR	=	0xfb3c
+                         0000FB3E   437 _g_QUEUEN	=	0xfb3e
+                         0000FB3F   438 _g_MUSICF	=	0xfb3f
+                         0000FB40   439 _g_PLYCNT	=	0xfb40
+                         0000FB41   440 _g_VCBA	=	0xfb41
+                         0000FB66   441 _g_VCBB	=	0xfb66
+                         0000FB8B   442 _g_VCBC	=	0xfb8b
+                         0000FBB0   443 _g_ENSTOP	=	0xfbb0
+                         0000FBB1   444 _g_BASROM	=	0xfbb1
+                         0000FBB2   445 _g_LINTTB	=	0xfbb2
+                         0000FBCA   446 _g_FSTPOS	=	0xfbca
+                         0000FBCC   447 _g_CODSAV	=	0xfbcc
+                         0000FBCD   448 _g_FNKSWI	=	0xfbcd
+                         0000FBCE   449 _g_FNKFLG	=	0xfbce
+                         0000FBD8   450 _g_ONGSBF	=	0xfbd8
+                         0000FBD9   451 _g_CLIKFL	=	0xfbd9
+                         0000FBDA   452 _g_OLDKEY	=	0xfbda
+                         0000FBE5   453 _g_NEWKEY	=	0xfbe5
+                         0000FBF0   454 _g_KEYBUF	=	0xfbf0
+                         0000FC18   455 _g_LINWRK	=	0xfc18
+                         0000FC40   456 _g_PATWRK	=	0xfc40
+                         0000FC48   457 _g_BOTTOM	=	0xfc48
+                         0000FC4A   458 _g_HIMEM	=	0xfc4a
+                         0000FC4C   459 _g_TRPTBL	=	0xfc4c
+                         0000FC9A   460 _g_RTYCNT	=	0xfc9a
+                         0000FC9B   461 _g_INTFLG	=	0xfc9b
+                         0000FC9C   462 _g_PADY	=	0xfc9c
+                         0000FC9D   463 _g_PADX	=	0xfc9d
+                         0000FC9E   464 _g_JIFFY	=	0xfc9e
+                         0000FCA0   465 _g_INTVAL	=	0xfca0
+                         0000FCA2   466 _g_INTCNT	=	0xfca2
+                         0000FCA4   467 _g_LOWLIM	=	0xfca4
+                         0000FCA5   468 _g_WINWID	=	0xfca5
+                         0000FCA6   469 _g_GRPHED	=	0xfca6
+                         0000FCA7   470 _g_ESCCNT	=	0xfca7
+                         0000FCA8   471 _g_INSFLG	=	0xfca8
+                         0000FCA9   472 _g_CSRSW	=	0xfca9
+                         0000FCAA   473 _g_CSTYLE	=	0xfcaa
+                         0000FCAB   474 _g_CAPST	=	0xfcab
+                         0000FCAC   475 _g_KANAST	=	0xfcac
+                         0000FCAD   476 _g_KANAMD	=	0xfcad
+                         0000FCAE   477 _g_FLBMEM	=	0xfcae
+                         0000FCAF   478 _g_SCRMOD	=	0xfcaf
+                         0000FCB0   479 _g_OLDSCR	=	0xfcb0
+                         0000FCB1   480 _g_CASPRV	=	0xfcb1
+                         0000FCB2   481 _g_BRDATR	=	0xfcb2
+                         0000FCB3   482 _g_GXPOS	=	0xfcb3
+                         0000FCB5   483 _g_GYPOS	=	0xfcb5
+                         0000FCBB   484 _g_DRWFLG	=	0xfcbb
+                         0000FCBC   485 _g_DRWSCL	=	0xfcbc
+                         0000FCBD   486 _g_DRWANG	=	0xfcbd
+                         0000FCC1   487 _g_MNROM	=	0xfcc1
+                         0000FCC1   488 _g_EXPTBL	=	0xfcc1
+                         0000FCC5   489 _g_SLTTBL	=	0xfcc5
+                         0000FCC9   490 _g_SLTATR	=	0xfcc9
+                         0000FD09   491 _g_SLTWRK	=	0xfd09
+                         0000FD89   492 _g_PROCNM	=	0xfd89
+                         0000FFE7   493 _g_RG08SAV	=	0xffe7
+                         0000FFE8   494 _g_RG09SAV	=	0xffe8
+                         0000FFE9   495 _g_RG10SAV	=	0xffe9
+                         0000FFEA   496 _g_RG11SAV	=	0xffea
+                         0000FFEB   497 _g_RG12SAV	=	0xffeb
+                         0000FFEC   498 _g_RG13SAV	=	0xffec
+                         0000FFED   499 _g_RG14SAV	=	0xffed
+                         0000FFEE   500 _g_RG15SAV	=	0xffee
+                         0000FFEF   501 _g_RG16SAV	=	0xffef
+                         0000FFF0   502 _g_RG17SAV	=	0xfff0
+                         0000FFF1   503 _g_RG18SAV	=	0xfff1
+                         0000FFF2   504 _g_RG19SAV	=	0xfff2
+                         0000FFF3   505 _g_RG20SAV	=	0xfff3
+                         0000FFF4   506 _g_RG21SAV	=	0xfff4
+                         0000FFF5   507 _g_RG22SAV	=	0xfff5
+                         0000FFF6   508 _g_RG23SAV	=	0xfff6
+                         0000FFF7   509 _g_MINROM	=	0xfff7
+                         0000FFF8   510 _g_SVFFF8	=	0xfff8
+                         0000FFFA   511 _g_RG25SAV	=	0xfffa
+                         0000FFFB   512 _g_RG26SAV	=	0xfffb
+                         0000FFFC   513 _g_RG27SAV	=	0xfffc
+                         0000FFFD   514 _g_SVFFFD	=	0xfffd
+                         00000004   515 _g_CGTABL	=	0x0004
+                         00000006   516 _g_VDP_DR	=	0x0006
+                         00000007   517 _g_VDP_DW	=	0x0007
+                         0000002B   518 _g_BASRVN	=	0x002b
+                         0000002B   519 _g_ROMVersion	=	0x002b
+                         0000002D   520 _g_MSXVER	=	0x002d
+                         0000002E   521 _g_MSXMID	=	0x002e
+                         00000034   522 _g_CHAR_16	=	0x0034
+                         00000000   523 _g_SUBRID	=	0x0000
+                         00000002   524 _g_STRSRC	=	0x0002
+                         0000F30F   525 _g_KANJTABLE	=	0xf30f
+                         0000F323   526 _g_DISKVE	=	0xf323
+                         0000F325   527 _g_BREAKV	=	0xf325
+                         0000F341   528 _g_RAMAD0	=	0xf341
+                         0000F342   529 _g_RAMAD1	=	0xf342
+                         0000F343   530 _g_RAMAD2	=	0xf343
+                         0000F344   531 _g_RAMAD3	=	0xf344
+                         0000F348   532 _g_MASTER	=	0xf348
+                         0000F37D   533 _g_BDOS	=	0xf37d
+                                    534 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:133: void PawnSprite_Disable(u8 sprtIdx)
+                                    535 ;	---------------------------------
+                                    536 ; Function PawnSprite_Disable
+                                    537 ; ---------------------------------
+    00000001                        538 _PawnSprite_Disable::
+                                    539 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/vdp.h:1261: inline void VDP_HideSprite(u8 index) { VDP_SetSpritePositionY(index, VDP_SPRITE_HIDE); }
+    00000001 2E D5            [ 7]  540 	ld	l, #0xd5
+                                    541 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:140: VDP_HideSprite(sprtIdx);
+                                    542 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:142: }
+    00000003 C3r00r00         [10]  543 	jp	_VDP_SetSpritePositionY
+                                    544 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:146: void PawnSprite_Initialize(u8 sprtIdx)
+                                    545 ;	---------------------------------
+                                    546 ; Function PawnSprite_Initialize
+                                    547 ; ---------------------------------
+    00000006                        548 _PawnSprite_Initialize::
+                                    549 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:153: u8 color = g_Pawn_Sprite->Color;
+    00000006 ED 5Br06r00      [20]  550 	ld	de, (_g_Pawn_Sprite)
+    0000000A 6B               [ 4]  551 	ld	l, e
+    0000000B 62               [ 4]  552 	ld	h, d
+    0000000C 23               [ 6]  553 	inc	hl
+    0000000D 23               [ 6]  554 	inc	hl
+    0000000E 23               [ 6]  555 	inc	hl
+    0000000F 4E               [ 7]  556 	ld	c, (hl)
+                                    557 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:154: if ((g_Pawn_Sprite->Flag & PAWN_SPRITE_OR) != 0)
+    00000010 21 04 00         [10]  558 	ld	hl, #4
+    00000013 19               [11]  559 	add	hl, de
+    00000014 CB 56            [12]  560 	bit	2, (hl)
+    00000016 28 02            [12]  561 	jr	z, 00102$
+                                    562 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:155: color |= VDP_SPRITE_CC;
+    00000018 CB F1            [ 8]  563 	set	6, c
+    0000001A                        564 00102$:
+                                    565 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:163: VDP_SetSpriteColorSM1(sprtIdx, color);
+    0000001A 69               [ 4]  566 	ld	l, c
+                                    567 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:172: }
+    0000001B C3r00r00         [10]  568 	jp	_VDP_SetSpriteColorSM1
+                                    569 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:176: void Pawn_ParseSprite(Pawn* pawn, SpriteCallback cb)
+                                    570 ;	---------------------------------
+                                    571 ; Function Pawn_ParseSprite
+                                    572 ; ---------------------------------
+    0000001E                        573 _Pawn_ParseSprite::
+    0000001E 22r04r00         [16]  574 	ld	(_g_Pawn), hl
+    00000021 4B               [ 4]  575 	ld	c, e
+    00000022 42               [ 4]  576 	ld	b, d
+                                    577 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:179: g_Pawn_Sprite = g_Pawn->SpriteList;
+    00000023 2Ar04r00         [16]  578 	ld	hl, (_g_Pawn)
+    00000026 7E               [ 7]  579 	ld	a, (hl)
+    00000027 23               [ 6]  580 	inc	hl
+    00000028 32r06r00         [13]  581 	ld	(_g_Pawn_Sprite+0), a
+    0000002B 7E               [ 7]  582 	ld	a, (hl)
+    0000002C 32r07r00         [13]  583 	ld	(_g_Pawn_Sprite+1), a
+                                    584 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:180: PAWN_SPRT_INIT()
+    0000002F 2Ar04r00         [16]  585 	ld	hl, (_g_Pawn)
+    00000032 23               [ 6]  586 	inc	hl
+    00000033 23               [ 6]  587 	inc	hl
+    00000034 23               [ 6]  588 	inc	hl
+    00000035 5E               [ 7]  589 	ld	e, (hl)
+                                    590 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:181: loop (i, g_Pawn->SpriteNum)
+    00000036 16 00            [ 7]  591 	ld	d, #0x00
+    00000038                        592 00103$:
+    00000038 2Ar04r00         [16]  593 	ld	hl, (_g_Pawn)
+    0000003B 23               [ 6]  594 	inc	hl
+    0000003C 23               [ 6]  595 	inc	hl
+    0000003D 7A               [ 4]  596 	ld	a, d
+    0000003E 96               [ 7]  597 	sub	a, (hl)
+    0000003F D0               [11]  598 	ret	nc
+                                    599 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:184: cb(sprtIdx);
+    00000040 C5               [11]  600 	push	bc
+    00000041 D5               [11]  601 	push	de
+    00000042 7B               [ 4]  602 	ld	a, e
+    00000043 69               [ 4]  603 	ld	l, c
+    00000044 60               [ 4]  604 	ld	h, b
+    00000045 CDr00r00         [17]  605 	call	___sdcc_call_hl
+    00000048 D1               [10]  606 	pop	de
+    00000049 C1               [10]  607 	pop	bc
+                                    608 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:185: PAWN_SPRT_NEXT();
+    0000004A 1C               [ 4]  609 	inc	e
+                                    610 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:186: g_Pawn_Sprite++;
+    0000004B 21r06r00         [10]  611 	ld	hl, #_g_Pawn_Sprite
+    0000004E 7E               [ 7]  612 	ld	a, (hl)
+    0000004F C6 05            [ 7]  613 	add	a, #0x05
+    00000051 77               [ 7]  614 	ld	(hl), a
+    00000052 30 02            [12]  615 	jr	nc, 00124$
+    00000054 23               [ 6]  616 	inc	hl
+    00000055 34               [11]  617 	inc	(hl)
+    00000056                        618 00124$:
+                                    619 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:181: loop (i, g_Pawn->SpriteNum)
+    00000056 14               [ 4]  620 	inc	d
+                                    621 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:188: }
+    00000057 C3r38r00         [10]  622 	jp	00103$
+                                    623 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:192: void Pawn_Initialize(Pawn* pawn, const Pawn_Sprite* sprtList, u8 sprtNum, u8 sprtID, const Pawn_Action* actList)
+                                    624 ;	---------------------------------
+                                    625 ; Function Pawn_Initialize
+                                    626 ; ---------------------------------
+    0000005A                        627 _Pawn_Initialize::
+                                    628 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:197: Mem_Set(0x00, g_Pawn, sizeof(Pawn));
+    0000005A 22r04r00         [16]  629 	ld	(_g_Pawn), hl
+    0000005D 06 0C            [ 7]  630 	ld	b, #0x0c
+    0000005F 18 03            [12]  631 	jr	00104$
+    00000061                        632 00103$:
+    00000061 36 00            [10]  633 	ld	(hl), #0x00
+    00000063 23               [ 6]  634 	inc	hl
+    00000064                        635 00104$:
+    00000064 36 00            [10]  636 	ld	(hl), #0x00
+    00000066 23               [ 6]  637 	inc	hl
+    00000067 10 F8            [13]  638 	djnz	00103$
+                                    639 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:198: g_Pawn->SpriteList = sprtList;
+    00000069 2Ar04r00         [16]  640 	ld	hl, (_g_Pawn)
+    0000006C 73               [ 7]  641 	ld	(hl), e
+    0000006D 23               [ 6]  642 	inc	hl
+    0000006E 72               [ 7]  643 	ld	(hl), d
+                                    644 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:199: g_Pawn->SpriteNum = sprtNum;
+    0000006F 2Ar04r00         [16]  645 	ld	hl, (_g_Pawn)
+    00000072 23               [ 6]  646 	inc	hl
+    00000073 23               [ 6]  647 	inc	hl
+    00000074 FD 21 02 00      [14]  648 	ld	iy, #2
+    00000078 FD 39            [15]  649 	add	iy, sp
+    0000007A FD 7E 00         [19]  650 	ld	a, 0 (iy)
+    0000007D 77               [ 7]  651 	ld	(hl), a
+                                    652 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:201: g_Pawn->SpriteID = sprtID;
+    0000007E 2Ar04r00         [16]  653 	ld	hl, (_g_Pawn)
+    00000081 23               [ 6]  654 	inc	hl
+    00000082 23               [ 6]  655 	inc	hl
+    00000083 23               [ 6]  656 	inc	hl
+    00000084 FD 7E 01         [19]  657 	ld	a, 1 (iy)
+    00000087 FD 23            [10]  658 	inc	iy
+    00000089 77               [ 7]  659 	ld	(hl), a
+                                    660 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:203: g_Pawn->ActionList = actList;
+    0000008A 2Ar04r00         [16]  661 	ld	hl, (_g_Pawn)
+    0000008D 01 04 00         [10]  662 	ld	bc, #0x0004
+    00000090 09               [11]  663 	add	hl, bc
+    00000091 FD 7E 01         [19]  664 	ld	a, 1 (iy)
+    00000094 FD 23            [10]  665 	inc	iy
+    00000096 77               [ 7]  666 	ld	(hl), a
+    00000097 23               [ 6]  667 	inc	hl
+    00000098 FD 7E 01         [19]  668 	ld	a, 1 (iy)
+    0000009B 77               [ 7]  669 	ld	(hl), a
+                                    670 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:206: Pawn_ForceSetAction(g_Pawn, 0);
+    0000009C AF               [ 4]  671 	xor	a, a
+    0000009D F5               [11]  672 	push	af
+    0000009E 33               [ 6]  673 	inc	sp
+    0000009F 2Ar04r00         [16]  674 	ld	hl, (_g_Pawn)
+    000000A2 CDrE0r00         [17]  675 	call	_Pawn_ForceSetAction
+                                    676 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:209: Pawn_ParseSprite(g_Pawn, PawnSprite_Initialize);
+    000000A5 11r06r00         [10]  677 	ld	de, #_PawnSprite_Initialize
+    000000A8 2Ar04r00         [16]  678 	ld	hl, (_g_Pawn)
+    000000AB CDr1Er00         [17]  679 	call	_Pawn_ParseSprite
+                                    680 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:210: }
+    000000AE E1               [10]  681 	pop	hl
+    000000AF F1               [10]  682 	pop	af
+    000000B0 F1               [10]  683 	pop	af
+    000000B1 E9               [ 4]  684 	jp	(hl)
+                                    685 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:214: void Pawn_SetPosition(Pawn* pawn, PAWN_POS x, PAWN_POS y)
+                                    686 ;	---------------------------------
+                                    687 ; Function Pawn_SetPosition
+                                    688 ; ---------------------------------
+    000000B2                        689 _Pawn_SetPosition::
+    000000B2 EB               [ 4]  690 	ex	de, hl
+                                    691 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:216: pawn->PositionX = x;
+    000000B3 21 06 00         [10]  692 	ld	hl, #0x0006
+    000000B6 19               [11]  693 	add	hl, de
+    000000B7 FD 21 02 00      [14]  694 	ld	iy, #2
+    000000BB FD 39            [15]  695 	add	iy, sp
+    000000BD FD 7E 00         [19]  696 	ld	a, 0 (iy)
+    000000C0 77               [ 7]  697 	ld	(hl), a
+                                    698 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:217: pawn->PositionY = y;
+    000000C1 21 07 00         [10]  699 	ld	hl, #0x0007
+    000000C4 19               [11]  700 	add	hl, de
+    000000C5 FD 7E 01         [19]  701 	ld	a, 1 (iy)
+    000000C8 FD 23            [10]  702 	inc	iy
+    000000CA 77               [ 7]  703 	ld	(hl), a
+                                    704 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:219: pawn->MoveX = 0;
+    000000CB 21 0E 00         [10]  705 	ld	hl, #0x000e
+    000000CE 19               [11]  706 	add	hl, de
+    000000CF 36 00            [10]  707 	ld	(hl), #0x00
+                                    708 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:220: pawn->MoveY = 0;
+    000000D1 21 0F 00         [10]  709 	ld	hl, #0x000f
+    000000D4 19               [11]  710 	add	hl, de
+    000000D5 36 00            [10]  711 	ld	(hl), #0x00
+                                    712 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:222: pawn->Update |= PAWN_UPDATE_POSITION;
+    000000D7 21 0C 00         [10]  713 	ld	hl, #0x000c
+    000000DA 19               [11]  714 	add	hl, de
+    000000DB CB C6            [15]  715 	set	0, (hl)
+                                    716 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:223: }
+    000000DD E1               [10]  717 	pop	hl
+    000000DE F1               [10]  718 	pop	af
+    000000DF E9               [ 4]  719 	jp	(hl)
+                                    720 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:227: void Pawn_ForceSetAction(Pawn* pawn, u8 id)
+                                    721 ;	---------------------------------
+                                    722 ; Function Pawn_ForceSetAction
+                                    723 ; ---------------------------------
+    000000E0                        724 _Pawn_ForceSetAction::
+    000000E0 EB               [ 4]  725 	ex	de, hl
+                                    726 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:229: pawn->ActionId = id;
+    000000E1 21 08 00         [10]  727 	ld	hl, #0x0008
+    000000E4 19               [11]  728 	add	hl, de
+    000000E5 FD 21 02 00      [14]  729 	ld	iy, #2
+    000000E9 FD 39            [15]  730 	add	iy, sp
+    000000EB FD 7E 00         [19]  731 	ld	a, 0 (iy)
+    000000EE 77               [ 7]  732 	ld	(hl), a
+                                    733 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.h:395: inline void Pawn_RestartAction(Game_Pawn* pawn) { pawn->AnimTimer = 0; pawn->AnimStep = 0; pawn->Update |= PAWN_UPDATE_PATTERN; }
+    000000EF 21 0B 00         [10]  734 	ld	hl, #0x000b
+    000000F2 19               [11]  735 	add	hl, de
+    000000F3 36 00            [10]  736 	ld	(hl), #0x00
+    000000F5 21 0A 00         [10]  737 	ld	hl, #0x000a
+    000000F8 19               [11]  738 	add	hl, de
+    000000F9 36 00            [10]  739 	ld	(hl), #0x00
+    000000FB 21 0C 00         [10]  740 	ld	hl, #0x000c
+    000000FE 19               [11]  741 	add	hl, de
+    000000FF CB CE            [15]  742 	set	1, (hl)
+    00000101 7E               [ 7]  743 	ld	a, (hl)
+                                    744 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:230: Pawn_RestartAction(pawn);
+                                    745 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:231: }
+    00000102 E1               [10]  746 	pop	hl
+    00000103 33               [ 6]  747 	inc	sp
+    00000104 E9               [ 4]  748 	jp	(hl)
+                                    749 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:235: void Pawn_SetAction(Pawn* pawn, u8 id)
+                                    750 ;	---------------------------------
+                                    751 ; Function Pawn_SetAction
+                                    752 ; ---------------------------------
+    00000105                        753 _Pawn_SetAction::
+    00000105 DD E5            [15]  754 	push	ix
+    00000107 DD 21 00 00      [14]  755 	ld	ix,	#0
+    0000010B DD 39            [15]  756 	add	ix, sp
+    0000010D 3B               [ 6]  757 	dec	sp
+    0000010E EB               [ 4]  758 	ex	de, hl
+                                    759 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:237: if ((pawn->ActionList[pawn->ActionId].Interrupt == 1) && (pawn->ActionId != id))
+    0000010F 4B               [ 4]  760 	ld	c, e
+    00000110 42               [ 4]  761 	ld	b, d
+    00000111 21 04 00         [10]  762 	ld	hl, #4
+    00000114 09               [11]  763 	add	hl, bc
+    00000115 4E               [ 7]  764 	ld	c, (hl)
+    00000116 23               [ 6]  765 	inc	hl
+    00000117 46               [ 7]  766 	ld	b, (hl)
+    00000118 D5               [11]  767 	push	de
+    00000119 FD E1            [14]  768 	pop	iy
+    0000011B FD 7E 08         [19]  769 	ld	a, 8 (iy)
+    0000011E DD 77 FF         [19]  770 	ld	-1 (ix), a
+    00000121 D5               [11]  771 	push	de
+    00000122 5F               [ 4]  772 	ld	e, a
+    00000123 16 00            [ 7]  773 	ld	d, #0x00
+    00000125 6B               [ 4]  774 	ld	l, e
+    00000126 62               [ 4]  775 	ld	h, d
+    00000127 29               [11]  776 	add	hl, hl
+    00000128 29               [11]  777 	add	hl, hl
+    00000129 19               [11]  778 	add	hl, de
+    0000012A D1               [10]  779 	pop	de
+    0000012B 09               [11]  780 	add	hl, bc
+    0000012C 01 04 00         [10]  781 	ld	bc, #0x0004
+    0000012F 09               [11]  782 	add	hl, bc
+    00000130 4E               [ 7]  783 	ld	c, (hl)
+    00000131 0D               [ 4]  784 	dec	c
+    00000132 20 11            [12]  785 	jr	nz, 00104$
+    00000134 DD 7E 04         [19]  786 	ld	a, 4 (ix)
+    00000137 DD 96 FF         [19]  787 	sub	a, -1 (ix)
+    0000013A 28 09            [12]  788 	jr	z, 00104$
+                                    789 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:238: Pawn_ForceSetAction(pawn, id);
+    0000013C DD 7E 04         [19]  790 	ld	a, 4 (ix)
+    0000013F F5               [11]  791 	push	af
+    00000140 33               [ 6]  792 	inc	sp
+    00000141 EB               [ 4]  793 	ex	de, hl
+    00000142 CDrE0r00         [17]  794 	call	_Pawn_ForceSetAction
+    00000145                        795 00104$:
+                                    796 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:239: }
+    00000145 33               [ 6]  797 	inc	sp
+    00000146 DD E1            [14]  798 	pop	ix
+    00000148 E1               [10]  799 	pop	hl
+    00000149 33               [ 6]  800 	inc	sp
+    0000014A E9               [ 4]  801 	jp	(hl)
+                                    802 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:243: void Pawn_SetEnable(Pawn* pawn, bool enable)
+                                    803 ;	---------------------------------
+                                    804 ; Function Pawn_SetEnable
+                                    805 ; ---------------------------------
+    0000014B                        806 _Pawn_SetEnable::
+                                    807 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:248: g_Pawn->Update &= ~PAWN_UPDATE_DISABLE;
+    0000014B 22r04r00         [16]  808 	ld	(_g_Pawn), hl
+    0000014E 01 0C 00         [10]  809 	ld	bc, #0x000c
+    00000151 09               [11]  810 	add	hl, bc
+    00000152 4E               [ 7]  811 	ld	c, (hl)
+                                    812 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:246: if (enable)
+    00000153 FD 21 02 00      [14]  813 	ld	iy, #2
+    00000157 FD 39            [15]  814 	add	iy, sp
+    00000159 FD 7E 00         [19]  815 	ld	a, 0 (iy)
+    0000015C B7               [ 4]  816 	or	a, a
+    0000015D 28 1A            [12]  817 	jr	z, 00102$
+                                    818 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:248: g_Pawn->Update &= ~PAWN_UPDATE_DISABLE;
+    0000015F CB B9            [ 8]  819 	res	7, c
+    00000161 71               [ 7]  820 	ld	(hl), c
+    00000162 2Ar04r00         [16]  821 	ld	hl, (_g_Pawn)
+    00000165 01 0C 00         [10]  822 	ld	bc, #0x000c
+    00000168 09               [11]  823 	add	hl, bc
+                                    824 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:249: g_Pawn->Update |= (PAWN_UPDATE_PATTERN | PAWN_UPDATE_POSITION);
+    00000169 7E               [ 7]  825 	ld	a, (hl)
+    0000016A F6 03            [ 7]  826 	or	a, #0x03
+    0000016C 77               [ 7]  827 	ld	(hl), a
+                                    828 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:251: Pawn_ParseSprite(g_Pawn, PawnSprite_Enable);
+    0000016D 11r00r00         [10]  829 	ld	de, #_PawnSprite_Enable
+    00000170 2Ar04r00         [16]  830 	ld	hl, (_g_Pawn)
+    00000173 CDr1Er00         [17]  831 	call	_Pawn_ParseSprite
+    00000176 C3r85r01         [10]  832 	jp	00104$
+    00000179                        833 00102$:
+                                    834 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:255: g_Pawn->Update |= PAWN_UPDATE_DISABLE;
+    00000179 CB F9            [ 8]  835 	set	7, c
+    0000017B 71               [ 7]  836 	ld	(hl), c
+                                    837 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:257: Pawn_ParseSprite(g_Pawn, PawnSprite_Disable);
+    0000017C 11r01r00         [10]  838 	ld	de, #_PawnSprite_Disable
+    0000017F 2Ar04r00         [16]  839 	ld	hl, (_g_Pawn)
+    00000182 CDr1Er00         [17]  840 	call	_Pawn_ParseSprite
+    00000185                        841 00104$:
+                                    842 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:259: }
+    00000185 E1               [10]  843 	pop	hl
+    00000186 33               [ 6]  844 	inc	sp
+    00000187 E9               [ 4]  845 	jp	(hl)
+                                    846 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:263: void Pawn_UpdateAnimation()
+                                    847 ;	---------------------------------
+                                    848 ; Function Pawn_UpdateAnimation
+                                    849 ; ---------------------------------
+    00000188                        850 _Pawn_UpdateAnimation::
+    00000188 DD E5            [15]  851 	push	ix
+    0000018A DD 21 00 00      [14]  852 	ld	ix,	#0
+    0000018E DD 39            [15]  853 	add	ix, sp
+    00000190 21 F5 FF         [10]  854 	ld	hl, #-11
+    00000193 39               [11]  855 	add	hl, sp
+    00000194 F9               [ 6]  856 	ld	sp, hl
+                                    857 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:266: const Pawn_Action* act = &g_Pawn->ActionList[g_Pawn->ActionId];
+    00000195 2Ar04r00         [16]  858 	ld	hl, (_g_Pawn)
+    00000198 DD 75 FE         [19]  859 	ld	-2 (ix), l
+    0000019B DD 74 FF         [19]  860 	ld	-1 (ix), h
+    0000019E DD 7E FE         [19]  861 	ld	a, -2 (ix)
+    000001A1 DD 77 FC         [19]  862 	ld	-4 (ix), a
+    000001A4 DD 7E FF         [19]  863 	ld	a, -1 (ix)
+    000001A7 DD 77 FD         [19]  864 	ld	-3 (ix), a
+    000001AA DD 6E FC         [19]  865 	ld	l, -4 (ix)
+    000001AD DD 66 FD         [19]  866 	ld	h, -3 (ix)
+    000001B0 11 04 00         [10]  867 	ld	de, #0x0004
+    000001B3 19               [11]  868 	add	hl, de
+    000001B4 7E               [ 7]  869 	ld	a, (hl)
+    000001B5 DD 77 FA         [19]  870 	ld	-6 (ix), a
+    000001B8 23               [ 6]  871 	inc	hl
+    000001B9 7E               [ 7]  872 	ld	a, (hl)
+    000001BA DD 77 FB         [19]  873 	ld	-5 (ix), a
+    000001BD DD 7E FE         [19]  874 	ld	a, -2 (ix)
+    000001C0 DD 77 FC         [19]  875 	ld	-4 (ix), a
+    000001C3 DD 7E FF         [19]  876 	ld	a, -1 (ix)
+    000001C6 DD 77 FD         [19]  877 	ld	-3 (ix), a
+    000001C9 DD 6E FC         [19]  878 	ld	l, -4 (ix)
+    000001CC DD 66 FD         [19]  879 	ld	h, -3 (ix)
+    000001CF 11 08 00         [10]  880 	ld	de, #0x0008
+    000001D2 19               [11]  881 	add	hl, de
+    000001D3 7E               [ 7]  882 	ld	a, (hl)
+    000001D4 DD 77 FD         [19]  883 	ld	-3 (ix), a
+    000001D7 4F               [ 4]  884 	ld	c, a
+    000001D8 06 00            [ 7]  885 	ld	b, #0x00
+    000001DA 69               [ 4]  886 	ld	l, c
+    000001DB 60               [ 4]  887 	ld	h, b
+    000001DC 29               [11]  888 	add	hl, hl
+    000001DD 29               [11]  889 	add	hl, hl
+    000001DE 09               [11]  890 	add	hl, bc
+    000001DF DD 75 FC         [19]  891 	ld	-4 (ix), l
+    000001E2 DD 74 FD         [19]  892 	ld	-3 (ix), h
+    000001E5 EB               [ 4]  893 	ex	de, hl
+    000001E6 DD 6E FA         [19]  894 	ld	l, -6 (ix)
+    000001E9 DD 66 FB         [19]  895 	ld	h, -5 (ix)
+    000001EC 19               [11]  896 	add	hl, de
+    000001ED E3               [19]  897 	ex	(sp), hl
+                                    898 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:269: if (g_Pawn->AnimTimer >= act->FrameList[g_Pawn->AnimStep].Duration)
+    000001EE 11 0B 00         [10]  899 	ld	de, #0x000b
+    000001F1 DD 6E FE         [19]  900 	ld	l, -2 (ix)
+    000001F4 DD 66 FF         [19]  901 	ld	h, -1 (ix)
+    000001F7 19               [11]  902 	add	hl, de
+    000001F8 DD 75 F7         [19]  903 	ld	-9 (ix), l
+    000001FB DD 74 F8         [19]  904 	ld	-8 (ix), h
+    000001FE C1               [10]  905 	pop	bc
+    000001FF E1               [10]  906 	pop	hl
+    00000200 E5               [11]  907 	push	hl
+    00000201 C5               [11]  908 	push	bc
+    00000202 7E               [ 7]  909 	ld	a, (hl)
+    00000203 DD 77 F9         [19]  910 	ld	-7 (ix), a
+    00000206 E1               [10]  911 	pop	hl
+    00000207 E5               [11]  912 	push	hl
+    00000208 7E               [ 7]  913 	ld	a, (hl)
+    00000209 DD 77 FA         [19]  914 	ld	-6 (ix), a
+    0000020C 23               [ 6]  915 	inc	hl
+    0000020D 7E               [ 7]  916 	ld	a, (hl)
+    0000020E DD 77 FB         [19]  917 	ld	-5 (ix), a
+    00000211 DD 6E FE         [19]  918 	ld	l, -2 (ix)
+    00000214 DD 66 FF         [19]  919 	ld	h, -1 (ix)
+    00000217 11 0A 00         [10]  920 	ld	de, #0x000a
+    0000021A 19               [11]  921 	add	hl, de
+    0000021B 7E               [ 7]  922 	ld	a, (hl)
+    0000021C DD 77 FF         [19]  923 	ld	-1 (ix), a
+    0000021F DD 77 FE         [19]  924 	ld	-2 (ix), a
+    00000222 DD 36 FF 00      [19]  925 	ld	-1 (ix), #0x00
+    00000226 DD 7E FE         [19]  926 	ld	a, -2 (ix)
+    00000229 DD 77 FC         [19]  927 	ld	-4 (ix), a
+    0000022C DD 36 FD 00      [19]  928 	ld	-3 (ix), #0x00
+    00000230 06 02            [ 7]  929 	ld	b, #0x02
+    00000232                        930 00144$:
+    00000232 DD CB FC 26      [23]  931 	sla	-4 (ix)
+    00000236 DD CB FD 16      [23]  932 	rl	-3 (ix)
+    0000023A 10 F6            [13]  933 	djnz	00144$
+    0000023C DD 5E FA         [19]  934 	ld	e, -6 (ix)
+    0000023F DD 56 FB         [19]  935 	ld	d, -5 (ix)
+    00000242 DD 6E FC         [19]  936 	ld	l, -4 (ix)
+    00000245 DD 66 FD         [19]  937 	ld	h, -3 (ix)
+    00000248 19               [11]  938 	add	hl, de
+    00000249 DD 75 FE         [19]  939 	ld	-2 (ix), l
+    0000024C DD 74 FF         [19]  940 	ld	-1 (ix), h
+    0000024F 23               [ 6]  941 	inc	hl
+    00000250 DD 7E F9         [19]  942 	ld	a,-7 (ix)
+    00000253 96               [ 7]  943 	sub	a,(hl)
+    00000254 38 53            [12]  944 	jr	c, 00102$
+                                    945 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:271: g_Pawn->AnimTimer = 0;
+    00000256 DD 6E F7         [19]  946 	ld	l, -9 (ix)
+    00000259 DD 66 F8         [19]  947 	ld	h, -8 (ix)
+    0000025C 36 00            [10]  948 	ld	(hl), #0x00
+                                    949 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:272: g_Pawn->AnimStep++;
+    0000025E 2Ar04r00         [16]  950 	ld	hl, (_g_Pawn)
+    00000261 DD 75 FB         [19]  951 	ld	-5 (ix), l
+    00000264 DD 74 FC         [19]  952 	ld	-4 (ix), h
+    00000267 11 0A 00         [10]  953 	ld	de, #0x000a
+    0000026A DD 6E FB         [19]  954 	ld	l, -5 (ix)
+    0000026D DD 66 FC         [19]  955 	ld	h, -4 (ix)
+    00000270 19               [11]  956 	add	hl, de
+    00000271 DD 75 FD         [19]  957 	ld	-3 (ix), l
+    00000274 DD 74 FE         [19]  958 	ld	-2 (ix), h
+    00000277 7E               [ 7]  959 	ld	a, (hl)
+    00000278 3C               [ 4]  960 	inc	a
+    00000279 DD 77 FF         [19]  961 	ld	-1 (ix), a
+    0000027C DD 6E FD         [19]  962 	ld	l, -3 (ix)
+    0000027F DD 66 FE         [19]  963 	ld	h, -2 (ix)
+    00000282 DD 7E FF         [19]  964 	ld	a, -1 (ix)
+    00000285 77               [ 7]  965 	ld	(hl), a
+                                    966 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:266: const Pawn_Action* act = &g_Pawn->ActionList[g_Pawn->ActionId];
+    00000286 2Ar04r00         [16]  967 	ld	hl, (_g_Pawn)
+    00000289 DD 75 FC         [19]  968 	ld	-4 (ix), l
+    0000028C DD 74 FD         [19]  969 	ld	-3 (ix), h
+                                    970 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:273: g_Pawn->Update |= PAWN_UPDATE_PATTERN;
+    0000028F 11 0C 00         [10]  971 	ld	de, #0x000c
+    00000292 DD 6E FC         [19]  972 	ld	l, -4 (ix)
+    00000295 DD 66 FD         [19]  973 	ld	h, -3 (ix)
+    00000298 19               [11]  974 	add	hl, de
+    00000299 DD 75 FE         [19]  975 	ld	-2 (ix), l
+    0000029C DD 74 FF         [19]  976 	ld	-1 (ix), h
+    0000029F 7E               [ 7]  977 	ld	a, (hl)
+    000002A0 CB CF            [ 8]  978 	set	1, a
+    000002A2 DD 6E FE         [19]  979 	ld	l, -2 (ix)
+    000002A5 DD 66 FF         [19]  980 	ld	h, -1 (ix)
+    000002A8 77               [ 7]  981 	ld	(hl), a
+    000002A9                        982 00102$:
+                                    983 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:266: const Pawn_Action* act = &g_Pawn->ActionList[g_Pawn->ActionId];
+    000002A9 2Ar04r00         [16]  984 	ld	hl, (_g_Pawn)
+    000002AC DD 75 FB         [19]  985 	ld	-5 (ix), l
+    000002AF DD 74 FC         [19]  986 	ld	-4 (ix), h
+                                    987 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:277: if (g_Pawn->AnimStep >= act->FrameNum)
+    000002B2 DD 7E FB         [19]  988 	ld	a, -5 (ix)
+    000002B5 DD 77 FE         [19]  989 	ld	-2 (ix), a
+    000002B8 DD 7E FC         [19]  990 	ld	a, -4 (ix)
+    000002BB DD 77 FF         [19]  991 	ld	-1 (ix), a
+    000002BE DD 6E FE         [19]  992 	ld	l, -2 (ix)
+    000002C1 DD 66 FF         [19]  993 	ld	h, -1 (ix)
+    000002C4 11 0A 00         [10]  994 	ld	de, #0x000a
+    000002C7 19               [11]  995 	add	hl, de
+    000002C8 7E               [ 7]  996 	ld	a, (hl)
+    000002C9 DD 77 FD         [19]  997 	ld	-3 (ix), a
+    000002CC DD 7E F5         [19]  998 	ld	a, -11 (ix)
+    000002CF DD 77 FE         [19]  999 	ld	-2 (ix), a
+    000002D2 DD 7E F6         [19] 1000 	ld	a, -10 (ix)
+    000002D5 DD 77 FF         [19] 1001 	ld	-1 (ix), a
+    000002D8 DD 6E FE         [19] 1002 	ld	l, -2 (ix)
+    000002DB DD 66 FF         [19] 1003 	ld	h, -1 (ix)
+    000002DE 23               [ 6] 1004 	inc	hl
+    000002DF 23               [ 6] 1005 	inc	hl
+    000002E0 DD 7E FD         [19] 1006 	ld	a,-3 (ix)
+    000002E3 96               [ 7] 1007 	sub	a,(hl)
+    000002E4 38 75            [12] 1008 	jr	c, 00107$
+                                   1009 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:279: if (act->Loop) // restart action
+    000002E6 E1               [10] 1010 	pop	hl
+    000002E7 E5               [11] 1011 	push	hl
+    000002E8 23               [ 6] 1012 	inc	hl
+    000002E9 23               [ 6] 1013 	inc	hl
+    000002EA 23               [ 6] 1014 	inc	hl
+    000002EB 7E               [ 7] 1015 	ld	a, (hl)
+    000002EC B7               [ 4] 1016 	or	a, a
+    000002ED 28 53            [12] 1017 	jr	z, 00104$
+                                   1018 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:281: g_Pawn->AnimTimer = 0;
+    000002EF 11 0B 00         [10] 1019 	ld	de, #0x000b
+    000002F2 DD 6E FB         [19] 1020 	ld	l, -5 (ix)
+    000002F5 DD 66 FC         [19] 1021 	ld	h, -4 (ix)
+    000002F8 19               [11] 1022 	add	hl, de
+    000002F9 DD 75 FE         [19] 1023 	ld	-2 (ix), l
+    000002FC DD 74 FF         [19] 1024 	ld	-1 (ix), h
+    000002FF 36 00            [10] 1025 	ld	(hl), #0x00
+                                   1026 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:282: g_Pawn->AnimStep = 0;
+    00000301 2Ar04r00         [16] 1027 	ld	hl, (_g_Pawn)
+    00000304 DD 75 FC         [19] 1028 	ld	-4 (ix), l
+    00000307 DD 74 FD         [19] 1029 	ld	-3 (ix), h
+    0000030A 11 0A 00         [10] 1030 	ld	de, #0x000a
+    0000030D DD 6E FC         [19] 1031 	ld	l, -4 (ix)
+    00000310 DD 66 FD         [19] 1032 	ld	h, -3 (ix)
+    00000313 19               [11] 1033 	add	hl, de
+    00000314 DD 75 FE         [19] 1034 	ld	-2 (ix), l
+    00000317 DD 74 FF         [19] 1035 	ld	-1 (ix), h
+    0000031A 36 00            [10] 1036 	ld	(hl), #0x00
+                                   1037 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:266: const Pawn_Action* act = &g_Pawn->ActionList[g_Pawn->ActionId];
+    0000031C 2Ar04r00         [16] 1038 	ld	hl, (_g_Pawn)
+    0000031F DD 75 FC         [19] 1039 	ld	-4 (ix), l
+    00000322 DD 74 FD         [19] 1040 	ld	-3 (ix), h
+                                   1041 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:273: g_Pawn->Update |= PAWN_UPDATE_PATTERN;
+    00000325 11 0C 00         [10] 1042 	ld	de, #0x000c
+    00000328 DD 6E FC         [19] 1043 	ld	l, -4 (ix)
+    0000032B DD 66 FD         [19] 1044 	ld	h, -3 (ix)
+    0000032E 19               [11] 1045 	add	hl, de
+                                   1046 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:283: g_Pawn->Update |= PAWN_UPDATE_PATTERN;
+    0000032F DD 75 FE         [19] 1047 	ld	-2 (ix), l
+    00000332 DD 74 FF         [19] 1048 	ld	-1 (ix), h
+    00000335 7E               [ 7] 1049 	ld	a, (hl)
+    00000336 CB CF            [ 8] 1050 	set	1, a
+    00000338 DD 6E FE         [19] 1051 	ld	l, -2 (ix)
+    0000033B DD 66 FF         [19] 1052 	ld	h, -1 (ix)
+    0000033E 77               [ 7] 1053 	ld	(hl), a
+    0000033F C3r5Br03         [10] 1054 	jp	00107$
+    00000342                       1055 00104$:
+                                   1056 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:287: Pawn_ForceSetAction(g_Pawn, 0);
+    00000342 AF               [ 4] 1057 	xor	a, a
+    00000343 F5               [11] 1058 	push	af
+    00000344 33               [ 6] 1059 	inc	sp
+    00000345 2Ar04r00         [16] 1060 	ld	hl, (_g_Pawn)
+    00000348 CDrE0r00         [17] 1061 	call	_Pawn_ForceSetAction
+                                   1062 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:288: act = &g_Pawn->ActionList[0];
+    0000034B FD 2Ar04r00      [20] 1063 	ld	iy, (_g_Pawn)
+    0000034F FD 7E 04         [19] 1064 	ld	a, 4 (iy)
+    00000352 DD 77 F5         [19] 1065 	ld	-11 (ix), a
+    00000355 FD 7E 05         [19] 1066 	ld	a, 5 (iy)
+    00000358 DD 77 F6         [19] 1067 	ld	-10 (ix), a
+    0000035B                       1068 00107$:
+                                   1069 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:293: const Pawn_Frame* frame = &act->FrameList[g_Pawn->AnimStep];
+    0000035B E1               [10] 1070 	pop	hl
+    0000035C E5               [11] 1071 	push	hl
+    0000035D 4E               [ 7] 1072 	ld	c, (hl)
+    0000035E 23               [ 6] 1073 	inc	hl
+    0000035F 46               [ 7] 1074 	ld	b, (hl)
+    00000360 FD 2Ar04r00      [20] 1075 	ld	iy, (_g_Pawn)
+    00000364 FD 6E 0A         [19] 1076 	ld	l, 10 (iy)
+    00000367 26 00            [ 7] 1077 	ld	h, #0x00
+    00000369 29               [11] 1078 	add	hl, hl
+    0000036A 29               [11] 1079 	add	hl, hl
+    0000036B 09               [11] 1080 	add	hl, bc
+                                   1081 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:294: if (frame->Event != NULL)
+    0000036C 5D               [ 4] 1082 	ld	e, l
+    0000036D 54               [ 4] 1083 	ld	d, h
+    0000036E 23               [ 6] 1084 	inc	hl
+    0000036F 23               [ 6] 1085 	inc	hl
+    00000370 7E               [ 7] 1086 	ld	a, (hl)
+    00000371 23               [ 6] 1087 	inc	hl
+    00000372 66               [ 7] 1088 	ld	h, (hl)
+    00000373 6F               [ 4] 1089 	ld	l, a
+    00000374 B4               [ 4] 1090 	or	a, h
+    00000375 28 05            [12] 1091 	jr	z, 00109$
+                                   1092 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:295: frame->Event();
+    00000377 D5               [11] 1093 	push	de
+    00000378 CDr00r00         [17] 1094 	call	___sdcc_call_hl
+    0000037B D1               [10] 1095 	pop	de
+    0000037C                       1096 00109$:
+                                   1097 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:298: g_Pawn->AnimFrame = frame->Id;
+    0000037C 2Ar04r00         [16] 1098 	ld	hl, (_g_Pawn)
+    0000037F 01 09 00         [10] 1099 	ld	bc, #0x0009
+    00000382 09               [11] 1100 	add	hl, bc
+    00000383 1A               [ 7] 1101 	ld	a, (de)
+    00000384 77               [ 7] 1102 	ld	(hl), a
+                                   1103 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:299: g_Pawn->AnimTimer++;
+    00000385 2Ar04r00         [16] 1104 	ld	hl, (_g_Pawn)
+    00000388 01 0B 00         [10] 1105 	ld	bc, #0x000b
+    0000038B 09               [11] 1106 	add	hl, bc
+    0000038C 34               [11] 1107 	inc	(hl)
+                                   1108 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:300: g_Pawn->Counter++;
+    0000038D 2Ar04r00         [16] 1109 	ld	hl, (_g_Pawn)
+    00000390 01 0D 00         [10] 1110 	ld	bc, #0x000d
+    00000393 09               [11] 1111 	add	hl, bc
+    00000394 34               [11] 1112 	inc	(hl)
+                                   1113 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:301: }
+    00000395 DD F9            [10] 1114 	ld	sp, ix
+    00000397 DD E1            [14] 1115 	pop	ix
+    00000399 C9               [10] 1116 	ret
+                                   1117 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:306: void Pawn_UpdatePhysics()
+                                   1118 ;	---------------------------------
+                                   1119 ; Function Pawn_UpdatePhysics
+                                   1120 ; ---------------------------------
+    0000039A                       1121 _Pawn_UpdatePhysics::
+    0000039A DD E5            [15] 1122 	push	ix
+    0000039C DD 21 00 00      [14] 1123 	ld	ix,	#0
+    000003A0 DD 39            [15] 1124 	add	ix, sp
+    000003A2 21 FA FF         [10] 1125 	ld	hl, #-6
+    000003A5 39               [11] 1126 	add	hl, sp
+    000003A6 F9               [ 6] 1127 	ld	sp, hl
+                                   1128 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:309: PAWN_POS targetX = g_Pawn->PositionX + g_Pawn->MoveX;
+    000003A7 2Ar04r00         [16] 1129 	ld	hl, (_g_Pawn)
+    000003AA E3               [19] 1130 	ex	(sp), hl
+    000003AB C1               [10] 1131 	pop	bc
+    000003AC C5               [11] 1132 	push	bc
+    000003AD 21 06 00         [10] 1133 	ld	hl, #6
+    000003B0 09               [11] 1134 	add	hl, bc
+    000003B1 4E               [ 7] 1135 	ld	c, (hl)
+    000003B2 D1               [10] 1136 	pop	de
+    000003B3 D5               [11] 1137 	push	de
+    000003B4 21 0E 00         [10] 1138 	ld	hl, #14
+    000003B7 19               [11] 1139 	add	hl, de
+    000003B8 7E               [ 7] 1140 	ld	a, (hl)
+    000003B9 81               [ 4] 1141 	add	a, c
+    000003BA DD 77 FC         [19] 1142 	ld	-4 (ix), a
+                                   1143 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:310: PAWN_POS targetY = g_Pawn->PositionY + g_Pawn->MoveY;
+    000003BD C1               [10] 1144 	pop	bc
+    000003BE C5               [11] 1145 	push	bc
+    000003BF 21 07 00         [10] 1146 	ld	hl, #7
+    000003C2 09               [11] 1147 	add	hl, bc
+    000003C3 7E               [ 7] 1148 	ld	a, (hl)
+    000003C4 DD 77 FE         [19] 1149 	ld	-2 (ix), a
+    000003C7 C1               [10] 1150 	pop	bc
+    000003C8 C5               [11] 1151 	push	bc
+    000003C9 21 0F 00         [10] 1152 	ld	hl, #15
+    000003CC 09               [11] 1153 	add	hl, bc
+    000003CD 7E               [ 7] 1154 	ld	a, (hl)
+    000003CE DD 77 FF         [19] 1155 	ld	-1 (ix), a
+    000003D1 DD 7E FE         [19] 1156 	ld	a, -2 (ix)
+    000003D4 DD 86 FF         [19] 1157 	add	a, -1 (ix)
+    000003D7 DD 77 FD         [19] 1158 	ld	-3 (ix), a
+                                   1159 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:318: if (g_Pawn->MoveY > 0)
+    000003DA AF               [ 4] 1160 	xor	a, a
+    000003DB DD 96 FF         [19] 1161 	sub	a, -1 (ix)
+    000003DE E2rE3r03         [10] 1162 	jp	po, 00371$
+    000003E1 EE 80            [ 7] 1163 	xor	a, #0x80
+    000003E3                       1164 00371$:
+    000003E3 F2r4Ar05         [10] 1165 	jp	p, 00129$
+                                   1166 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:321: if (targetY + GET_BOUND_Y() >= PAWN_BORDER_MAX_Y)
+    000003E6 DD 4E FD         [19] 1167 	ld	c, -3 (ix)
+    000003E9 06 00            [ 7] 1168 	ld	b, #0x00
+    000003EB D1               [10] 1169 	pop	de
+    000003EC D5               [11] 1170 	push	de
+    000003ED 21 11 00         [10] 1171 	ld	hl, #17
+    000003F0 19               [11] 1172 	add	hl, de
+    000003F1 6E               [ 7] 1173 	ld	l, (hl)
+    000003F2 26 00            [ 7] 1174 	ld	h, #0x00
+    000003F4 09               [11] 1175 	add	hl, bc
+    000003F5 7D               [ 4] 1176 	ld	a, l
+    000003F6 D6 BF            [ 7] 1177 	sub	a, #0xbf
+    000003F8 7C               [ 4] 1178 	ld	a, h
+    000003F9 DE 00            [ 7] 1179 	sbc	a, #0x00
+    000003FB 38 16            [12] 1180 	jr	c, 00110$
+                                   1181 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:324: g_Pawn->PhysicsCB(PAWN_PHYSICS_BORDER_DOWN, 0);
+    000003FD C1               [10] 1182 	pop	bc
+    000003FE C5               [11] 1183 	push	bc
+    000003FF 21 13 00         [10] 1184 	ld	hl, #19
+    00000402 09               [11] 1185 	add	hl, bc
+    00000403 4E               [ 7] 1186 	ld	c, (hl)
+    00000404 23               [ 6] 1187 	inc	hl
+    00000405 46               [ 7] 1188 	ld	b, (hl)
+    00000406 2E 00            [ 7] 1189 	ld	l, #0x00
+    00000408 3E 05            [ 7] 1190 	ld	a, #0x05
+    0000040A C5               [11] 1191 	push	bc
+    0000040B FD E1            [14] 1192 	pop	iy
+    0000040D CDr00r00         [17] 1193 	call	___sdcc_call_iy
+    00000410 C3rECr06         [10] 1194 	jp	00131$
+    00000413                       1195 00110$:
+                                   1196 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:333: g_Pawn_CellY = (targetY + GET_BOUND_Y()) / 8;
+    00000413 7D               [ 4] 1197 	ld	a, l
+    00000414 CB 2C            [ 8] 1198 	sra	h
+    00000416 CB 1F            [ 8] 1199 	rr	a
+    00000418 CB 2C            [ 8] 1200 	sra	h
+    0000041A CB 1F            [ 8] 1201 	rr	a
+    0000041C CB 2C            [ 8] 1202 	sra	h
+    0000041E CB 1F            [ 8] 1203 	rr	a
+    00000420 32r09r00         [13] 1204 	ld	(_g_Pawn_CellY), a
+                                   1205 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:335: u8 lastCell = 0xFF;
+    00000423 DD 36 FF FF      [19] 1206 	ld	-1 (ix), #0xff
+                                   1207 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:351: g_Pawn_CellX = (targetX + (GET_BOUND_X() / 4)) / 8;
+    00000427 DD 4E FC         [19] 1208 	ld	c, -4 (ix)
+    0000042A 06 00            [ 7] 1209 	ld	b, #0x00
+    0000042C D1               [10] 1210 	pop	de
+    0000042D D5               [11] 1211 	push	de
+    0000042E 21 10 00         [10] 1212 	ld	hl, #16
+    00000431 19               [11] 1213 	add	hl, de
+    00000432 6E               [ 7] 1214 	ld	l, (hl)
+    00000433 26 00            [ 7] 1215 	ld	h, #0x00
+    00000435 CB 2C            [ 8] 1216 	sra	h
+    00000437 CB 1D            [ 8] 1217 	rr	l
+    00000439 CB 2C            [ 8] 1218 	sra	h
+    0000043B CB 1D            [ 8] 1219 	rr	l
+    0000043D 09               [11] 1220 	add	hl, bc
+    0000043E 7D               [ 4] 1221 	ld	a, l
+    0000043F CB 2C            [ 8] 1222 	sra	h
+    00000441 CB 1F            [ 8] 1223 	rr	a
+    00000443 CB 2C            [ 8] 1224 	sra	h
+    00000445 CB 1F            [ 8] 1225 	rr	a
+    00000447 CB 2C            [ 8] 1226 	sra	h
+    00000449 CB 1F            [ 8] 1227 	rr	a
+                                   1228 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:352: if (g_Pawn_CellX != lastCell)
+    0000044B 32r08r00         [13] 1229 	ld	(_g_Pawn_CellX), a
+    0000044E 3C               [ 4] 1230 	inc	a
+    0000044F 28 62            [12] 1231 	jr	z, 00104$
+                                   1232 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:354: lastCell = g_Pawn_CellX;
+    00000451 3Ar08r00         [13] 1233 	ld	a, (_g_Pawn_CellX)
+    00000454 6F               [ 4] 1234 	ld	l, a
+    00000455 DD 75 FF         [19] 1235 	ld	-1 (ix), l
+                                   1236 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:355: u8 tile = PAWN_GET_TILE(g_Pawn_CellX, g_Pawn_CellY);
+    00000458 3Ar09r00         [13] 1237 	ld	a, (_g_Pawn_CellY+0)
+    0000045B 5F               [ 4] 1238 	ld	e, a
+    0000045C 16 00            [ 7] 1239 	ld	d, #0x00
+    0000045E EB               [ 4] 1240 	ex	de, hl
+    0000045F 29               [11] 1241 	add	hl, hl
+    00000460 29               [11] 1242 	add	hl, hl
+    00000461 29               [11] 1243 	add	hl, hl
+    00000462 29               [11] 1244 	add	hl, hl
+    00000463 29               [11] 1245 	add	hl, hl
+    00000464 EB               [ 4] 1246 	ex	de, hl
+    00000465 FD 2Ar00r00      [20] 1247 	ld	iy, (_g_ScreenLayoutLow)
+    00000469 FD 19            [15] 1248 	add	iy, de
+    0000046B 26 00            [ 7] 1249 	ld	h, #0x00
+    0000046D FD E5            [15] 1250 	push	iy
+    0000046F D1               [10] 1251 	pop	de
+    00000470 19               [11] 1252 	add	hl, de
+    00000471 CDr00r00         [17] 1253 	call	_VDP_Peek_16K
+    00000474 5F               [ 4] 1254 	ld	e, a
+                                   1255 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:356: if (g_Pawn->CollisionCB(tile))
+    00000475 FD 2Ar04r00      [20] 1256 	ld	iy, (_g_Pawn)
+    00000479 FD 6E 15         [19] 1257 	ld	l, 21 (iy)
+    0000047C FD 66 16         [19] 1258 	ld	h, 22 (iy)
+    0000047F C5               [11] 1259 	push	bc
+    00000480 D5               [11] 1260 	push	de
+    00000481 7B               [ 4] 1261 	ld	a, e
+    00000482 CDr00r00         [17] 1262 	call	___sdcc_call_hl
+    00000485 D1               [10] 1263 	pop	de
+    00000486 C1               [10] 1264 	pop	bc
+                                   1265 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:309: PAWN_POS targetX = g_Pawn->PositionX + g_Pawn->MoveX;
+    00000487 2Ar04r00         [16] 1266 	ld	hl, (_g_Pawn)
+    0000048A E3               [19] 1267 	ex	(sp), hl
+                                   1268 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:356: if (g_Pawn->CollisionCB(tile))
+    0000048B B7               [ 4] 1269 	or	a, a
+    0000048C 28 25            [12] 1270 	jr	z, 00104$
+                                   1271 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:358: g_Pawn->PhysicsCB(PAWN_PHYSICS_COL_DOWN, tile);
+    0000048E C1               [10] 1272 	pop	bc
+    0000048F C5               [11] 1273 	push	bc
+    00000490 21 13 00         [10] 1274 	ld	hl, #19
+    00000493 09               [11] 1275 	add	hl, bc
+    00000494 4E               [ 7] 1276 	ld	c, (hl)
+    00000495 23               [ 6] 1277 	inc	hl
+    00000496 46               [ 7] 1278 	ld	b, (hl)
+    00000497 6B               [ 4] 1279 	ld	l, e
+    00000498 AF               [ 4] 1280 	xor	a, a
+    00000499 C5               [11] 1281 	push	bc
+    0000049A FD E1            [14] 1282 	pop	iy
+    0000049C CDr00r00         [17] 1283 	call	___sdcc_call_iy
+                                   1284 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:359: targetY = (g_Pawn_CellY * 8) - GET_BOUND_Y();
+    0000049F 3Ar09r00         [13] 1285 	ld	a, (_g_Pawn_CellY)
+    000004A2 87               [ 4] 1286 	add	a, a
+    000004A3 87               [ 4] 1287 	add	a, a
+    000004A4 87               [ 4] 1288 	add	a, a
+    000004A5 2Ar04r00         [16] 1289 	ld	hl, (_g_Pawn)
+    000004A8 11 11 00         [10] 1290 	ld	de, #0x0011
+    000004AB 19               [11] 1291 	add	hl, de
+    000004AC 96               [ 7] 1292 	sub	a, (hl)
+    000004AD DD 77 FD         [19] 1293 	ld	-3 (ix), a
+                                   1294 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:360: goto skipVertival;
+    000004B0 C3rECr06         [10] 1295 	jp	00131$
+    000004B3                       1296 00104$:
+                                   1297 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:351: g_Pawn_CellX = (targetX + (GET_BOUND_X() / 4)) / 8;
+    000004B3 D1               [10] 1298 	pop	de
+    000004B4 D5               [11] 1299 	push	de
+                                   1300 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:379: g_Pawn_CellX = (targetX + GET_BOUND_X() - (GET_BOUND_X() / 4)) / 8;
+    000004B5 21 10 00         [10] 1301 	ld	hl, #16
+    000004B8 19               [11] 1302 	add	hl, de
+    000004B9 5E               [ 7] 1303 	ld	e, (hl)
+    000004BA 16 00            [ 7] 1304 	ld	d, #0x00
+    000004BC 69               [ 4] 1305 	ld	l, c
+    000004BD 60               [ 4] 1306 	ld	h, b
+    000004BE 19               [11] 1307 	add	hl, de
+    000004BF CB 2A            [ 8] 1308 	sra	d
+    000004C1 CB 1B            [ 8] 1309 	rr	e
+    000004C3 CB 2A            [ 8] 1310 	sra	d
+    000004C5 CB 1B            [ 8] 1311 	rr	e
+    000004C7 7D               [ 4] 1312 	ld	a, l
+    000004C8 93               [ 4] 1313 	sub	a, e
+    000004C9 DD 77 FA         [19] 1314 	ld	-6 (ix), a
+    000004CC 7C               [ 4] 1315 	ld	a, h
+    000004CD 9A               [ 4] 1316 	sbc	a, d
+    000004CE DD 77 FB         [19] 1317 	ld	-5 (ix), a
+    000004D1 E1               [10] 1318 	pop	hl
+    000004D2 E5               [11] 1319 	push	hl
+    000004D3 DD CB FB 7E      [20] 1320 	bit	7, -5 (ix)
+    000004D7 28 06            [12] 1321 	jr	z, 00153$
+    000004D9 E1               [10] 1322 	pop	hl
+    000004DA E5               [11] 1323 	push	hl
+    000004DB 11 07 00         [10] 1324 	ld	de, #0x0007
+    000004DE 19               [11] 1325 	add	hl, de
+    000004DF                       1326 00153$:
+    000004DF 7D               [ 4] 1327 	ld	a, l
+    000004E0 CB 2C            [ 8] 1328 	sra	h
+    000004E2 CB 1F            [ 8] 1329 	rr	a
+    000004E4 CB 2C            [ 8] 1330 	sra	h
+    000004E6 CB 1F            [ 8] 1331 	rr	a
+    000004E8 CB 2C            [ 8] 1332 	sra	h
+    000004EA CB 1F            [ 8] 1333 	rr	a
+                                   1334 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:380: if (g_Pawn_CellX != lastCell)
+    000004EC 32r08r00         [13] 1335 	ld	(_g_Pawn_CellX), a
+    000004EF DD 96 FF         [19] 1336 	sub	a, -1 (ix)
+    000004F2 CArECr06         [10] 1337 	jp	z, 00131$
+                                   1338 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:383: u8 tile = PAWN_GET_TILE(g_Pawn_CellX, g_Pawn_CellY);
+    000004F5 3Ar09r00         [13] 1339 	ld	a, (_g_Pawn_CellY)
+    000004F8 26 00            [ 7] 1340 	ld	h, #0x00
+    000004FA 6F               [ 4] 1341 	ld	l, a
+    000004FB 29               [11] 1342 	add	hl, hl
+    000004FC 29               [11] 1343 	add	hl, hl
+    000004FD 29               [11] 1344 	add	hl, hl
+    000004FE 29               [11] 1345 	add	hl, hl
+    000004FF 29               [11] 1346 	add	hl, hl
+    00000500 ED 4Br00r00      [20] 1347 	ld	bc, (_g_ScreenLayoutLow)
+    00000504 09               [11] 1348 	add	hl, bc
+    00000505 3Ar08r00         [13] 1349 	ld	a, (_g_Pawn_CellX+0)
+    00000508 4F               [ 4] 1350 	ld	c, a
+    00000509 06 00            [ 7] 1351 	ld	b, #0x00
+    0000050B 09               [11] 1352 	add	hl, bc
+    0000050C CDr00r00         [17] 1353 	call	_VDP_Peek_16K
+    0000050F 5F               [ 4] 1354 	ld	e, a
+                                   1355 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:384: if (g_Pawn->CollisionCB(tile))
+    00000510 FD 2Ar04r00      [20] 1356 	ld	iy, (_g_Pawn)
+    00000514 FD 6E 15         [19] 1357 	ld	l, 21 (iy)
+    00000517 FD 66 16         [19] 1358 	ld	h, 22 (iy)
+    0000051A D5               [11] 1359 	push	de
+    0000051B 7B               [ 4] 1360 	ld	a, e
+    0000051C CDr00r00         [17] 1361 	call	___sdcc_call_hl
+    0000051F D1               [10] 1362 	pop	de
+    00000520 B7               [ 4] 1363 	or	a, a
+    00000521 CArECr06         [10] 1364 	jp	z, 00131$
+                                   1365 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:386: g_Pawn->PhysicsCB(PAWN_PHYSICS_COL_DOWN, tile);
+    00000524 2Ar04r00         [16] 1366 	ld	hl, (_g_Pawn)
+    00000527 01 13 00         [10] 1367 	ld	bc, #0x0013
+    0000052A 09               [11] 1368 	add	hl, bc
+    0000052B 4E               [ 7] 1369 	ld	c, (hl)
+    0000052C 23               [ 6] 1370 	inc	hl
+    0000052D 46               [ 7] 1371 	ld	b, (hl)
+    0000052E 6B               [ 4] 1372 	ld	l, e
+    0000052F AF               [ 4] 1373 	xor	a, a
+    00000530 C5               [11] 1374 	push	bc
+    00000531 FD E1            [14] 1375 	pop	iy
+    00000533 CDr00r00         [17] 1376 	call	___sdcc_call_iy
+                                   1377 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:387: targetY = (g_Pawn_CellY * 8) - GET_BOUND_Y();
+    00000536 3Ar09r00         [13] 1378 	ld	a, (_g_Pawn_CellY)
+    00000539 87               [ 4] 1379 	add	a, a
+    0000053A 87               [ 4] 1380 	add	a, a
+    0000053B 87               [ 4] 1381 	add	a, a
+    0000053C 2Ar04r00         [16] 1382 	ld	hl, (_g_Pawn)
+    0000053F 11 11 00         [10] 1383 	ld	de, #0x0011
+    00000542 19               [11] 1384 	add	hl, de
+    00000543 96               [ 7] 1385 	sub	a, (hl)
+    00000544 DD 77 FD         [19] 1386 	ld	-3 (ix), a
+                                   1387 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:388: goto skipVertival;
+    00000547 C3rECr06         [10] 1388 	jp	00131$
+    0000054A                       1389 00129$:
+                                   1390 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:410: else if (g_Pawn->MoveY < 0)
+    0000054A DD CB FF 7E      [20] 1391 	bit	7, -1 (ix)
+    0000054E CArE4r05         [10] 1392 	jp	z, 00126$
+                                   1393 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:417: if (targetY > g_Pawn->PositionY)
+    00000551 DD 7E FE         [19] 1394 	ld	a, -2 (ix)
+    00000554 DD 96 FD         [19] 1395 	sub	a, -3 (ix)
+    00000557 30 07            [12] 1396 	jr	nc, 00115$
+                                   1397 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:424: targetY = PAWN_BORDER_MIN_Y;
+    00000559 DD 36 FD 00      [19] 1398 	ld	-3 (ix), #0x00
+    0000055D C3rECr06         [10] 1399 	jp	00131$
+    00000560                       1400 00115$:
+                                   1401 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:430: g_Pawn_CellX = (targetX + (GET_BOUND_X() / 2)) / 8;
+    00000560 DD 4E FC         [19] 1402 	ld	c, -4 (ix)
+    00000563 06 00            [ 7] 1403 	ld	b, #0x00
+    00000565 D1               [10] 1404 	pop	de
+    00000566 D5               [11] 1405 	push	de
+    00000567 21 10 00         [10] 1406 	ld	hl, #16
+    0000056A 19               [11] 1407 	add	hl, de
+    0000056B 6E               [ 7] 1408 	ld	l, (hl)
+    0000056C 26 00            [ 7] 1409 	ld	h, #0x00
+    0000056E CB 2C            [ 8] 1410 	sra	h
+    00000570 CB 1D            [ 8] 1411 	rr	l
+    00000572 09               [11] 1412 	add	hl, bc
+    00000573 7D               [ 4] 1413 	ld	a, l
+    00000574 CB 2C            [ 8] 1414 	sra	h
+    00000576 CB 1F            [ 8] 1415 	rr	a
+    00000578 CB 2C            [ 8] 1416 	sra	h
+    0000057A CB 1F            [ 8] 1417 	rr	a
+    0000057C CB 2C            [ 8] 1418 	sra	h
+    0000057E CB 1F            [ 8] 1419 	rr	a
+    00000580 32r08r00         [13] 1420 	ld	(_g_Pawn_CellX), a
+                                   1421 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:431: g_Pawn_CellY = (targetY) / 8;
+    00000583 DD 7E FD         [19] 1422 	ld	a, -3 (ix)
+    00000586 2E 00            [ 7] 1423 	ld	l, #0x00
+    00000588 CB 2D            [ 8] 1424 	sra	l
+    0000058A CB 1F            [ 8] 1425 	rr	a
+    0000058C CB 2D            [ 8] 1426 	sra	l
+    0000058E CB 1F            [ 8] 1427 	rr	a
+    00000590 CB 2D            [ 8] 1428 	sra	l
+    00000592 CB 1F            [ 8] 1429 	rr	a
+                                   1430 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:432: u8 tile = PAWN_GET_TILE(g_Pawn_CellX, g_Pawn_CellY);
+    00000594 32r09r00         [13] 1431 	ld	(_g_Pawn_CellY), a
+    00000597 26 00            [ 7] 1432 	ld	h, #0x00
+    00000599 6F               [ 4] 1433 	ld	l, a
+    0000059A 29               [11] 1434 	add	hl, hl
+    0000059B 29               [11] 1435 	add	hl, hl
+    0000059C 29               [11] 1436 	add	hl, hl
+    0000059D 29               [11] 1437 	add	hl, hl
+    0000059E 29               [11] 1438 	add	hl, hl
+    0000059F ED 4Br00r00      [20] 1439 	ld	bc, (_g_ScreenLayoutLow)
+    000005A3 09               [11] 1440 	add	hl, bc
+    000005A4 3Ar08r00         [13] 1441 	ld	a, (_g_Pawn_CellX+0)
+    000005A7 4F               [ 4] 1442 	ld	c, a
+    000005A8 06 00            [ 7] 1443 	ld	b, #0x00
+    000005AA 09               [11] 1444 	add	hl, bc
+    000005AB CDr00r00         [17] 1445 	call	_VDP_Peek_16K
+    000005AE 5F               [ 4] 1446 	ld	e, a
+                                   1447 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:433: if (g_Pawn->CollisionCB(tile))
+    000005AF FD 2Ar04r00      [20] 1448 	ld	iy, (_g_Pawn)
+    000005B3 FD 6E 15         [19] 1449 	ld	l, 21 (iy)
+    000005B6 FD 66 16         [19] 1450 	ld	h, 22 (iy)
+    000005B9 D5               [11] 1451 	push	de
+    000005BA 7B               [ 4] 1452 	ld	a, e
+    000005BB CDr00r00         [17] 1453 	call	___sdcc_call_hl
+    000005BE D1               [10] 1454 	pop	de
+    000005BF B7               [ 4] 1455 	or	a, a
+    000005C0 CArECr06         [10] 1456 	jp	z, 00131$
+                                   1457 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:435: g_Pawn->PhysicsCB(PAWN_PHYSICS_COL_UP, tile);
+    000005C3 2Ar04r00         [16] 1458 	ld	hl, (_g_Pawn)
+    000005C6 01 13 00         [10] 1459 	ld	bc, #0x0013
+    000005C9 09               [11] 1460 	add	hl, bc
+    000005CA 4E               [ 7] 1461 	ld	c, (hl)
+    000005CB 23               [ 6] 1462 	inc	hl
+    000005CC 46               [ 7] 1463 	ld	b, (hl)
+    000005CD 6B               [ 4] 1464 	ld	l, e
+    000005CE 3E 01            [ 7] 1465 	ld	a, #0x01
+    000005D0 C5               [11] 1466 	push	bc
+    000005D1 FD E1            [14] 1467 	pop	iy
+    000005D3 CDr00r00         [17] 1468 	call	___sdcc_call_iy
+                                   1469 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:436: targetY = (g_Pawn_CellY * 8) + 8;
+    000005D6 3Ar09r00         [13] 1470 	ld	a, (_g_Pawn_CellY)
+    000005D9 87               [ 4] 1471 	add	a, a
+    000005DA 87               [ 4] 1472 	add	a, a
+    000005DB 87               [ 4] 1473 	add	a, a
+    000005DC C6 08            [ 7] 1474 	add	a, #0x08
+    000005DE DD 77 FD         [19] 1475 	ld	-3 (ix), a
+    000005E1 C3rECr06         [10] 1476 	jp	00131$
+    000005E4                       1477 00126$:
+                                   1478 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:449: u8 tile = 0;
+    000005E4 DD 36 FE 00      [19] 1479 	ld	-2 (ix), #0x00
+                                   1480 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:450: g_Pawn_CellY = (targetY + GET_BOUND_Y()) / 8;
+    000005E8 DD 4E FD         [19] 1481 	ld	c, -3 (ix)
+    000005EB 06 00            [ 7] 1482 	ld	b, #0x00
+    000005ED D1               [10] 1483 	pop	de
+    000005EE D5               [11] 1484 	push	de
+    000005EF 21 11 00         [10] 1485 	ld	hl, #17
+    000005F2 19               [11] 1486 	add	hl, de
+    000005F3 6E               [ 7] 1487 	ld	l, (hl)
+    000005F4 26 00            [ 7] 1488 	ld	h, #0x00
+    000005F6 09               [11] 1489 	add	hl, bc
+    000005F7 7D               [ 4] 1490 	ld	a, l
+    000005F8 CB 2C            [ 8] 1491 	sra	h
+    000005FA CB 1F            [ 8] 1492 	rr	a
+    000005FC CB 2C            [ 8] 1493 	sra	h
+    000005FE CB 1F            [ 8] 1494 	rr	a
+    00000600 CB 2C            [ 8] 1495 	sra	h
+    00000602 CB 1F            [ 8] 1496 	rr	a
+    00000604 32r09r00         [13] 1497 	ld	(_g_Pawn_CellY), a
+                                   1498 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:452: u8 lastCell = 0xFF;
+    00000607 DD 36 FF FF      [19] 1499 	ld	-1 (ix), #0xff
+                                   1500 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:464: g_Pawn_CellX = (targetX + (GET_BOUND_X() / 4)) / 8;
+    0000060B DD 4E FC         [19] 1501 	ld	c, -4 (ix)
+    0000060E 06 00            [ 7] 1502 	ld	b, #0x00
+    00000610 D1               [10] 1503 	pop	de
+    00000611 D5               [11] 1504 	push	de
+    00000612 21 10 00         [10] 1505 	ld	hl, #16
+    00000615 19               [11] 1506 	add	hl, de
+    00000616 6E               [ 7] 1507 	ld	l, (hl)
+    00000617 26 00            [ 7] 1508 	ld	h, #0x00
+    00000619 CB 2C            [ 8] 1509 	sra	h
+    0000061B CB 1D            [ 8] 1510 	rr	l
+    0000061D CB 2C            [ 8] 1511 	sra	h
+    0000061F CB 1D            [ 8] 1512 	rr	l
+    00000621 09               [11] 1513 	add	hl, bc
+    00000622 7D               [ 4] 1514 	ld	a, l
+    00000623 CB 2C            [ 8] 1515 	sra	h
+    00000625 CB 1F            [ 8] 1516 	rr	a
+    00000627 CB 2C            [ 8] 1517 	sra	h
+    00000629 CB 1F            [ 8] 1518 	rr	a
+    0000062B CB 2C            [ 8] 1519 	sra	h
+    0000062D CB 1F            [ 8] 1520 	rr	a
+                                   1521 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:465: if (g_Pawn_CellX != lastCell)
+    0000062F 32r08r00         [13] 1522 	ld	(_g_Pawn_CellX), a
+    00000632 3C               [ 4] 1523 	inc	a
+    00000633 28 3B            [12] 1524 	jr	z, 00120$
+                                   1525 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:354: lastCell = g_Pawn_CellX;
+    00000635 3Ar08r00         [13] 1526 	ld	a, (_g_Pawn_CellX)
+    00000638 6F               [ 4] 1527 	ld	l, a
+                                   1528 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:467: lastCell = g_Pawn_CellX;
+    00000639 DD 75 FF         [19] 1529 	ld	-1 (ix), l
+                                   1530 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:468: tile = PAWN_GET_TILE(g_Pawn_CellX, g_Pawn_CellY);
+    0000063C 3Ar09r00         [13] 1531 	ld	a, (_g_Pawn_CellY+0)
+    0000063F 5F               [ 4] 1532 	ld	e, a
+    00000640 16 00            [ 7] 1533 	ld	d, #0x00
+    00000642 EB               [ 4] 1534 	ex	de, hl
+    00000643 29               [11] 1535 	add	hl, hl
+    00000644 29               [11] 1536 	add	hl, hl
+    00000645 29               [11] 1537 	add	hl, hl
+    00000646 29               [11] 1538 	add	hl, hl
+    00000647 29               [11] 1539 	add	hl, hl
+    00000648 EB               [ 4] 1540 	ex	de, hl
+    00000649 FD 2Ar00r00      [20] 1541 	ld	iy, (_g_ScreenLayoutLow)
+    0000064D FD 19            [15] 1542 	add	iy, de
+    0000064F 26 00            [ 7] 1543 	ld	h, #0x00
+    00000651 FD E5            [15] 1544 	push	iy
+    00000653 D1               [10] 1545 	pop	de
+    00000654 19               [11] 1546 	add	hl, de
+    00000655 CDr00r00         [17] 1547 	call	_VDP_Peek_16K
+    00000658 DD 77 FE         [19] 1548 	ld	-2 (ix), a
+                                   1549 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:469: if (g_Pawn->CollisionCB(tile))
+    0000065B FD 2Ar04r00      [20] 1550 	ld	iy, (_g_Pawn)
+    0000065F FD 6E 15         [19] 1551 	ld	l, 21 (iy)
+    00000662 FD 66 16         [19] 1552 	ld	h, 22 (iy)
+    00000665 C5               [11] 1553 	push	bc
+    00000666 DD 7E FE         [19] 1554 	ld	a, -2 (ix)
+    00000669 CDr00r00         [17] 1555 	call	___sdcc_call_hl
+    0000066C C1               [10] 1556 	pop	bc
+    0000066D B7               [ 4] 1557 	or	a, a
+    0000066E 20 7C            [12] 1558 	jr	nz, 00131$
+                                   1559 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:470: goto skipVertival;
+    00000670                       1560 00120$:
+                                   1561 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:309: PAWN_POS targetX = g_Pawn->PositionX + g_Pawn->MoveX;
+    00000670 FD 2Ar04r00      [20] 1562 	ld	iy, (_g_Pawn)
+                                   1563 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:379: g_Pawn_CellX = (targetX + GET_BOUND_X() - (GET_BOUND_X() / 4)) / 8;
+    00000674 FD 5E 10         [19] 1564 	ld	e, 16 (iy)
+    00000677 16 00            [ 7] 1565 	ld	d, #0x00
+                                   1566 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:484: g_Pawn_CellX = (targetX + GET_BOUND_X() - (GET_BOUND_X() / 4)) / 8;
+    00000679 6B               [ 4] 1567 	ld	l, e
+    0000067A 62               [ 4] 1568 	ld	h, d
+    0000067B 09               [11] 1569 	add	hl, bc
+    0000067C CB 2A            [ 8] 1570 	sra	d
+    0000067E CB 1B            [ 8] 1571 	rr	e
+    00000680 CB 2A            [ 8] 1572 	sra	d
+    00000682 CB 1B            [ 8] 1573 	rr	e
+    00000684 BF               [ 4] 1574 	cp	a, a
+    00000685 ED 52            [15] 1575 	sbc	hl, de
+    00000687 5D               [ 4] 1576 	ld	e, l
+    00000688 54               [ 4] 1577 	ld	d, h
+    00000689 CB 7A            [ 8] 1578 	bit	7, d
+    0000068B 28 04            [12] 1579 	jr	z, 00161$
+    0000068D 21 07 00         [10] 1580 	ld	hl, #0x0007
+    00000690 19               [11] 1581 	add	hl, de
+    00000691                       1582 00161$:
+    00000691 7D               [ 4] 1583 	ld	a, l
+    00000692 CB 2C            [ 8] 1584 	sra	h
+    00000694 CB 1F            [ 8] 1585 	rr	a
+    00000696 CB 2C            [ 8] 1586 	sra	h
+    00000698 CB 1F            [ 8] 1587 	rr	a
+    0000069A CB 2C            [ 8] 1588 	sra	h
+    0000069C CB 1F            [ 8] 1589 	rr	a
+                                   1590 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:485: if (g_Pawn_CellX != lastCell)
+    0000069E 32r08r00         [13] 1591 	ld	(_g_Pawn_CellX), a
+    000006A1 DD 96 FF         [19] 1592 	sub	a, -1 (ix)
+    000006A4 28 31            [12] 1593 	jr	z, 00124$
+                                   1594 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:488: tile = PAWN_GET_TILE(g_Pawn_CellX, g_Pawn_CellY);
+    000006A6 3Ar09r00         [13] 1595 	ld	a, (_g_Pawn_CellY)
+    000006A9 26 00            [ 7] 1596 	ld	h, #0x00
+    000006AB 6F               [ 4] 1597 	ld	l, a
+    000006AC 29               [11] 1598 	add	hl, hl
+    000006AD 29               [11] 1599 	add	hl, hl
+    000006AE 29               [11] 1600 	add	hl, hl
+    000006AF 29               [11] 1601 	add	hl, hl
+    000006B0 29               [11] 1602 	add	hl, hl
+    000006B1 ED 4Br00r00      [20] 1603 	ld	bc, (_g_ScreenLayoutLow)
+    000006B5 09               [11] 1604 	add	hl, bc
+    000006B6 3Ar08r00         [13] 1605 	ld	a, (_g_Pawn_CellX+0)
+    000006B9 16 00            [ 7] 1606 	ld	d, #0x00
+    000006BB 5F               [ 4] 1607 	ld	e, a
+    000006BC 19               [11] 1608 	add	hl, de
+    000006BD CDr00r00         [17] 1609 	call	_VDP_Peek_16K
+    000006C0 DD 77 FE         [19] 1610 	ld	-2 (ix), a
+                                   1611 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:489: if (g_Pawn->CollisionCB(tile))
+    000006C3 2Ar04r00         [16] 1612 	ld	hl, (_g_Pawn)
+    000006C6 11 15 00         [10] 1613 	ld	de, #0x0015
+    000006C9 19               [11] 1614 	add	hl, de
+    000006CA 7E               [ 7] 1615 	ld	a, (hl)
+    000006CB 23               [ 6] 1616 	inc	hl
+    000006CC 66               [ 7] 1617 	ld	h, (hl)
+    000006CD 6F               [ 4] 1618 	ld	l, a
+    000006CE DD 7E FE         [19] 1619 	ld	a, -2 (ix)
+    000006D1 CDr00r00         [17] 1620 	call	___sdcc_call_hl
+    000006D4 B7               [ 4] 1621 	or	a, a
+    000006D5 20 15            [12] 1622 	jr	nz, 00131$
+                                   1623 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:490: goto skipVertival;
+    000006D7                       1624 00124$:
+                                   1625 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:503: g_Pawn->PhysicsCB(PAWN_PHYSICS_FALL, tile);
+    000006D7 2Ar04r00         [16] 1626 	ld	hl, (_g_Pawn)
+    000006DA 11 13 00         [10] 1627 	ld	de, #0x0013
+    000006DD 19               [11] 1628 	add	hl, de
+    000006DE 4E               [ 7] 1629 	ld	c, (hl)
+    000006DF 23               [ 6] 1630 	inc	hl
+    000006E0 46               [ 7] 1631 	ld	b, (hl)
+    000006E1 DD 6E FE         [19] 1632 	ld	l, -2 (ix)
+    000006E4 3E 04            [ 7] 1633 	ld	a, #0x04
+    000006E6 C5               [11] 1634 	push	bc
+    000006E7 FD E1            [14] 1635 	pop	iy
+    000006E9 CDr00r00         [17] 1636 	call	___sdcc_call_iy
+                                   1637 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:506: skipVertival:
+    000006EC                       1638 00131$:
+                                   1639 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:309: PAWN_POS targetX = g_Pawn->PositionX + g_Pawn->MoveX;
+    000006EC ED 4Br04r00      [20] 1640 	ld	bc, (_g_Pawn)
+    000006F0 59               [ 4] 1641 	ld	e, c
+    000006F1 50               [ 4] 1642 	ld	d, b
+                                   1643 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:509: if (g_Pawn->MoveX > 0)
+    000006F2 21 0E 00         [10] 1644 	ld	hl, #14
+    000006F5 19               [11] 1645 	add	hl, de
+    000006F6 5E               [ 7] 1646 	ld	e, (hl)
+    000006F7 AF               [ 4] 1647 	xor	a, a
+    000006F8 93               [ 4] 1648 	sub	a, e
+    000006F9 E2rFEr06         [10] 1649 	jp	po, 00376$
+    000006FC EE 80            [ 7] 1650 	xor	a, #0x80
+    000006FE                       1651 00376$:
+    000006FE F2rB7r07         [10] 1652 	jp	p, 00145$
+                                   1653 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:351: g_Pawn_CellX = (targetX + (GET_BOUND_X() / 4)) / 8;
+    00000701 59               [ 4] 1654 	ld	e, c
+    00000702 50               [ 4] 1655 	ld	d, b
+                                   1656 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:379: g_Pawn_CellX = (targetX + GET_BOUND_X() - (GET_BOUND_X() / 4)) / 8;
+    00000703 21 10 00         [10] 1657 	ld	hl, #16
+    00000706 19               [11] 1658 	add	hl, de
+    00000707 5E               [ 7] 1659 	ld	e, (hl)
+                                   1660 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:512: if ((u8)(targetX + GET_BOUND_X()) < g_Pawn->PositionX)
+    00000708 7B               [ 4] 1661 	ld	a, e
+    00000709 DD 86 FC         [19] 1662 	add	a, -4 (ix)
+    0000070C 69               [ 4] 1663 	ld	l, c
+    0000070D 60               [ 4] 1664 	ld	h, b
+    0000070E C5               [11] 1665 	push	bc
+    0000070F 01 06 00         [10] 1666 	ld	bc, #0x0006
+    00000712 09               [11] 1667 	add	hl, bc
+    00000713 C1               [10] 1668 	pop	bc
+    00000714 96               [ 7] 1669 	sub	a, (hl)
+    00000715 30 14            [12] 1670 	jr	nc, 00135$
+                                   1671 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:515: g_Pawn->PhysicsCB(PAWN_PHYSICS_BORDER_RIGHT, 0);
+    00000717 21 13 00         [10] 1672 	ld	hl, #19
+    0000071A 09               [11] 1673 	add	hl, bc
+    0000071B 4E               [ 7] 1674 	ld	c, (hl)
+    0000071C 23               [ 6] 1675 	inc	hl
+    0000071D 46               [ 7] 1676 	ld	b, (hl)
+    0000071E 2E 00            [ 7] 1677 	ld	l, #0x00
+    00000720 3E 07            [ 7] 1678 	ld	a, #0x07
+    00000722 C5               [11] 1679 	push	bc
+    00000723 FD E1            [14] 1680 	pop	iy
+    00000725 CDr00r00         [17] 1681 	call	___sdcc_call_iy
+    00000728 C3r4Er08         [10] 1682 	jp	00146$
+    0000072B                       1683 00135$:
+                                   1684 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:524: g_Pawn_CellX = (targetX + GET_BOUND_X()) / 8;
+    0000072B DD 6E FC         [19] 1685 	ld	l, -4 (ix)
+    0000072E 26 00            [ 7] 1686 	ld	h, #0x00
+    00000730 54               [ 4] 1687 	ld	d, h
+    00000731 19               [11] 1688 	add	hl, de
+    00000732 7D               [ 4] 1689 	ld	a, l
+    00000733 CB 2C            [ 8] 1690 	sra	h
+    00000735 CB 1F            [ 8] 1691 	rr	a
+    00000737 CB 2C            [ 8] 1692 	sra	h
+    00000739 CB 1F            [ 8] 1693 	rr	a
+    0000073B CB 2C            [ 8] 1694 	sra	h
+    0000073D CB 1F            [ 8] 1695 	rr	a
+    0000073F 32r08r00         [13] 1696 	ld	(_g_Pawn_CellX), a
+                                   1697 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:525: g_Pawn_CellY = (targetY + (GET_BOUND_Y() / 2)) / 8;
+    00000742 DD 5E FD         [19] 1698 	ld	e, -3 (ix)
+    00000745 16 00            [ 7] 1699 	ld	d, #0x00
+    00000747 21 11 00         [10] 1700 	ld	hl, #17
+    0000074A 09               [11] 1701 	add	hl, bc
+    0000074B 6E               [ 7] 1702 	ld	l, (hl)
+    0000074C 26 00            [ 7] 1703 	ld	h, #0x00
+    0000074E CB 2C            [ 8] 1704 	sra	h
+    00000750 CB 1D            [ 8] 1705 	rr	l
+    00000752 19               [11] 1706 	add	hl, de
+    00000753 CB 2C            [ 8] 1707 	sra	h
+    00000755 CB 1D            [ 8] 1708 	rr	l
+    00000757 CB 2C            [ 8] 1709 	sra	h
+    00000759 CB 1D            [ 8] 1710 	rr	l
+    0000075B CB 2C            [ 8] 1711 	sra	h
+    0000075D CB 1D            [ 8] 1712 	rr	l
+    0000075F 7D               [ 4] 1713 	ld	a, l
+                                   1714 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:526: u8 tile = PAWN_GET_TILE(g_Pawn_CellX, g_Pawn_CellY);
+    00000760 32r09r00         [13] 1715 	ld	(_g_Pawn_CellY), a
+    00000763 26 00            [ 7] 1716 	ld	h, #0x00
+    00000765 6F               [ 4] 1717 	ld	l, a
+    00000766 29               [11] 1718 	add	hl, hl
+    00000767 29               [11] 1719 	add	hl, hl
+    00000768 29               [11] 1720 	add	hl, hl
+    00000769 29               [11] 1721 	add	hl, hl
+    0000076A 29               [11] 1722 	add	hl, hl
+    0000076B ED 4Br00r00      [20] 1723 	ld	bc, (_g_ScreenLayoutLow)
+    0000076F 09               [11] 1724 	add	hl, bc
+    00000770 3Ar08r00         [13] 1725 	ld	a, (_g_Pawn_CellX+0)
+    00000773 16 00            [ 7] 1726 	ld	d, #0x00
+    00000775 5F               [ 4] 1727 	ld	e, a
+    00000776 19               [11] 1728 	add	hl, de
+    00000777 CDr00r00         [17] 1729 	call	_VDP_Peek_16K
+    0000077A 4F               [ 4] 1730 	ld	c, a
+                                   1731 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:527: if (g_Pawn->CollisionCB(tile))
+    0000077B 2Ar04r00         [16] 1732 	ld	hl, (_g_Pawn)
+    0000077E 11 15 00         [10] 1733 	ld	de, #0x0015
+    00000781 19               [11] 1734 	add	hl, de
+    00000782 7E               [ 7] 1735 	ld	a, (hl)
+    00000783 23               [ 6] 1736 	inc	hl
+    00000784 66               [ 7] 1737 	ld	h, (hl)
+    00000785 6F               [ 4] 1738 	ld	l, a
+    00000786 C5               [11] 1739 	push	bc
+    00000787 79               [ 4] 1740 	ld	a, c
+    00000788 CDr00r00         [17] 1741 	call	___sdcc_call_hl
+    0000078B C1               [10] 1742 	pop	bc
+    0000078C B7               [ 4] 1743 	or	a, a
+    0000078D CAr4Er08         [10] 1744 	jp	z, 00146$
+                                   1745 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:529: g_Pawn->PhysicsCB(PAWN_PHYSICS_COL_RIGHT, tile);
+    00000790 2Ar04r00         [16] 1746 	ld	hl, (_g_Pawn)
+    00000793 11 13 00         [10] 1747 	ld	de, #0x0013
+    00000796 19               [11] 1748 	add	hl, de
+    00000797 5E               [ 7] 1749 	ld	e, (hl)
+    00000798 23               [ 6] 1750 	inc	hl
+    00000799 56               [ 7] 1751 	ld	d, (hl)
+    0000079A 69               [ 4] 1752 	ld	l, c
+    0000079B 3E 02            [ 7] 1753 	ld	a, #0x02
+    0000079D D5               [11] 1754 	push	de
+    0000079E FD E1            [14] 1755 	pop	iy
+    000007A0 CDr00r00         [17] 1756 	call	___sdcc_call_iy
+                                   1757 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:530: targetX = (g_Pawn_CellX * 8) - GET_BOUND_X();
+    000007A3 3Ar08r00         [13] 1758 	ld	a, (_g_Pawn_CellX)
+    000007A6 87               [ 4] 1759 	add	a, a
+    000007A7 87               [ 4] 1760 	add	a, a
+    000007A8 87               [ 4] 1761 	add	a, a
+    000007A9 2Ar04r00         [16] 1762 	ld	hl, (_g_Pawn)
+    000007AC 11 10 00         [10] 1763 	ld	de, #0x0010
+    000007AF 19               [11] 1764 	add	hl, de
+    000007B0 96               [ 7] 1765 	sub	a, (hl)
+    000007B1 DD 77 FC         [19] 1766 	ld	-4 (ix), a
+    000007B4 C3r4Er08         [10] 1767 	jp	00146$
+    000007B7                       1768 00145$:
+                                   1769 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:536: else if (g_Pawn->MoveX < 0)
+    000007B7 CB 7B            [ 8] 1770 	bit	7, e
+    000007B9 CAr4Er08         [10] 1771 	jp	z, 00146$
+                                   1772 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:539: if (targetX > g_Pawn->PositionX)
+    000007BC 59               [ 4] 1773 	ld	e, c
+    000007BD 50               [ 4] 1774 	ld	d, b
+    000007BE 21 06 00         [10] 1775 	ld	hl, #6
+    000007C1 19               [11] 1776 	add	hl, de
+    000007C2 7E               [ 7] 1777 	ld	a, (hl)
+    000007C3 DD 96 FC         [19] 1778 	sub	a, -4 (ix)
+    000007C6 30 07            [12] 1779 	jr	nc, 00140$
+                                   1780 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:545: targetX = 0;
+    000007C8 DD 36 FC 00      [19] 1781 	ld	-4 (ix), #0x00
+    000007CC C3r4Er08         [10] 1782 	jp	00146$
+    000007CF                       1783 00140$:
+                                   1784 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:551: g_Pawn_CellX = (targetX) / 8;
+    000007CF DD 7E FC         [19] 1785 	ld	a, -4 (ix)
+    000007D2 2E 00            [ 7] 1786 	ld	l, #0x00
+    000007D4 CB 2D            [ 8] 1787 	sra	l
+    000007D6 CB 1F            [ 8] 1788 	rr	a
+    000007D8 CB 2D            [ 8] 1789 	sra	l
+    000007DA CB 1F            [ 8] 1790 	rr	a
+    000007DC CB 2D            [ 8] 1791 	sra	l
+    000007DE CB 1F            [ 8] 1792 	rr	a
+    000007E0 32r08r00         [13] 1793 	ld	(_g_Pawn_CellX), a
+                                   1794 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:552: g_Pawn_CellY = (targetY + (GET_BOUND_Y() / 2)) / 8;
+    000007E3 DD 5E FD         [19] 1795 	ld	e, -3 (ix)
+    000007E6 16 00            [ 7] 1796 	ld	d, #0x00
+    000007E8 21 11 00         [10] 1797 	ld	hl, #17
+    000007EB 09               [11] 1798 	add	hl, bc
+    000007EC 6E               [ 7] 1799 	ld	l, (hl)
+    000007ED 26 00            [ 7] 1800 	ld	h, #0x00
+    000007EF CB 2C            [ 8] 1801 	sra	h
+    000007F1 CB 1D            [ 8] 1802 	rr	l
+    000007F3 19               [11] 1803 	add	hl, de
+    000007F4 CB 2C            [ 8] 1804 	sra	h
+    000007F6 CB 1D            [ 8] 1805 	rr	l
+    000007F8 CB 2C            [ 8] 1806 	sra	h
+    000007FA CB 1D            [ 8] 1807 	rr	l
+    000007FC CB 2C            [ 8] 1808 	sra	h
+    000007FE CB 1D            [ 8] 1809 	rr	l
+    00000800 7D               [ 4] 1810 	ld	a, l
+                                   1811 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:553: u8 tile = PAWN_GET_TILE(g_Pawn_CellX, g_Pawn_CellY);
+    00000801 32r09r00         [13] 1812 	ld	(_g_Pawn_CellY), a
+    00000804 26 00            [ 7] 1813 	ld	h, #0x00
+    00000806 6F               [ 4] 1814 	ld	l, a
+    00000807 29               [11] 1815 	add	hl, hl
+    00000808 29               [11] 1816 	add	hl, hl
+    00000809 29               [11] 1817 	add	hl, hl
+    0000080A 29               [11] 1818 	add	hl, hl
+    0000080B 29               [11] 1819 	add	hl, hl
+    0000080C ED 4Br00r00      [20] 1820 	ld	bc, (_g_ScreenLayoutLow)
+    00000810 09               [11] 1821 	add	hl, bc
+    00000811 3Ar08r00         [13] 1822 	ld	a, (_g_Pawn_CellX+0)
+    00000814 16 00            [ 7] 1823 	ld	d, #0x00
+    00000816 5F               [ 4] 1824 	ld	e, a
+    00000817 19               [11] 1825 	add	hl, de
+    00000818 CDr00r00         [17] 1826 	call	_VDP_Peek_16K
+    0000081B 4F               [ 4] 1827 	ld	c, a
+                                   1828 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:554: if (g_Pawn->CollisionCB(tile))
+    0000081C 2Ar04r00         [16] 1829 	ld	hl, (_g_Pawn)
+    0000081F 11 15 00         [10] 1830 	ld	de, #0x0015
+    00000822 19               [11] 1831 	add	hl, de
+    00000823 7E               [ 7] 1832 	ld	a, (hl)
+    00000824 23               [ 6] 1833 	inc	hl
+    00000825 66               [ 7] 1834 	ld	h, (hl)
+    00000826 6F               [ 4] 1835 	ld	l, a
+    00000827 C5               [11] 1836 	push	bc
+    00000828 79               [ 4] 1837 	ld	a, c
+    00000829 CDr00r00         [17] 1838 	call	___sdcc_call_hl
+    0000082C C1               [10] 1839 	pop	bc
+    0000082D B7               [ 4] 1840 	or	a, a
+    0000082E 28 1E            [12] 1841 	jr	z, 00146$
+                                   1842 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:556: g_Pawn->PhysicsCB(PAWN_PHYSICS_COL_LEFT, tile);
+    00000830 2Ar04r00         [16] 1843 	ld	hl, (_g_Pawn)
+    00000833 11 13 00         [10] 1844 	ld	de, #0x0013
+    00000836 19               [11] 1845 	add	hl, de
+    00000837 5E               [ 7] 1846 	ld	e, (hl)
+    00000838 23               [ 6] 1847 	inc	hl
+    00000839 56               [ 7] 1848 	ld	d, (hl)
+    0000083A 69               [ 4] 1849 	ld	l, c
+    0000083B 3E 03            [ 7] 1850 	ld	a, #0x03
+    0000083D D5               [11] 1851 	push	de
+    0000083E FD E1            [14] 1852 	pop	iy
+    00000840 CDr00r00         [17] 1853 	call	___sdcc_call_iy
+                                   1854 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:557: targetX = (g_Pawn_CellX * 8) + 8;
+    00000843 3Ar08r00         [13] 1855 	ld	a, (_g_Pawn_CellX)
+    00000846 87               [ 4] 1856 	add	a, a
+    00000847 87               [ 4] 1857 	add	a, a
+    00000848 87               [ 4] 1858 	add	a, a
+    00000849 C6 08            [ 7] 1859 	add	a, #0x08
+    0000084B DD 77 FC         [19] 1860 	ld	-4 (ix), a
+    0000084E                       1861 00146$:
+                                   1862 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:563: g_Pawn->PositionX = targetX;
+    0000084E 2Ar04r00         [16] 1863 	ld	hl, (_g_Pawn)
+    00000851 01 06 00         [10] 1864 	ld	bc, #0x0006
+    00000854 09               [11] 1865 	add	hl, bc
+    00000855 DD 7E FC         [19] 1866 	ld	a, -4 (ix)
+    00000858 77               [ 7] 1867 	ld	(hl), a
+                                   1868 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:564: g_Pawn->PositionY = targetY;
+    00000859 2Ar04r00         [16] 1869 	ld	hl, (_g_Pawn)
+    0000085C 01 07 00         [10] 1870 	ld	bc, #0x0007
+    0000085F 09               [11] 1871 	add	hl, bc
+    00000860 DD 7E FD         [19] 1872 	ld	a, -3 (ix)
+    00000863 77               [ 7] 1873 	ld	(hl), a
+                                   1874 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:309: PAWN_POS targetX = g_Pawn->PositionX + g_Pawn->MoveX;
+    00000864 2Ar04r00         [16] 1875 	ld	hl, (_g_Pawn)
+                                   1876 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:570: g_Pawn->Update |= PAWN_UPDATE_POSITION;
+    00000867 01 0C 00         [10] 1877 	ld	bc, #0x000c
+    0000086A 09               [11] 1878 	add	hl, bc
+    0000086B CB C6            [15] 1879 	set	0, (hl)
+                                   1880 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:309: PAWN_POS targetX = g_Pawn->PositionX + g_Pawn->MoveX;
+    0000086D 2Ar04r00         [16] 1881 	ld	hl, (_g_Pawn)
+                                   1882 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:570: g_Pawn->Update |= PAWN_UPDATE_POSITION;
+    00000870 01 0C 00         [10] 1883 	ld	bc, #0x000c
+    00000873 09               [11] 1884 	add	hl, bc
+                                   1885 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:571: g_Pawn->Update &= ~PAWN_UPDATE_COLLISION;
+    00000874 CB A6            [15] 1886 	res	4, (hl)
+                                   1887 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:572: }
+    00000876 DD F9            [10] 1888 	ld	sp, ix
+    00000878 DD E1            [14] 1889 	pop	ix
+    0000087A C9               [10] 1890 	ret
+                                   1891 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:577: void Pawn_Update(Pawn* pawn)
+                                   1892 ;	---------------------------------
+                                   1893 ; Function Pawn_Update
+                                   1894 ; ---------------------------------
+    0000087B                       1895 _Pawn_Update::
+                                   1896 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:581: if (g_Pawn->Update & PAWN_UPDATE_DISABLE)
+    0000087B 22r04r00         [16] 1897 	ld	(_g_Pawn), hl
+    0000087E 11 0C 00         [10] 1898 	ld	de, #0x000c
+    00000881 19               [11] 1899 	add	hl, de
+    00000882 7E               [ 7] 1900 	ld	a, (hl)
+    00000883 07               [ 4] 1901 	rlca
+                                   1902 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:582: return;
+    00000884 D8               [11] 1903 	ret	c
+                                   1904 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:585: Pawn_UpdateAnimation();
+    00000885 CDr88r01         [17] 1905 	call	_Pawn_UpdateAnimation
+                                   1906 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:589: if (g_Pawn->Update & PAWN_UPDATE_COLLISION)
+    00000888 2Ar04r00         [16] 1907 	ld	hl, (_g_Pawn)
+    0000088B 11 0C 00         [10] 1908 	ld	de, #0x000c
+    0000088E 19               [11] 1909 	add	hl, de
+    0000088F CB 66            [12] 1910 	bit	4, (hl)
+                                   1911 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:590: Pawn_UpdatePhysics();
+    00000891 C2r9Ar03         [10] 1912 	jp	nz, _Pawn_UpdatePhysics
+                                   1913 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:592: }
+    00000894 C9               [10] 1914 	ret
+                                   1915 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:766: void Pawn_Draw(Pawn* pawn)
+                                   1916 ;	---------------------------------
+                                   1917 ; Function Pawn_Draw
+                                   1918 ; ---------------------------------
+    00000895                       1919 _Pawn_Draw::
+    00000895 DD E5            [15] 1920 	push	ix
+    00000897 DD 21 00 00      [14] 1921 	ld	ix,	#0
+    0000089B DD 39            [15] 1922 	add	ix, sp
+    0000089D F5               [11] 1923 	push	af
+    0000089E 3B               [ 6] 1924 	dec	sp
+    0000089F 22r04r00         [16] 1925 	ld	(_g_Pawn), hl
+                                   1926 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:770: if ((g_Pawn->Update & (PAWN_UPDATE_PATTERN | PAWN_UPDATE_POSITION)) == 0)
+    000008A2 ED 4Br04r00      [20] 1927 	ld	bc, (_g_Pawn)
+    000008A6 59               [ 4] 1928 	ld	e, c
+    000008A7 50               [ 4] 1929 	ld	d, b
+    000008A8 21 0C 00         [10] 1930 	ld	hl, #12
+    000008AB 19               [11] 1931 	add	hl, de
+    000008AC 5E               [ 7] 1932 	ld	e, (hl)
+    000008AD 7B               [ 4] 1933 	ld	a, e
+    000008AE E6 03            [ 7] 1934 	and	a, #0x03
+    000008B0 CAr89r09         [10] 1935 	jp	z, 00117$
+                                   1936 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:771: return;
+                                   1937 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:773: if (g_Pawn->Update & PAWN_UPDATE_DISABLE)
+    000008B3 CB 7B            [ 8] 1938 	bit	7, e
+                                   1939 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:774: return;
+    000008B5 C2r89r09         [10] 1940 	jp	nz, 00117$
+                                   1941 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:695: g_Pawn_Sprite = g_Pawn->SpriteList;
+    000008B8 2Ar04r00         [16] 1942 	ld	hl, (_g_Pawn)
+    000008BB 7E               [ 7] 1943 	ld	a, (hl)
+    000008BC 23               [ 6] 1944 	inc	hl
+    000008BD 32r06r00         [13] 1945 	ld	(_g_Pawn_Sprite+0), a
+    000008C0 7E               [ 7] 1946 	ld	a, (hl)
+    000008C1 32r07r00         [13] 1947 	ld	(_g_Pawn_Sprite+1), a
+                                   1948 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:698: u16 dest = g_SpriteAttributeLow + (g_Pawn->SpriteID * 4);
+    000008C4 21 03 00         [10] 1949 	ld	hl, #3
+    000008C7 09               [11] 1950 	add	hl, bc
+    000008C8 6E               [ 7] 1951 	ld	l, (hl)
+    000008C9 26 00            [ 7] 1952 	ld	h, #0x00
+    000008CB 29               [11] 1953 	add	hl, hl
+    000008CC 29               [11] 1954 	add	hl, hl
+    000008CD ED 4Br00r00      [20] 1955 	ld	bc, (_g_SpriteAttributeLow)
+    000008D1 09               [11] 1956 	add	hl, bc
+    000008D2 EB               [ 4] 1957 	ex	de, hl
+                                   1958 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:699: loop (i, g_Pawn->SpriteNum)
+    000008D3 DD 36 FF 00      [19] 1959 	ld	-1 (ix), #0x00
+    000008D7                       1960 00115$:
+                                   1961 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:770: if ((g_Pawn->Update & (PAWN_UPDATE_PATTERN | PAWN_UPDATE_POSITION)) == 0)
+    000008D7 2Ar04r00         [16] 1962 	ld	hl, (_g_Pawn)
+    000008DA E3               [19] 1963 	ex	(sp), hl
+                                   1964 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:699: loop (i, g_Pawn->SpriteNum)
+    000008DB E1               [10] 1965 	pop	hl
+    000008DC E5               [11] 1966 	push	hl
+    000008DD 23               [ 6] 1967 	inc	hl
+    000008DE 23               [ 6] 1968 	inc	hl
+    000008DF 6E               [ 7] 1969 	ld	l, (hl)
+                                   1970 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:770: if ((g_Pawn->Update & (PAWN_UPDATE_PATTERN | PAWN_UPDATE_POSITION)) == 0)
+    000008E0 DD 7E FD         [19] 1971 	ld	a, -3 (ix)
+    000008E3 C6 0C            [ 7] 1972 	add	a, #0x0c
+    000008E5 4F               [ 4] 1973 	ld	c, a
+    000008E6 DD 7E FE         [19] 1974 	ld	a, -2 (ix)
+    000008E9 CE 00            [ 7] 1975 	adc	a, #0x00
+    000008EB 47               [ 4] 1976 	ld	b, a
+                                   1977 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:699: loop (i, g_Pawn->SpriteNum)
+    000008EC DD 7E FF         [19] 1978 	ld	a, -1 (ix)
+    000008EF 95               [ 4] 1979 	sub	a, l
+    000008F0 D2r85r09         [10] 1980 	jp	nc, 00113$
+                                   1981 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:701: g_Pawn_FrameOffset = 0;
+    000008F3 AF               [ 4] 1982 	xor	a, a
+    000008F4 32r0Ar00         [13] 1983 	ld	(#_g_Pawn_FrameOffset), a
+                                   1984 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:702: if ((g_Pawn->Update & PAWN_UPDATE_BLEND) && (g_Pawn_Sprite->Flag & PAWN_SPRITE_BLEND)) // Skip odd frames
+    000008F7 0A               [ 7] 1985 	ld	a, (bc)
+    000008F8 CB 77            [ 8] 1986 	bit	6, a
+    000008FA 28 20            [12] 1987 	jr	z, 00109$
+    000008FC 2Ar06r00         [16] 1988 	ld	hl, (_g_Pawn_Sprite)
+    000008FF 23               [ 6] 1989 	inc	hl
+    00000900 23               [ 6] 1990 	inc	hl
+    00000901 23               [ 6] 1991 	inc	hl
+    00000902 23               [ 6] 1992 	inc	hl
+    00000903 7E               [ 7] 1993 	ld	a, (hl)
+    00000904 0F               [ 4] 1994 	rrca
+    00000905 30 15            [12] 1995 	jr	nc, 00109$
+                                   1996 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:704: if ((g_Pawn->Counter & 1) != 0)
+    00000907 E1               [10] 1997 	pop	hl
+    00000908 E5               [11] 1998 	push	hl
+    00000909 C5               [11] 1999 	push	bc
+    0000090A 01 0D 00         [10] 2000 	ld	bc, #0x000d
+    0000090D 09               [11] 2001 	add	hl, bc
+    0000090E C1               [10] 2002 	pop	bc
+    0000090F 7E               [ 7] 2003 	ld	a, (hl)
+    00000910 0F               [ 4] 2004 	rrca
+    00000911 30 05            [12] 2005 	jr	nc, 00107$
+                                   2006 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:705: g_Pawn_FrameOffset = PAWN_BLEND_OFFSET;
+    00000913 21r0Ar00         [10] 2007 	ld	hl, #_g_Pawn_FrameOffset
+    00000916 36 0C            [10] 2008 	ld	(hl), #0x0c
+    00000918                       2009 00107$:
+                                   2010 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:706: g_Pawn->Update |= PAWN_UPDATE_PATTERN;
+    00000918 0A               [ 7] 2011 	ld	a, (bc)
+    00000919 CB CF            [ 8] 2012 	set	1, a
+    0000091B 02               [ 7] 2013 	ld	(bc), a
+    0000091C                       2014 00109$:
+                                   2015 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:709: g_Pawn_Buffer[PAWN_SPRT_POS_Y] = g_Pawn->PositionY + g_Pawn_Sprite->OffsetY - 1; // Decrement Y to fit screen coordinate
+    0000091C 2Ar04r00         [16] 2016 	ld	hl, (_g_Pawn)
+    0000091F 01 07 00         [10] 2017 	ld	bc, #0x0007
+    00000922 09               [11] 2018 	add	hl, bc
+    00000923 7E               [ 7] 2019 	ld	a, (hl)
+    00000924 2Ar06r00         [16] 2020 	ld	hl, (_g_Pawn_Sprite)
+    00000927 23               [ 6] 2021 	inc	hl
+    00000928 86               [ 7] 2022 	add	a, (hl)
+    00000929 3D               [ 4] 2023 	dec	a
+    0000092A 32r00r00         [13] 2024 	ld	(#_g_Pawn_Buffer), a
+                                   2025 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:710: g_Pawn_Buffer[PAWN_SPRT_POS_X] = g_Pawn->PositionX + g_Pawn_Sprite->OffsetX;
+    0000092D 2Ar04r00         [16] 2026 	ld	hl, (_g_Pawn)
+    00000930 01 06 00         [10] 2027 	ld	bc, #0x0006
+    00000933 09               [11] 2028 	add	hl, bc
+    00000934 7E               [ 7] 2029 	ld	a, (hl)
+    00000935 2Ar06r00         [16] 2030 	ld	hl, (_g_Pawn_Sprite)
+    00000938 86               [ 7] 2031 	add	a, (hl)
+    00000939 32r01r00         [13] 2032 	ld	(#(_g_Pawn_Buffer + 1)), a
+                                   2033 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:712: u8 size = 2;
+    0000093C 0E 02            [ 7] 2034 	ld	c, #0x02
+                                   2035 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:770: if ((g_Pawn->Update & (PAWN_UPDATE_PATTERN | PAWN_UPDATE_POSITION)) == 0)
+    0000093E 2Ar04r00         [16] 2036 	ld	hl, (_g_Pawn)
+    00000941 E3               [19] 2037 	ex	(sp), hl
+                                   2038 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:713: if (g_Pawn->Update & PAWN_UPDATE_PATTERN)
+    00000942 E1               [10] 2039 	pop	hl
+    00000943 E5               [11] 2040 	push	hl
+    00000944 C5               [11] 2041 	push	bc
+    00000945 01 0C 00         [10] 2042 	ld	bc, #0x000c
+    00000948 09               [11] 2043 	add	hl, bc
+    00000949 C1               [10] 2044 	pop	bc
+    0000094A CB 4E            [12] 2045 	bit	1, (hl)
+    0000094C 28 17            [12] 2046 	jr	z, 00111$
+                                   2047 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:715: u8 frame = g_Pawn->AnimFrame + g_Pawn_Sprite->DataOffset + g_Pawn_FrameOffset;
+    0000094E C1               [10] 2048 	pop	bc
+    0000094F C5               [11] 2049 	push	bc
+    00000950 21 09 00         [10] 2050 	ld	hl, #9
+    00000953 09               [11] 2051 	add	hl, bc
+    00000954 7E               [ 7] 2052 	ld	a, (hl)
+    00000955 2Ar06r00         [16] 2053 	ld	hl, (_g_Pawn_Sprite)
+    00000958 23               [ 6] 2054 	inc	hl
+    00000959 23               [ 6] 2055 	inc	hl
+    0000095A 86               [ 7] 2056 	add	a, (hl)
+    0000095B 21r0Ar00         [10] 2057 	ld	hl, #_g_Pawn_FrameOffset
+    0000095E 86               [ 7] 2058 	add	a, (hl)
+                                   2059 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:748: g_Pawn_Buffer[PAWN_SPRT_PATTERN] = frame;
+    0000095F 01r02r00         [10] 2060 	ld	bc, #_g_Pawn_Buffer + 2
+    00000962 02               [ 7] 2061 	ld	(bc), a
+                                   2062 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:749: size++;
+    00000963 0E 03            [ 7] 2063 	ld	c, #0x03
+    00000965                       2064 00111$:
+                                   2065 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:753: VDP_WriteVRAM(g_Pawn_Buffer, dest, g_SpriteAttributeHigh, size);
+    00000965 06 00            [ 7] 2066 	ld	b, #0x00
+    00000967 D5               [11] 2067 	push	de
+    00000968 C5               [11] 2068 	push	bc
+    00000969 21r00r00         [10] 2069 	ld	hl, #_g_Pawn_Buffer
+    0000096C CDr00r00         [17] 2070 	call	_VDP_WriteVRAM_16K
+    0000096F D1               [10] 2071 	pop	de
+                                   2072 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:756: dest += 4;
+    00000970 13               [ 6] 2073 	inc	de
+    00000971 13               [ 6] 2074 	inc	de
+    00000972 13               [ 6] 2075 	inc	de
+    00000973 13               [ 6] 2076 	inc	de
+                                   2077 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:758: g_Pawn_Sprite++;
+    00000974 21r06r00         [10] 2078 	ld	hl, #_g_Pawn_Sprite
+    00000977 7E               [ 7] 2079 	ld	a, (hl)
+    00000978 C6 05            [ 7] 2080 	add	a, #0x05
+    0000097A 77               [ 7] 2081 	ld	(hl), a
+    0000097B 30 02            [12] 2082 	jr	nc, 00191$
+    0000097D 23               [ 6] 2083 	inc	hl
+    0000097E 34               [11] 2084 	inc	(hl)
+    0000097F                       2085 00191$:
+                                   2086 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:699: loop (i, g_Pawn->SpriteNum)
+    0000097F DD 34 FF         [23] 2087 	inc	-1 (ix)
+    00000982 C3rD7r08         [10] 2088 	jp	00115$
+                                   2089 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:779: Pawn_Draw_Sprite();
+    00000985                       2090 00113$:
+                                   2091 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:782: g_Pawn->Update &= ~(PAWN_UPDATE_PATTERN | PAWN_UPDATE_POSITION);
+    00000985 0A               [ 7] 2092 	ld	a, (bc)
+    00000986 E6 FC            [ 7] 2093 	and	a, #0xfc
+    00000988 02               [ 7] 2094 	ld	(bc), a
+    00000989                       2095 00117$:
+                                   2096 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:783: }
+    00000989 DD F9            [10] 2097 	ld	sp, ix
+    0000098B DD E1            [14] 2098 	pop	ix
+    0000098D C9               [10] 2099 	ret
+                                   2100 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:788: void Pawn_SetMovement(Pawn* pawn, i8 dx, i8 dy) 
+                                   2101 ;	---------------------------------
+                                   2102 ; Function Pawn_SetMovement
+                                   2103 ; ---------------------------------
+    0000098E                       2104 _Pawn_SetMovement::
+    0000098E EB               [ 4] 2105 	ex	de, hl
+                                   2106 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:790: pawn->MoveX = dx;
+    0000098F 21 0E 00         [10] 2107 	ld	hl, #0x000e
+    00000992 19               [11] 2108 	add	hl, de
+    00000993 FD 21 02 00      [14] 2109 	ld	iy, #2
+    00000997 FD 39            [15] 2110 	add	iy, sp
+    00000999 FD 7E 00         [19] 2111 	ld	a, 0 (iy)
+    0000099C 77               [ 7] 2112 	ld	(hl), a
+                                   2113 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:791: pawn->MoveY = dy;
+    0000099D 21 0F 00         [10] 2114 	ld	hl, #0x000f
+    000009A0 19               [11] 2115 	add	hl, de
+    000009A1 FD 7E 01         [19] 2116 	ld	a, 1 (iy)
+    000009A4 FD 23            [10] 2117 	inc	iy
+    000009A6 77               [ 7] 2118 	ld	(hl), a
+                                   2119 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:792: pawn->Update |= PAWN_UPDATE_COLLISION;
+    000009A7 21 0C 00         [10] 2120 	ld	hl, #0x000c
+    000009AA 19               [11] 2121 	add	hl, de
+    000009AB CB E6            [15] 2122 	set	4, (hl)
+                                   2123 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:793: }
+    000009AD E1               [10] 2124 	pop	hl
+    000009AE F1               [10] 2125 	pop	af
+    000009AF E9               [ 4] 2126 	jp	(hl)
+                                   2127 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:797: void Pawn_InitializePhysics(Pawn* pawn, Pawn_PhysicsCB pcb, Pawn_CollisionCB ccb, u8 boundX, u8 boundY)
+                                   2128 ;	---------------------------------
+                                   2129 ; Function Pawn_InitializePhysics
+                                   2130 ; ---------------------------------
+    000009B0                       2131 _Pawn_InitializePhysics::
+    000009B0 DD E5            [15] 2132 	push	ix
+    000009B2 DD 21 00 00      [14] 2133 	ld	ix,	#0
+    000009B6 DD 39            [15] 2134 	add	ix, sp
+    000009B8 4D               [ 4] 2135 	ld	c, l
+    000009B9 44               [ 4] 2136 	ld	b, h
+                                   2137 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:802: pawn->BoundX = boundX;
+    000009BA 21 10 00         [10] 2138 	ld	hl, #0x0010
+    000009BD 09               [11] 2139 	add	hl, bc
+    000009BE DD 7E 06         [19] 2140 	ld	a, 6 (ix)
+    000009C1 77               [ 7] 2141 	ld	(hl), a
+                                   2142 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:805: pawn->BoundY = boundY;
+    000009C2 21 11 00         [10] 2143 	ld	hl, #0x0011
+    000009C5 09               [11] 2144 	add	hl, bc
+    000009C6 DD 7E 07         [19] 2145 	ld	a, 7 (ix)
+    000009C9 77               [ 7] 2146 	ld	(hl), a
+                                   2147 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:807: pawn->PhysicsCB = pcb; 
+    000009CA 21 13 00         [10] 2148 	ld	hl, #0x0013
+    000009CD 09               [11] 2149 	add	hl, bc
+    000009CE 73               [ 7] 2150 	ld	(hl), e
+    000009CF 23               [ 6] 2151 	inc	hl
+    000009D0 72               [ 7] 2152 	ld	(hl), d
+                                   2153 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:808: pawn->CollisionCB = ccb;
+    000009D1 21 15 00         [10] 2154 	ld	hl, #0x0015
+    000009D4 09               [11] 2155 	add	hl, bc
+    000009D5 DD 7E 04         [19] 2156 	ld	a, 4 (ix)
+    000009D8 77               [ 7] 2157 	ld	(hl), a
+    000009D9 23               [ 6] 2158 	inc	hl
+    000009DA DD 7E 05         [19] 2159 	ld	a, 5 (ix)
+    000009DD 77               [ 7] 2160 	ld	(hl), a
+                                   2161 ;C:\Users\Jummy\Downloads\MSXgl-1.5.0b\engine/src/game/pawn.c:809: }
+    000009DE DD E1            [14] 2162 	pop	ix
+    000009E0 E1               [10] 2163 	pop	hl
+    000009E1 F1               [10] 2164 	pop	af
+    000009E2 F1               [10] 2165 	pop	af
+    000009E3 E9               [ 4] 2166 	jp	(hl)
+                                   2167 	.area _CODE
+                                   2168 	.area _INITIALIZER
+                                   2169 	.area _CABS (ABS)
