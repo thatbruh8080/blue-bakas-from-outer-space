@@ -1496,7 +1496,6 @@ void DestroyMapTile(u8 tx, u8 ty)
         g_GameOverToTitle = TRUE;
         g_GameOverSoundDone = FALSE;
 
-        // Stop the fuel loop from restarting over the game-over sound.
         g_FuelSoundWanted = FALSE;
         g_FuelSoundRestart = FALSE;
 
@@ -1513,7 +1512,9 @@ void DestroyMapTile(u8 tx, u8 ty)
         return;
     }
 
-    Energy -= 50;
+    if(Energy > 50)
+      Energy -= 50;
+  
     Print_DrawTextAt(23, 22, " SHIP HIT");
     g_ShowGoodHit = FALSE;
     DrawHUD();
