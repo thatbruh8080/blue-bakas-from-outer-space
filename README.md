@@ -1,4 +1,4 @@
-# blue-bakas-from-outer-space
+# Blue Bakas from Outer Space
 A (honestly bad) port of Blue Meanies from Outer Space for MSX1, developed with MSXgl
 Original game made by Duane Later for the VIC-20 in 1981
 
@@ -7,7 +7,7 @@ Original game made by Duane Later for the VIC-20 in 1981
   <img src="./screenshots/Bluebakas_0003.png" alt="Gameplay" title="Gameplay"/>
 </div>
 
-Controls:
+# Controls:
 **Q, A and Z** for the cannons on the left respectively from top to bottom
 
 **O, K and M** for the cannons on the right
