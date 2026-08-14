@@ -1,6 +1,7 @@
 # Blue Bakas from Outer Space
-A (honestly bad) port of Blue Meanies from Outer Space for MSX1, developed with MSXgl
-Original game made by Duane Later for the VIC-20 in 1981
+A (honestly bad) port of Blue Meanies from Outer Space for MSX1, developed with MSXgl by aoineko.
+
+Original game's made by Duane Later for the VIC-20 in 1981
 
 <div>
   <img src="./screenshots/Bluebakas_0002.png" alt="Title screen" title="Title screen"/>
