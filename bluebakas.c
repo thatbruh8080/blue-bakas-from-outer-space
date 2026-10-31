@@ -1,13 +1,13 @@
-// ____________________________                                                                                                                             
-// ██▀▀█▀▀██▀▀▀▀▀▀▀█▀▀█        │  ██▀▄ ▄▄               ██▀▄      ██               ▄█▀▀                  ▄▀█▄      ██                ▄▄▄                    
+// ____________________________
+// ██▀▀█▀▀██▀▀▀▀▀▀▀█▀▀█        │  ██▀▄ ▄▄               ██▀▄      ██               ▄█▀▀                  ▄▀█▄      ██                ▄▄▄
 // ██  ▀  █▄  ▀██▄ ▀ ▄█ ▄▀▀ █  │  ██▀▄ ██  ██ █ ▄███    ██▀▄ ▄▀██ ██▄▀ ▄▀██  ██▀   ██▀▀ ██▄▀ ▄▀█▄ ▄█▄█   █ ██ ██ █ ██▀▀ ▄███ ██▄▀   ▀█▄  ██▀▄ ▄▀██ ▄█▀▄ ▄███
 // █  █ █  ▀▀  ▄█  █  █ ▀▄█ █▄ │  ██▄▀ ▀█▄ ▀█▄▀ ▀█▄▄    ██▄▀ ▀▄██ ██ █ ▀▄██ ▄██    ██   ██   ▀▄█▀ ██ █   ▀▄█▀ ▀█▄▀ ▀█▄▄ ▀█▄▄ ██     ▄▄█▀ ██▀  ▀▄██ ▀█▄  ▀█▄▄
-// ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀────────┘                                                                                                         ▀▀                 
-// Blue Meanies from Outer Space port                                          
-// Original game programmed by Duane Later and published by Commodore Business Machines for the VIC-20 in 1981.                                             
-// 2026, thatbruh                                                                                                                                           
-//──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────                                             
-                                                                                 
+// ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀────────┘                                                                                                         ▀▀
+// Blue Meanies from Outer Space port
+// Original game programmed by Duane Later and published by Commodore Business Machines for the VIC-20 in 1981.
+// 2026, thatbruh
+//──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
 //=============================================================================
 // Includes and declarations
 //=============================================================================
@@ -74,17 +74,34 @@ u16 Energy = 1000;
 #define FUEL_RESPAWN_DELAY_MEDIUM  900
 #define FUEL_RESPAWN_DELAY_LONG    1800
 
-// Fixed-point movement for smooth sprites.
+// Fixed-point movement for smooth meanie sprites.
 // 4 fractional bits means:
 // 16 = 1 pixel
 // 8  = 0.5 pixel
 // 4  = 0.25 pixel
 #define FIX_SHIFT           4
-#define FIX_ONE             16
 
 // Meanie speed in fixed-point units.
-#define MEANIE_HSPEED_FIX   16  // 1 pixel/frame sideways
-#define MEANIE_VSPEED_FIX   8   // 0.5 pixel/frame downward
+// Smooth interpretation of the reference video's short sideways hops and drops.
+// Decisions use 8-frame segments. The probabilities below are tuning choices,
+// not a claim to reproduce the VIC-20 program's original random generator.
+#define MEANIE_HSPEED_FIX   16  // Base sideways speed: 1 pixel/frame (or twice this).
+#define MEANIE_VSPEED_FIX   24  // Dropping segments: 1.5 pixels/frame.
+#define MEANIE_DECISION_FRAMES 8
+
+// Assumes JITTER is the first entry in your existing AYfx bank.
+// Change only this ID if the bank has been reordered.
+#define SFX_JITTER          0
+#define SFX_FUEL            6
+#define SFX_AMBIENT_NONE    255
+#define SFX_JITTER_PRIORITY 14 // Below fuel (12), laser (1) and impact/game-over (0).
+
+#if MEANIE_HSPEED_FIX != 16
+#error Short-hop movement expects a base horizontal speed of 1 pixel/frame.
+#endif
+#if MEANIE_VSPEED_FIX < 1 || MEANIE_VSPEED_FIX > 32
+#error Keep descent between 1/16 and 2 pixels/frame for the collision sampler.
+#endif
 
 #define SPR_PAT_MEANIE      0
 #define SPR_PAT_FUEL        1
@@ -101,19 +118,18 @@ typedef struct
 {
     Pawn PawnObj;
     bool Active;
-    u8 Tick;
 
     // Smooth 4-bit fixed-point position.
     // High bits are pixels, low 4 bits are fractional.
     i16 XFix;
     i16 YFix;
 
-    // Smooth 4-bit fixed-point velocity.
-    i16 VXFix;
-    i16 VYFix;
+    // Segment velocities in 4-bit fixed-point units.
+    i8 VXFix;
+    u8 VYFix;
 
-    // How much horizontal movement remains in the current left/right move.
-    u16 MoveLeftFix;
+    // Frames left before choosing another short hop/drop.
+    u8 MoveFrames;
 } Meanie;
 
 //=============================================================================
@@ -127,17 +143,22 @@ Pawn g_Explosion;
 bool g_FuelActive = FALSE;
 bool g_ExplosionActive = FALSE;
 
-i16 g_FuelXFix = 0;
-i16 g_FuelYFix = 0;
+// Fuel moves in whole pixels, so it does not need fixed-point coordinates.
+u8 g_FuelX = 0;
+u8 g_FuelY = 0;
 
 u16 g_FuelSpawnDelay = FUEL_RESPAWN_DELAY_LONG;
 
 u16 g_Rand = 0xA7;
-bool g_FuelSoundWanted = FALSE;
-bool g_FuelSoundRestart = FALSE;
+volatile bool g_GameOverToTitle = FALSE;
+volatile bool g_GameOverSoundDone = FALSE;
 
-bool g_GameOverToTitle = FALSE;
-bool g_GameOverSoundDone = FALSE;
+// One meanie owns JITTER until it dies. Audio randomness does not alter AI RNG.
+u8 g_JitterOwner = MEANIE_COUNT; // Sentinel: no owner.
+u8 g_SoundRand = 0xA7;
+bool g_JitterWanted = FALSE; // Pending movement sound from this owner only.
+bool g_FuelSoundNext = TRUE;
+volatile u8 g_AmbientSound = SFX_AMBIENT_NONE; // Shared with finish callback.
 
 //=============================================================================
 // Function prototypes
@@ -162,15 +183,16 @@ void TrySpawnFuel();
 void SpawnFuel();
 void DespawnFuel();
 bool FuelHitsSolidTile();
-void UpdateFuelSound();
 
 void OnSFXFinished();
+u8 PlaySFX(u8 id, u8 priority);
+void UpdateMeanieSound();
 
 void InitExplosion();
 void StartExplosion(i16 x, i16 y);
 void UpdateExplosion();
 void ExplosionDestroyTilesAt(i16 x, i16 y);
-bool IsExplosionDestroyableTile(u8 tile);
+bool IsDestroyableTile(u8 tile);
 void ShowMeanerScreen();
 void LoadMap();
 void LoadLevel();
@@ -178,12 +200,11 @@ void ResetGameplayFlags();
 bool AnyKeyDown();
 void WaitForCleanKeyPress();
 
-
 //=============================================================================
 // RAM buffer for the map (32x22)
 //=============================================================================
 
-u8 g_RamMap[PLAYFIELD_SIZE]; 
+u8 g_RamMap[PLAYFIELD_SIZE];
 
 //=============================================================================
 // Repair robot state
@@ -219,7 +240,6 @@ u8 g_KeyRow2Prev = 0xFF;
 u8 g_KeyRow4Prev = 0xFF;
 u8 g_KeyRow5Prev = 0xFF;
 
-
 //=============================================================================
 // Initialize graphics
 //=============================================================================
@@ -232,28 +252,25 @@ void InitGraphics() {
     VDP_SetColor(COLOR_BLACK);
     VDP_SetSpriteFlag(VDP_SPRITE_SIZE_8);
 
-    // Writes Meanie sprite to the pattern table
     VDP_WriteVRAM_16K(
         g_Meanie8x8,
         VDP_GetSpritePatternTable() + (SPR_PAT_MEANIE * 8),
         sizeof(g_Meanie8x8)
     );
 
-    // Writes fuel tank sprite to the pattern table
     VDP_WriteVRAM_16K(
         g_Fuel8x8,
         VDP_GetSpritePatternTable() + (SPR_PAT_FUEL * 8),
         sizeof(g_Fuel8x8)
     );
 
-    // Writes explosion sprites to the pattern table
     VDP_WriteVRAM_16K(
         g_Explosion8x8,
         VDP_GetSpritePatternTable() + (SPR_PAT_EXPLOSION * 8),
         sizeof(g_Explosion8x8)
     );
 
-    // SCREEN 1 has a 256-pattern table. The tiles correspond to 0-31
+    // SCREEN 1 has one 256-pattern table. Our game graphics use 0-31.
     VDP_WriteVRAM_16K(
         g_Tiles_Patterns,
         g_ScreenPatternLow,
@@ -265,8 +282,9 @@ void InitGraphics() {
     // SCREEN 1 color table to white on transparent/backdrop.
     Print_SetTextFont(g_Font_PETSCII, 32);
 
-    // SCREEN 1 color table: one byte controls each color pair of 8 patterns.
-    // Leave all font groups white on the black backdrop, then override the four groups used by the game tiles.
+    // SCREEN 1 color table: one byte controls each group of 8 patterns.
+    // Leave all font groups white on the black backdrop, then override
+    // the four groups used by the game tiles.
     VDP_FillVRAM_16K(0xF0, g_ScreenColorLow, 32);
     VDP_Poke_16K(0x20, g_ScreenColorLow + 0); // patterns  0-7:  green / backdrop
     VDP_Poke_16K(0xF0, g_ScreenColorLow + 1); // patterns  8-15: white / backdrop
@@ -296,25 +314,99 @@ void InitSound()
     BIOS_SetHookCallback(H_TIMI, VBlankHook);
 }
 
-void PlaySFX(u8 id, u8 prio)
+// Foreground sound requests use MSXgl's interrupt helpers, not inline assembly.
+// Keep the bank-pointer update atomic relative to the VBlank replayer.
+u8 PlaySFX(u8 id, u8 priority)
 {
-    ayFX_PlayBank(id, prio);
+    u8 result;
+    DisableInterrupt();
+    result = ayFX_PlayBank(id, priority);
+    if(result == AYFX_ERROR_NONE)
+        g_AmbientSound = (id == SFX_JITTER || id == SFX_FUEL) ? id : SFX_AMBIENT_NONE;
+    EnableInterrupt();
+    return result;
+}
+
+void UpdateMeanieSound()
+{
+    u8 i, candidate, sound, priority;
+
+    // Retain a living owner; transfer only when it dies or leaves the screen.
+    if(g_JitterOwner == MEANIE_COUNT || !g_Meanies[g_JitterOwner].Active)
+    {
+        g_JitterOwner = MEANIE_COUNT;
+        g_JitterWanted = FALSE;
+        // Small independent LFSR: sound ownership cannot change movement/spawns.
+        g_SoundRand = (g_SoundRand >> 1) ^ ((g_SoundRand & 1) ? 0xB8 : 0);
+        candidate = g_SoundRand % MEANIE_COUNT;
+        for(i = 0; i < MEANIE_COUNT; i++)
+        {
+            if(g_Meanies[candidate].Active)
+            {
+                g_JitterOwner = candidate;
+                g_JitterWanted = TRUE;
+                break;
+            }
+            if(++candidate == MEANIE_COUNT)
+                candidate = 0;
+        }
+        // Stop the dead owner's voice, but never mute a laser/hit/game-over SFX.
+        DisableInterrupt();
+        if(g_AmbientSound == SFX_JITTER)
+        {
+            ayFX_Mute();
+            g_AmbientSound = SFX_AMBIENT_NONE;
+        }
+        EnableInterrupt();
+    }
+
+    DisableInterrupt();
+    if(!g_FuelActive && g_AmbientSound == SFX_FUEL)
+    {
+        ayFX_Mute();
+        g_AmbientSound = SFX_AMBIENT_NONE;
+    }
+    EnableInterrupt();
+
+    // Keep the intentional laser freeze. Do not queue a stale movement chirp.
+    if(g_LaserActive || g_LaserErasing || g_GameOverToTitle)
+    {
+        g_JitterWanted = FALSE;
+        return;
+    }
+
+    if(g_FuelActive && (g_FuelSoundNext || !g_JitterWanted))
+    {
+        sound = SFX_FUEL;
+        priority = 12;
+    }
+    else if(g_JitterOwner != MEANIE_COUNT && g_JitterWanted)
+    {
+        sound = SFX_JITTER;
+        priority = SFX_JITTER_PRIORITY;
+    }
+    else
+        return;
+
+    // Alternate whole effects on the existing AYfx channel, without chopping
+    // either sound into fragments. Important effects still preempt both.
+    DisableInterrupt();
+    if((ayFX_Priority & 0x80) && ayFX_PlayBank(sound, priority) == AYFX_ERROR_NONE)
+    {
+        g_AmbientSound = sound;
+        g_FuelSoundNext = (sound == SFX_JITTER);
+        if(sound == SFX_JITTER)
+            g_JitterWanted = FALSE;
+    }
+    EnableInterrupt();
 }
 
 void OnSFXFinished()
 {
     ayFX_Mute();
-
+    g_AmbientSound = SFX_AMBIENT_NONE;
     if(g_GameOverToTitle)
-    {
         g_GameOverSoundDone = TRUE;
-        return;
-    }
-
-    if(g_FuelSoundWanted)
-    {
-        g_FuelSoundRestart = TRUE;
-    }
 }
 
 //=============================================================================
@@ -327,6 +419,10 @@ void ResetGameplayFlags()
     g_LaserErasing = FALSE;
     g_ShowGoodHit = FALSE;
     g_hasHUDChanged = TRUE;
+    g_JitterWanted = FALSE;
+    g_JitterOwner = MEANIE_COUNT;
+    g_FuelSoundNext = TRUE;
+    g_AmbientSound = SFX_AMBIENT_NONE;
 }
 
 bool AnyKeyDown()
@@ -394,6 +490,10 @@ void InitMeanie()
 {
     u8 i;
 
+    g_JitterOwner = MEANIE_COUNT;
+    g_JitterWanted = FALSE;
+    g_FuelSoundNext = TRUE;
+
     for(i = 0; i < MEANIE_COUNT; i++)
     {
         // Each meanie uses one 8x8 sprite.
@@ -406,11 +506,12 @@ void InitMeanie()
             g_MeanieActions
         );
 
+        // Initialize the static frame once. No per-frame animation work is needed.
+        Pawn_Update(&g_Meanies[i].PawnObj);
         Pawn_SetPosition(&g_Meanies[i].PawnObj, 122, 0);
         Pawn_Disable(&g_Meanies[i].PawnObj);
 
         g_Meanies[i].Active = FALSE;
-        g_Meanies[i].Tick = 0;
 
         g_Meanies[i].XFix = 0;
         g_Meanies[i].YFix = 0;
@@ -420,18 +521,13 @@ void InitMeanie()
 
         // No current sideways movement yet.
         // SpawnMeanie() will call PickMeanieSideMove().
-        g_Meanies[i].MoveLeftFix = 0;
+        g_Meanies[i].MoveFrames = 0;
     }
 }
 
 //=============================================================================
 // Initialize fuel
 //=============================================================================
-
-const Pawn_Sprite g_FuelSprite[] =
-{
-    { 0, 0, 0, COLOR_CYAN, 0 }
-};
 
 const Pawn_Frame g_FuelFrames[] =
 {
@@ -447,18 +543,19 @@ void InitFuel()
 {
     Pawn_Initialize(
         &g_Fuel,
-        g_FuelSprite,
-        numberof(g_FuelSprite),
+        g_MeanieSprite,
+        numberof(g_MeanieSprite),
         SPR_ID_FUEL,
         g_FuelActions
     );
 
+    Pawn_Update(&g_Fuel); // Resolve static pattern 1 once.
     Pawn_SetPosition(&g_Fuel, 0, 216);
     Pawn_Disable(&g_Fuel);
 
     g_FuelActive = FALSE;
-    g_FuelXFix = 0;
-    g_FuelYFix = 0;
+    g_FuelX = 0;
+    g_FuelY = 0;
 
     g_FuelSpawnDelay = PickFuelRespawnDelay();
 }
@@ -472,8 +569,8 @@ void SpawnFuel()
     tileX = RandRange(4, 27);
     x = tileX << 3;
 
-    g_FuelXFix = ((i16)x) << FIX_SHIFT;
-    g_FuelYFix = 0;
+    g_FuelX = x;
+    g_FuelY = 0;
 
     Pawn_SetPosition(&g_Fuel, x, 0);
     Pawn_Enable(&g_Fuel);
@@ -487,7 +584,6 @@ void DespawnFuel()
     g_FuelActive = FALSE;
     g_FuelSpawnDelay = PickFuelRespawnDelay();
 
-    UpdateFuelSound();
 }
 
 void TrySpawnFuel()
@@ -506,25 +602,13 @@ void TrySpawnFuel()
 
 bool FuelHitsSolidTile()
 {
-    i16 x;
-    i16 y;
+    u8 ty = (g_FuelY + 7) >> 3;
 
-    u8 tx1;
-    u8 tx2;
-    u8 ty;
-
-    x = g_FuelXFix >> FIX_SHIFT;
-    y = g_FuelYFix >> FIX_SHIFT;
-
-    // Check bottom-left and bottom-right of the 8x8 fuel sprite.
-    tx1 = (u8)((x + 1) >> 3);
-    tx2 = (u8)((x + 7) >> 3);
-    ty  = (u8)((y + 7) >> 3);
-
+    // SpawnFuel aligns X to an 8-pixel tile and fuel never moves sideways.
+    // Bottom-left and bottom-right therefore always hit the same map column.
     if(ty >= PLAYFIELD_H)
         return FALSE;
-
-    return (GetMapTile(tx1, ty) == TILE_SOLID) || (GetMapTile(tx2, ty) == TILE_SOLID);
+    return GetMapTile(g_FuelX >> 3, ty) == TILE_SOLID;
 }
 
 void UpdateFuel()
@@ -535,28 +619,19 @@ void UpdateFuel()
     bool freeze = g_LaserActive || g_LaserErasing;
 
     // During laser draw/erase, freeze the fuel tank completely:
-    // no spawn countdown, no falling, no collision, just redraw if visible.
+    // no spawn countdown, falling or collision. Its hardware sprite stays visible.
     if(freeze)
-    {
-        if(g_FuelActive)
-        {
-            Pawn_Draw(&g_Fuel);
-        }
-
         return;
-    }
 
     TrySpawnFuel();
-
-    UpdateFuelSound();
 
     if(!g_FuelActive)
         return;
 
-    g_FuelYFix += 16;
+    g_FuelY++;
 
-    x = g_FuelXFix >> FIX_SHIFT;
-    y = g_FuelYFix >> FIX_SHIFT;
+    x = g_FuelX;
+    y = g_FuelY;
 
     if(FuelHitsSolidTile())
     {
@@ -583,34 +658,7 @@ void UpdateFuel()
 
     Pawn_SetPosition(&g_Fuel, (u8)x, (u8)y);
 
-    Pawn_Update(&g_Fuel);
     Pawn_Draw(&g_Fuel);
-}
-
-void UpdateFuelSound()
-{
-    if(!g_FuelActive)
-    {
-        g_FuelSoundWanted = FALSE;
-        g_FuelSoundRestart = FALSE;
-        return;
-    }
-
-    if(!g_FuelSoundWanted)
-    {
-        g_FuelSoundWanted = TRUE;
-        g_FuelSoundRestart = TRUE;
-    }
-
-    if(g_FuelSoundRestart)
-    {
-        // Low priority so laser/hit can override it.
-        // 6 = your fuel loop SFX index.
-        if(ayFX_PlayBank(6, 12) == AYFX_ERROR_NONE)
-        {
-            g_FuelSoundRestart = FALSE;
-        }
-    }
 }
 
 u16 PickFuelRespawnDelay()
@@ -662,6 +710,7 @@ void InitExplosion()
         g_ExplosionActions
     );
 
+    Pawn_Update(&g_Explosion); // Resolve the static 2x2 explosion frame once.
     Pawn_SetPosition(&g_Explosion, 0, 216);
     Pawn_Disable(&g_Explosion);
 
@@ -699,7 +748,6 @@ void UpdateExplosion()
     if(!g_ExplosionActive)
         return;
 
-    Pawn_Update(&g_Explosion);
     Pawn_Draw(&g_Explosion);
 
     // Keep the explosion alive while the laser is active or erasing.
@@ -758,29 +806,18 @@ void SetMapTile(u8 tx, u8 ty, u8 tile)
 
     g_RamMap[index] = tile;
 
-    VDP_WriteVRAM_16K(
-        &g_RamMap[index],
-        VDP_GetLayoutTable() + index,
-        1
-    );
+    VDP_Poke_16K(tile, VDP_GetLayoutTable() + index);
 }
 
 bool IsDestroyableTile(u8 tile)
 {
     // 1 = solid
-    // 3 = cannon
-    // 4 = laser 1
-    // 5 = core
-    // 6 = laser 2
-    // all destroyable by meanies
-    return tile != TILE_EMPTY && tile != TILE_REPAIR_ROBOT;
-}
-
-bool IsExplosionDestroyableTile(u8 tile)
-{
-    // Safer: do not let explosions erase the repair robot overlay.
-    // If you truly want explosions to erase absolutely everything,
-    // remove this check.
+    // 8 = cannon
+    // 24 = laser 1
+    // 16 = core
+    // 17 = laser 2
+    // All nonempty tiles except the repair robot are destroyable by meanies.
+    // Explosions share this check so they cannot erase the repair robot overlay.
     return tile != TILE_EMPTY && tile != TILE_REPAIR_ROBOT;
 }
 
@@ -820,7 +857,7 @@ void ExplosionDestroyTilesAt(i16 x, i16 y)
         {
             tile = GetMapTile(tx, ty);
 
-            if(IsExplosionDestroyableTile(tile))
+            if(IsDestroyableTile(tile))
             {
                 SetMapTile(tx, ty, TILE_EMPTY);
             }
@@ -904,10 +941,10 @@ void RepairRobotTile()
 
     // If this spot originally had something important, restore that.
     // 1 = wall/floor
-    // 3 = cannon
-    // 4 = laser 1
-    // 5 = core
-    // 6 = laser 2
+    // 8 = cannon
+    // 24 = laser 1
+    // 16 = core
+    // 17 = laser 2
     if(originalTile != TILE_EMPTY)
         buildTile = originalTile;
     else
@@ -978,22 +1015,6 @@ void UpdateRepairRobot()
 // Lasers
 //=============================================================================
 
-bool HasLaserOnScreen()
-{
-    u16 index;
-
-    for(index = 0; index < PLAYFIELD_SIZE; index++)
-    {
-        if(g_RamMap[index] == TILE_LASER1)
-            return TRUE;
-
-        if(g_RamMap[index] == TILE_LASER2)
-            return TRUE;
-    }
-
-    return FALSE;
-}
-
 bool CanFireLaser(u8 cannonX, u8 cannonY)
 {
     // If the cannon was destroyed, it cannot fire anymore.
@@ -1011,146 +1032,75 @@ bool CanFireLaser(u8 cannonX, u8 cannonY)
     return TRUE;
 }
 
+// Both the laser tile and target occupy inclusive 8x8 pixel boxes.
+bool LaserOverlaps(u8 tx, u8 ty, i16 x, i16 y)
+{
+    i16 dx = x - ((i16)tx << 3);
+    i16 dy = y - ((i16)ty << 3);
+    return dx >= -7 && dx <= 7 && dy >= -7 && dy <= 7;
+}
+
 bool LaserHitsFuelAtTile(u8 tx, u8 ty)
 {
-    i16 laserLeft;
-    i16 laserTop;
-    i16 laserRight;
-    i16 laserBottom;
-
-    i16 fuelLeft;
-    i16 fuelTop;
-    i16 fuelRight;
-    i16 fuelBottom;
-
-    if(!g_FuelActive)
+    if(!g_FuelActive || !LaserOverlaps(tx, ty, g_FuelX, g_FuelY))
         return FALSE;
 
-    laserLeft = ((i16)tx) << 3;
-    laserTop = ((i16)ty) << 3;
-    laserRight = laserLeft + 7;
-    laserBottom = laserTop + 7;
-
-    fuelLeft = g_FuelXFix >> FIX_SHIFT;
-    fuelTop = g_FuelYFix >> FIX_SHIFT;
-    fuelRight = fuelLeft + 7;
-    fuelBottom = fuelTop + 7;
-
-    if(fuelRight < laserLeft)
-        return FALSE;
-
-    if(fuelLeft > laserRight)
-        return FALSE;
-
-    if(fuelBottom < laserTop)
-        return FALSE;
-
-    if(fuelTop > laserBottom)
-        return FALSE;
-
-    StartExplosion(fuelLeft, fuelTop);
-
+    StartExplosion(g_FuelX, g_FuelY);
     DespawnFuel();
-
     return TRUE;
 }
 
 bool LaserHitsMeanieAtTile(u8 tx, u8 ty)
 {
     u8 i;
-
-    i16 laserLeft;
-    i16 laserTop;
-    i16 laserRight;
-    i16 laserBottom;
-
-    i16 meanieLeft;
-    i16 meanieTop;
-    i16 meanieRight;
-    i16 meanieBottom;
-
-    bool hit;
-
-    hit = FALSE;
-
-    laserLeft = ((i16)tx) << 3;
-    laserTop = ((i16)ty) << 3;
-    laserRight = laserLeft + 7;
-    laserBottom = laserTop + 7;
+    i16 x, y;
+    bool hit = FALSE;
+    Meanie* meanie;
 
     for(i = 0; i < MEANIE_COUNT; i++)
     {
-        if(!g_Meanies[i].Active)
+        meanie = &g_Meanies[i];
+        if(!meanie->Active)
             continue;
-
-        meanieLeft = g_Meanies[i].XFix >> FIX_SHIFT;
-        meanieTop = g_Meanies[i].YFix >> FIX_SHIFT;
-        meanieRight = meanieLeft + 7;
-        meanieBottom = meanieTop + 7;
-
-        if(meanieRight < laserLeft)
+        x = meanie->XFix >> FIX_SHIFT;
+        y = meanie->YFix >> FIX_SHIFT;
+        if(!LaserOverlaps(tx, ty, x, y))
             continue;
-
-        if(meanieLeft > laserRight)
-            continue;
-
-        if(meanieBottom < laserTop)
-            continue;
-
-        if(meanieTop > laserBottom)
-            continue;
-
-        StartExplosion(meanieLeft, meanieTop);
-
-        Pawn_Disable(&g_Meanies[i].PawnObj);
-        g_Meanies[i].Active = FALSE;
-
+        StartExplosion(x, y);
+        Pawn_Disable(&meanie->PawnObj);
+        meanie->Active = FALSE;
         hit = TRUE;
     }
-
     return hit;
 }
 
 void StartLaser(u8 row, bool fromLeft)
 {
-    if(fromLeft)
-    {
-        if(!CanFireLaser(LASER_LEFT_CANNON_X, row))
-            return;
+    if(!CanFireLaser(fromLeft ? LASER_LEFT_CANNON_X : LASER_RIGHT_CANNON_X, row))
+        return;
 
-        g_LaserTileX = LASER_COL_MIN;
-        g_LaserTileY = row;
-        g_LaserTile = TILE_LASER1;
-        g_LaserDir = 1;
-    }
-    else
-    {
-        if(!CanFireLaser(LASER_RIGHT_CANNON_X, row))
-            return;
-
-        g_LaserTileX = LASER_COL_MAX;
-        g_LaserTileY = row;
-        g_LaserTile = TILE_LASER2;
-        g_LaserDir = -1;
-    }
-
+    g_LaserTileX = fromLeft ? LASER_COL_MIN : LASER_COL_MAX;
+    g_LaserTileY = row;
+    g_LaserTile = fromLeft ? TILE_LASER1 : TILE_LASER2;
+    g_LaserDir = fromLeft ? 1 : -1;
     Energy -= 50;
     g_hasHUDChanged = TRUE;
     DrawHUD();
-
     g_LaserStepDelay = LASER_STEP_DELAY;
     g_LaserErasing = FALSE;
     g_LaserActive = TRUE;
-
     SetMapTile(g_LaserTileX, g_LaserTileY, g_LaserTile);
     PlaySFX(4, 1);
 }
 
 void UpdateActiveLaser()
 {
+    bool hitMeanie, hitFuel;
+    u8 first = g_LaserDir > 0 ? LASER_COL_MIN : LASER_COL_MAX;
+    u8 last = g_LaserDir > 0 ? LASER_COL_MAX : LASER_COL_MIN;
+
     if(!g_LaserActive)
         return;
-
     if(g_LaserStepDelay > 0)
     {
         g_LaserStepDelay--;
@@ -1159,118 +1109,47 @@ void UpdateActiveLaser()
 
     if(!g_LaserErasing)
     {
+        // Evaluate both: a laser can hit fuel and meanies on the same tile.
+        hitMeanie = LaserHitsMeanieAtTile(g_LaserTileX, g_LaserTileY);
+        hitFuel = LaserHitsFuelAtTile(g_LaserTileX, g_LaserTileY);
+        if(hitMeanie || hitFuel)
         {
-            bool hitMeanie;
-            bool hitFuel;
-
-            hitMeanie = LaserHitsMeanieAtTile(g_LaserTileX, g_LaserTileY);
-            hitFuel = LaserHitsFuelAtTile(g_LaserTileX, g_LaserTileY);
-
-            if(hitMeanie || hitFuel)
+            g_ShowGoodHit = hitMeanie;
+            if(hitMeanie)
+                Score = Score <= 190 ? Score + 10 : 200;
+            else
+                Score = Score >= 80 ? Score - 80 : 0;
+            g_hasHUDChanged = TRUE;
+            PlaySFX(5, 0);
+            if(Score >= 200)
             {
-                if(hitMeanie)
-                {
-                    g_ShowGoodHit = TRUE;
-
-                    if(Score <= 190)
-                        Score += 10;
-                    else
-                        Score = 200;
-                }
-                else
-                {
-                    g_ShowGoodHit = FALSE;
-
-                    if(Score >= 80)
-                        Score -= 80;
-                    else
-                        Score = 0;
-                }
-
-                g_hasHUDChanged = TRUE;
-
-                PlaySFX(5, 0);
-
-                if(Score >= 200)
-                {
-                    ShowMeanerScreen();
-                    return;
-                }
-
-                SetMapTile(g_LaserTileX, g_LaserTileY, TILE_EMPTY);
-
-                g_LaserErasing = TRUE;
-
-                if(g_LaserDir > 0)
-                    g_LaserTileX = LASER_COL_MIN;
-                else
-                    g_LaserTileX = LASER_COL_MAX;
-
+                ShowMeanerScreen();
                 return;
             }
+            SetMapTile(g_LaserTileX, g_LaserTileY, TILE_EMPTY);
+            g_LaserErasing = TRUE;
+            g_LaserTileX = first;
+            return;
         }
+    }
 
-        // Draw current laser tile.
-        SetMapTile(g_LaserTileX, g_LaserTileY, g_LaserTile);
-
-        // Move laser head.
-        if(g_LaserDir > 0)
+    // Draw the current laser tile, or erase in the same direction it was drawn.
+    SetMapTile(g_LaserTileX, g_LaserTileY,
+               g_LaserErasing ? TILE_EMPTY : g_LaserTile);
+    if(g_LaserTileX == last)
+    {
+        if(g_LaserErasing)
         {
-            if(g_LaserTileX >= LASER_COL_MAX)
-            {
-                g_LaserErasing = TRUE;
-                g_LaserTileX = LASER_COL_MIN;
-            }
-            else
-            {
-                g_LaserTileX++;
-            }
+            g_LaserActive = FALSE;
+            g_LaserErasing = FALSE;
+            return;
         }
-        else
-        {
-            if(g_LaserTileX <= LASER_COL_MIN)
-            {
-                g_LaserErasing = TRUE;
-                g_LaserTileX = LASER_COL_MAX;
-            }
-            else
-            {
-                g_LaserTileX--;
-            }
-        }
+        g_LaserErasing = TRUE;
+        g_LaserTileX = first;
     }
     else
-    {
-        // Erase the laser line in the same direction it was drawn.
-        SetMapTile(g_LaserTileX, g_LaserTileY, TILE_EMPTY);
-
-        if(g_LaserDir > 0)
-        {
-            if(g_LaserTileX >= LASER_COL_MAX)
-            {
-                g_LaserActive = FALSE;
-                g_LaserErasing = FALSE;
-                return;
-            }
-            else
-            {
-                g_LaserTileX++;
-            }
-        }
-        else
-        {
-            if(g_LaserTileX <= LASER_COL_MIN)
-            {
-                g_LaserActive = FALSE;
-                g_LaserErasing = FALSE;
-                return;
-            }
-            else
-            {
-                g_LaserTileX--;
-            }
-        }
-    }
+        // Move the laser head in its firing direction.
+        g_LaserTileX += g_LaserDir;
 
     g_LaserStepDelay = LASER_STEP_DELAY;
 }
@@ -1357,25 +1236,20 @@ u8 RandRange(u8 min, u8 max)
 
 void PickMeanieSideMove(Meanie* meanie)
 {
-    u8 distance;
-    u8 choice;
-    choice = RandRange(0, 2);
+    u8 choice = Rand8();
+    i8 speed;
 
-    if(choice == 0)
-        distance = 8;
-    else if(choice == 1)
-        distance = 16;
-    else
-        distance = 32;
-
-    meanie->MoveLeftFix = ((u16)distance) << FIX_SHIFT;
-
-    // 1/2 chance left, 1/2 chance right.
-    // Use the high bit, not bit 0, because bit 0 is weak in this tiny RNG.
-    if(Rand8() & 0x80)
-        meanie->VXFix = MEANIE_HSPEED_FIX;
-    else
-        meanie->VXFix = -MEANIE_HSPEED_FIX;
+    // In the reference, a move can shift sideways, drop, or do both.
+    // Short 8/16-pixel horizontal hops replace the old long diagonal glides.
+    // 1/4 of segments have no sideways movement; 1/4 have no descent.
+    speed = (choice & 1) ? MEANIE_HSPEED_FIX : 2 * MEANIE_HSPEED_FIX;
+    if(choice & 0x80)
+        speed = -speed;
+    meanie->VXFix = (choice & 0x0C) ? speed : 0;
+    meanie->VYFix = (choice & 0x60) ? MEANIE_VSPEED_FIX : 0;
+    meanie->MoveFrames = MEANIE_DECISION_FRAMES;
+    if(g_JitterOwner != MEANIE_COUNT && meanie == &g_Meanies[g_JitterOwner])
+        g_JitterWanted = TRUE;
 }
 
 void SpawnMeanie(Meanie* meanie)
@@ -1390,16 +1264,12 @@ void SpawnMeanie(Meanie* meanie)
     meanie->XFix = ((i16)x) << FIX_SHIFT;
     meanie->YFix = ((i16)MEANIE_SPAWN_Y) << FIX_SHIFT;
 
-    // Smooth downward speed.
-    meanie->VYFix = MEANIE_VSPEED_FIX;
-
     // Pick first left/right move.
     PickMeanieSideMove(meanie);
 
     Pawn_SetPosition(&meanie->PawnObj, x, MEANIE_SPAWN_Y);
     Pawn_Enable(&meanie->PawnObj);
 
-    meanie->Tick = Rand8();
     meanie->Active = TRUE;
 }
 
@@ -1407,71 +1277,49 @@ void TrySpawnMeanie()
 {
     u8 i;
 
-    // 1 in 32 chance.
-    // Use high bits so spawn timing is less patterned.
-    if((Rand8() & 0xF8) != 0)
-        return;
-
-    // Find one inactive meanie slot.
+    // Find one inactive slot first: do not run the RNG while both are occupied.
     for(i = 0; i < MEANIE_COUNT; i++)
     {
         if(!g_Meanies[i].Active)
         {
-            SpawnMeanie(&g_Meanies[i]);
+            // 1 in 32 chance, using the high bits as before.
+            if((Rand8() & 0xF8) == 0)
+                SpawnMeanie(&g_Meanies[i]);
             return;
         }
     }
 }
 
-bool CheckMeaniePoint(i16 px, i16 py, u8* hitTx, u8* hitTy)
+bool HitMeanieTile(u8 tx, u8 ty)
 {
-    u8 tx;
-    u8 ty;
-    u8 tile;
-
-    if(px < 0 || py < 0)
-        return FALSE;
-
-    tx = (u8)(px >> 3);
-    ty = (u8)(py >> 3);
-
+    // Out-of-screen corners are ignored, as in the original point sampler.
     if(tx >= PLAYFIELD_W || ty >= PLAYFIELD_H)
         return FALSE;
-
-    tile = GetMapTile(tx, ty);
-
-    if(IsDestroyableTile(tile))
-    {
-        *hitTx = tx;
-        *hitTy = ty;
-        return TRUE;
-    }
-
-    return FALSE;
+    if(!IsDestroyableTile(g_RamMap[((u16)ty << 5) + tx]))
+        return FALSE;
+    DestroyMapTile(tx, ty);
+    return TRUE;
 }
 
 bool CheckMeanieCrashAt(Meanie* meanie, i16 x, i16 y)
 {
-    u8 tx;
-    u8 ty;
+    u8 tx1 = (u8)((x + 1) >> 3);
+    u8 tx2 = (u8)((x + 7) >> 3);
+    u8 ty1 = (u8)((y + 1) >> 3);
+    u8 ty2 = (u8)((y + 7) >> 3);
 
-    // Check four points inside the 8x8 sprite.
-    // This lets the meanie crash into walls, cannons, cores, or floor tiles.
-    if(
-        CheckMeaniePoint(x + 1, y + 1, &tx, &ty) ||
-        CheckMeaniePoint(x + 7, y + 1, &tx, &ty) ||
-        CheckMeaniePoint(x + 1, y + 7, &tx, &ty) ||
-        CheckMeaniePoint(x + 7, y + 7, &tx, &ty)
-    )
+    // Check the same four points inside the 8x8 sprite, in the same order.
+    // Skip repeated tiles; no VRAM reads and no stale collision cache.
+    // Negative offscreen coordinates become out-of-range tile indices.
+    if(HitMeanieTile(tx1, ty1) ||
+       (tx2 != tx1 && HitMeanieTile(tx2, ty1)) ||
+       (ty2 != ty1 && (HitMeanieTile(tx1, ty2) ||
+        (tx2 != tx1 && HitMeanieTile(tx2, ty2)))))
     {
-        DestroyMapTile(tx, ty);
-
         Pawn_Disable(&meanie->PawnObj);
         meanie->Active = FALSE;
-
         return TRUE;
     }
-
     return FALSE;
 }
 
@@ -1496,14 +1344,13 @@ void DestroyMapTile(u8 tx, u8 ty)
         g_GameOverToTitle = TRUE;
         g_GameOverSoundDone = FALSE;
 
-        g_FuelSoundWanted = FALSE;
-        g_FuelSoundRestart = FALSE;
+        // Ambient effects cannot restart over the game-over sound.
 
         ayFX_Mute();
 
         // Sound no. 8 in the bank = index 7.
         // Priority 0 = highest priority.
-        if(ayFX_PlayBank(7, 0) != AYFX_ERROR_NONE)
+        if(PlaySFX(7, 0) != AYFX_ERROR_NONE)
         {
             // If sound 8 is missing, don't softlock.
             g_GameOverSoundDone = TRUE;
@@ -1513,8 +1360,8 @@ void DestroyMapTile(u8 tx, u8 ty)
     }
 
     if(Energy > 50)
-      Energy -= 50;
-  
+        Energy -= 50;
+
     Print_DrawTextAt(23, 22, " SHIP HIT");
     g_ShowGoodHit = FALSE;
     DrawHUD();
@@ -1526,35 +1373,19 @@ void UpdateOneMeanie(Meanie* meanie)
 {
     i16 x;
     i16 y;
-    i16 step;
 
     if(!meanie->Active)
         return;
 
-    // If the current left/right move is finished, pick another.
-    if(meanie->MoveLeftFix == 0)
+    // If the current short movement segment is finished, pick another.
+    if(meanie->MoveFrames == 0)
     {
         PickMeanieSideMove(meanie);
     }
 
-    // Move horizontally, but do not overshoot the chosen 8, 16 and 32 pixel distance.
-    if(meanie->MoveLeftFix < MEANIE_HSPEED_FIX)
-    {
-        if(meanie->VXFix < 0)
-            step = -(i16)meanie->MoveLeftFix;
-        else
-            step = (i16)meanie->MoveLeftFix;
-
-        meanie->MoveLeftFix = 0;
-    }
-    else
-    {
-        step = meanie->VXFix;
-        meanie->MoveLeftFix -= MEANIE_HSPEED_FIX;
-    }
-
-    // Apply smooth movement.
-    meanie->XFix += step;
+    // Interpolate the short hops smoothly, including fractional descent.
+    meanie->MoveFrames--;
+    meanie->XFix += meanie->VXFix;
     meanie->YFix += meanie->VYFix;
 
     x = meanie->XFix >> FIX_SHIFT;
@@ -1575,7 +1406,6 @@ void UpdateOneMeanie(Meanie* meanie)
 
     Pawn_SetPosition(&meanie->PawnObj, (u8)x, (u8)y);
 
-    Pawn_Update(&meanie->PawnObj);
     Pawn_Draw(&meanie->PawnObj);
 }
 
@@ -1583,24 +1413,17 @@ void UpdateMeanie()
 {
     u8 i;
 
-    bool freeze = g_LaserActive || g_LaserErasing || g_GameOverToTitle;
+    // The laser freeze is intentional gameplay, including its erase phase.
+    // Sprites stay in VRAM; no redraw or AI update is needed while frozen.
+    if(g_LaserActive || g_LaserErasing || g_GameOverToTitle)
+        return;
 
-    if(!freeze)
-        TrySpawnMeanie();
-
+    TrySpawnMeanie();
     for(i = 0; i < MEANIE_COUNT; i++)
     {
         if(!g_Meanies[i].Active)
             continue;
-
-        if(freeze)
-        {
-            Pawn_Draw(&g_Meanies[i].PawnObj);
-            continue;
-        }
-
         UpdateOneMeanie(&g_Meanies[i]);
-
         if(g_GameOverToTitle)
             return;
     }
@@ -1614,7 +1437,7 @@ void ShowTitleScreen()
 {
     VDP_FillVRAM_16K(TILE_EMPTY, VDP_GetLayoutTable(), 768);
 
-    Print_DrawTextAt(11, 3,  "BLUE BAKAS");
+    Print_DrawTextAt(11, 3, "BLUE BAKAS");
     Print_DrawTextAt(8, 4,  "FROM OUTER SPACE");
 
     Print_DrawTextAt(11, 14, "Hit a key");
@@ -1682,35 +1505,41 @@ void LoadLevel()
     InitFuel();
     InitExplosion();
     InitRepairRobot();
+    Print_DrawTextAt(0, 22, "ENERGY=");
+    Print_DrawTextAt(0, 23, "SCORE=");
 }
 
+// Values are bounded by gameplay: energy <= 9999, score <= 200.
+// Repeated subtraction avoids the general signed-integer print conversion.
 void DrawInt4At(u8 x, u8 y, u16 value)
 {
-    if(value >= 1000)
-        Print_DrawIntAt(x, y, (i16)value);
-    else if(value >= 100)
+    static const u16 divisors[] = { 1000, 100, 10, 1 };
+    char text[5];
+    u8 i, digit;
+    bool started = FALSE;
+
+    for(i = 0; i < 4; i++)
     {
-        Print_DrawTextAt(x, y, " ");
-        Print_DrawIntAt(x + 1, y, (i16)value);
+        digit = 0;
+        while(value >= divisors[i])
+        {
+            value -= divisors[i];
+            digit++;
+        }
+        if(digit || i == 3)
+            started = TRUE;
+        text[i] = started ? '0' + digit : ' ';
     }
-    else if(value >= 10)
-    {
-        Print_DrawTextAt(x, y, "  ");
-        Print_DrawIntAt(x + 2, y, (i16)value);
-    }
-    else
-    {
-        Print_DrawTextAt(x, y, "   ");
-        Print_DrawIntAt(x + 3, y, (i16)value);
-    }
+    text[4] = 0;
+    Print_DrawTextAt(x, y, text);
 }
 
 void DrawHUD()
 {
-    Print_DrawTextAt(0, 22, "ENERGY=");
+    // Calls made immediately by gameplay also consume the pending HUD update.
+    g_hasHUDChanged = FALSE;
     DrawInt4At(8, 22, Energy);
 
-    Print_DrawTextAt(0, 23, "SCORE=");
     DrawInt4At(7, 23, Score);
 
     if(Energy == 0)
@@ -1751,9 +1580,6 @@ void main()
                 Score = 0;
                 Energy = 1000;
 
-                g_FuelSoundWanted = FALSE;
-                g_FuelSoundRestart = FALSE;
-
                 ResetGameplayFlags();
 
                 InitGraphics();
@@ -1768,16 +1594,12 @@ void main()
         UpdateLaser();
         UpdateExplosion();
         UpdateMeanie();
-
-        if(g_GameOverToTitle)
-            continue;
-
-        UpdateFuel();
-
-        if(g_hasHUDChanged)
+        if(!g_GameOverToTitle)
         {
-            DrawHUD();
-            g_hasHUDChanged = FALSE;
+            UpdateFuel();
+            UpdateMeanieSound();
+            if(g_hasHUDChanged)
+                DrawHUD();
         }
     }
 }
