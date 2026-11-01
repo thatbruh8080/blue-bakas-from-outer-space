@@ -1,5 +1,5 @@
 # Blue Bakas from Outer Space
-A (honestly bad) port of Blue Meanies from Outer Space for MSX1, developed with MSXgl by aoineko.
+A port of Blue Meanies from Outer Space for MSX1, developed with MSXgl by aoineko. Actually the very first game I made with MSXgl.
 
 Original game's made by Duane Later for the VIC-20 in 1981
 
@@ -7,6 +7,8 @@ Original game's made by Duane Later for the VIC-20 in 1981
   <img src="./screenshots/Bluebakas_0002.png" alt="Title screen" title="Title screen"/>
   <img src="./screenshots/Bluebakas_0003.png" alt="Gameplay" title="Gameplay"/>
 </div>
+
+Basically the objective is to get 200 points. You have to use the cannons to shoot down those grumpy looking square things and prevent them from reaching the core, or else that'll be OVERRUN. But shooting from the cannons cost some ENERGY so you'd also want to be really careful and precise. Though occasionally a fuel tank might fall down and whenever that falls down you should leave it alone
 
 If you'd wanna play it yourself directly on the browser it's right here: https://webmsx.org/?MACHINE=MSX1&SCREEN_FILTER_MODE=1&SCREEN_CRT_SCANLINES=0&ROM=https://raw.githubusercontent.com/thatbruh8080/blue-bakas-from-outer-space/main/emul/rom/bluebakas.rom
 
