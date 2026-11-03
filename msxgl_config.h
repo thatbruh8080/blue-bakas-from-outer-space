@@ -80,10 +80,10 @@
 #define VDP_UNIT					VDP_UNIT_U8
 
 // VDP screen modes (additionnal limitations come from the selected MSX_VERSION)
-#define VDP_USE_MODE_T1				TRUE	// MSX1		Screen 0 Width 40
+#define VDP_USE_MODE_T1				FALSE	// MSX1		Screen 0 Width 40
 #define VDP_USE_MODE_G1				TRUE	// MSX1		Screen 1
-#define VDP_USE_MODE_G2				TRUE	// MSX1		Screen 2
-#define VDP_USE_MODE_MC				TRUE	// MSX1		Screen 3
+#define VDP_USE_MODE_G2				FALSE	// MSX1		Screen 2
+#define VDP_USE_MODE_MC				FALSE	// MSX1		Screen 3
 #define VDP_USE_MODE_T2				FALSE	// MSX2		Screen 0 Width 80
 #define VDP_USE_MODE_G3				FALSE	// MSX2		Screen 4
 #define VDP_USE_MODE_G4				FALSE	// MSX2		Screen 5
@@ -96,7 +96,7 @@
 #define VDP_USE_COMMAND				TRUE	// Use VDP commands wrapper functions
 #define VDP_USE_CUSTOM_CMD			FALSE	// Use custom VDP commands through data buffer
 #define VDP_AUTO_INIT				TRUE	// Call VDP_Initialize() at the first call to VDP_SetMode()
-#define VDP_USE_UNDOCUMENTED		TRUE	// Allow the use of undocumented screen mode (WIP)
+#define VDP_USE_UNDOCUMENTED		FALSE	// Allow the use of undocumented screen mode (WIP)
 #define VDP_USE_VALIDATOR			TRUE	// Handle some option specific for each VDP mode (highly recommended)
 #define VDP_USE_DEFAULT_PALETTE		FALSE	// Add data for default MSX2 palette
 #define VDP_USE_MSX1_PALETTE		FALSE	// Add data for default MSX1 palette
@@ -146,10 +146,10 @@
 //-----------------------------------------------------------------------------
 
 // Input module setting
-#define INPUT_USE_JOYSTICK			TRUE	// Add functions to handle joystick using I/O port
+#define INPUT_USE_JOYSTICK			FALSE	// Add functions to handle joystick using I/O port
 #define INPUT_USE_KEYBOARD			TRUE	// Add functions to handle keyboard using I/O port
-#define INPUT_USE_MOUSE				TRUE	// Add support for Mouse handling functions
-#define INPUT_USE_DETECT			TRUE	// Add feature to detect device plugged in General purpose ports
+#define INPUT_USE_MOUSE				FALSE	// Add support for Mouse handling functions
+#define INPUT_USE_DETECT			FALSE	// Add feature to detect device plugged in General purpose ports
 #define INPUT_USE_ISR_PROTECTION	TRUE	// Disable interruptions while access PSG registers (needed if you use BIOS or access PSG in your own ISR)
 #define INPUT_JOY_UPDATE			FALSE	// Add function to update all joystick states at once
 #define INPUT_HOLD_SIGNAL			FALSE	// Determines whether functions that modify signals should keep the state of those they don't need to modify (which slows functions down a bit) 
@@ -172,7 +172,7 @@
 #define MEM_USE_VALIDATOR			FALSE	// Activate validator to handle invalide input value
 #define MEM_USE_FASTCOPY			FALSE	// Add support for fast-copy function (using unrolled-LDI loop)
 #define MEM_USE_FASTSET				FALSE	// Add support for fast-set function (using unrolled-LDI loop)
-#define MEM_USE_DYNAMIC				TRUE	// Add support for malloc style dynamic allocator
+#define MEM_USE_DYNAMIC				FALSE	// Add support for malloc style dynamic allocator
 #define MEM_USE_BUILTIN				TRUE	// Use SDCC built-in memcpy and memset function instead of MSXgl ones
 
 //-----------------------------------------------------------------------------
@@ -211,11 +211,11 @@
 #define PRINT_USE_FX_SHADOW			FALSE	// [Bitmap] Allow use of text shadow
 #define PRINT_USE_FX_OUTLINE		FALSE	// [Bitmap] Allow use of text outline
 #define PRINT_USE_2_PASS_FX			FALSE	// [Bitmap] Allow use 2-pass FX render to prevent character overlap
-#define PRINT_USE_GRAPH				TRUE	// Allow use of character lines and boxes
+#define PRINT_USE_GRAPH				FALSE	// Allow use of character lines and boxes
 #define PRINT_USE_VALIDATOR			TRUE	// Add validator character code
 #define PRINT_USE_UNIT				FALSE	// Display integer type (h: hexadecimal, b: binary)
-#define PRINT_USE_FORMAT			TRUE	// Add printf type function
-#define PRINT_USE_32B				TRUE	// Allow to print 32-bits integers
+#define PRINT_USE_FORMAT			FALSE	// Add printf type function
+#define PRINT_USE_32B				FALSE	// Allow to print 32-bits integers
 #define PRINT_SKIP_SPACE			FALSE	// Skill space character
 #define PRINT_COLOR_NUM				8		// 1 color per line
 // Character width
@@ -264,7 +264,7 @@
 #define PAWN_USE_SPRT_FX			FALSE	// Allow sprite effects (crop, flip, mask, rotate)
 #define PAWN_SPRITE_SIZE			8		// Sprite size mode (8 for 8x8 pixel mode, or 16 for 16x16)
 #define PAWN_BLEND_OFFSET			12		// Sprite pattern offset for blending mode
-#define PAWN_USE_PHYSICS			TRUE	// Add physics and collision features
+#define PAWN_USE_PHYSICS			FALSE	// Add physics and collision features
 // Pawn coordinate unit
 // - PAWN_UNIT_SCREEN				Default screen (pixel) unit (8-bit unsigned int)
 // - PAWN_UNIT_QMN(n)				Fixed-point (Qm.n) unit (16-bit signed int)
@@ -411,7 +411,7 @@
 #define PSG_ACCESS					PSG_INDIRECT
 #define PSG_USE_NOTES				FALSE	// Add notes table to convert note to tone
 #define PSG_USE_EXTRA				TRUE	// Add helper functions to handle PSG settings
-#define PSG_USE_RESUME				TRUE	// Add function to allow playback pause and resume
+#define PSG_USE_RESUME				FALSE	// Add function to allow playback pause and resume
 
 // MSX-Music options
 #define MSXAUDIO_USE_RESUME			TRUE	// Add function to allow playback pause and resume

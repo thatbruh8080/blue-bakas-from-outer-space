@@ -153,7 +153,8 @@ u16 g_Rand = 0xA7;
 volatile bool g_GameOverToTitle = FALSE;
 volatile bool g_GameOverSoundDone = FALSE;
 
-// One meanie owns JITTER until it dies. Audio randomness does not alter AI RNG.
+// "I, Blue Meanie, hereby state in my will that I leave this annoying sound to my fellow meani-" *good hit*
+// Sound ownership uses its own RNG so it cannot change movement or spawns.
 u8 g_JitterOwner = MEANIE_COUNT; // Sentinel: no owner.
 u8 g_SoundRand = 0xA7;
 bool g_JitterWanted = FALSE; // Pending movement sound from this owner only.
@@ -245,6 +246,7 @@ u8 g_KeyRow5Prev = 0xFF;
 //=============================================================================
 
 void InitGraphics() {
+    // Sets up SCREEN 1 and clears VRAM
     VDP_SetMode(VDP_MODE_SCREEN1);
     VDP_ClearVRAM();
 
@@ -252,6 +254,7 @@ void InitGraphics() {
     VDP_SetColor(COLOR_BLACK);
     VDP_SetSpriteFlag(VDP_SPRITE_SIZE_8);
 
+    // Uploads some mean blue thing into the sprite pattern table
     VDP_WriteVRAM_16K(
         g_Meanie8x8,
         VDP_GetSpritePatternTable() + (SPR_PAT_MEANIE * 8),
@@ -350,7 +353,8 @@ void UpdateMeanieSound()
             if(++candidate == MEANIE_COUNT)
                 candidate = 0;
         }
-        // Stop the dead owner's voice, but never mute a laser/hit/game-over SFX.
+        // The previous owner has stopped existing. Stop its jitter too.
+        // Leave laser, hit and game-over sounds alone.
         DisableInterrupt();
         if(g_AmbientSound == SFX_JITTER)
         {
@@ -368,7 +372,7 @@ void UpdateMeanieSound()
     }
     EnableInterrupt();
 
-    // Keep the intentional laser freeze. Do not queue a stale movement chirp.
+    // No movement sound during the laser freeze.
     if(g_LaserActive || g_LaserErasing || g_GameOverToTitle)
     {
         g_JitterWanted = FALSE;
@@ -613,9 +617,6 @@ bool FuelHitsSolidTile()
 
 void UpdateFuel()
 {
-    i16 x;
-    i16 y;
-
     bool freeze = g_LaserActive || g_LaserErasing;
 
     // During laser draw/erase, freeze the fuel tank completely:
@@ -629,9 +630,6 @@ void UpdateFuel()
         return;
 
     g_FuelY++;
-
-    x = g_FuelX;
-    y = g_FuelY;
 
     if(FuelHitsSolidTile())
     {
@@ -649,14 +647,14 @@ void UpdateFuel()
         return;
     }
 
-    if(y >= MEANIE_BOTTOM_Y)
+    if(g_FuelY >= MEANIE_BOTTOM_Y)
     {
         DespawnFuel();
 
         return;
     }
 
-    Pawn_SetPosition(&g_Fuel, (u8)x, (u8)y);
+    Pawn_SetPosition(&g_Fuel, g_FuelX, g_FuelY);
 
     Pawn_Draw(&g_Fuel);
 }
@@ -719,7 +717,7 @@ void InitExplosion()
 
 void StartExplosion(i16 x, i16 y)
 {
-    // Center the 16x16 explosion around the 8x8 thing that was hit.
+    // Centers the 16x16 explosion around whatever 8x8 thing got hit
     x -= 4;
     y -= 4;
 
@@ -733,8 +731,7 @@ void StartExplosion(i16 x, i16 y)
     else if(y > 176)
         y = 176;
 
-    // New behaviour:
-    // destroy every map tile touched by the 16x16 explosion box.
+    // Destroys every map tile touched by the 16x16 explosion box.
     ExplosionDestroyTilesAt(x, y);
 
     Pawn_SetPosition(&g_Explosion, (u8)x, (u8)y);
@@ -885,7 +882,7 @@ void InitRepairRobot()
             g_RobotTileY = index >> 5;
 
             // The robot itself is an overlay.
-            // Your screenshot has it standing over empty space, so start with 0 beneath it.
+            // The starting position has empty space underneath, so start with 0.
             g_RobotUnderTile = TILE_EMPTY;
 
             SetMapTile(g_RobotTileX, g_RobotTileY, TILE_REPAIR_ROBOT);
@@ -915,10 +912,10 @@ void MoveRepairRobot(i8 dx, i8 dy)
     if(newX < 0 || newY < 0 || newX >= PLAYFIELD_W || newY >= PLAYFIELD_H)
         return;
 
-    // Restore the real tile where the robot used to be.
+    // Restores whatever was under the robot before moving it
     SetMapTile(g_RobotTileX, g_RobotTileY, g_RobotUnderTile);
 
-    // Move to the new tile.
+    // Moves the robot
     g_RobotTileX = (u8)newX;
     g_RobotTileY = (u8)newY;
 
@@ -950,12 +947,11 @@ void RepairRobotTile()
     else
         buildTile = TILE_SOLID; // Build anywhere, even where original map was empty.
 
-    // Already built/repaired.
+    // If it's already repaired then there's no need wasting energy
     if(g_RobotUnderTile == buildTile)
         return;
 
-    // Build/repair the hidden tile under the robot.
-    // The robot remains visible until it moves away.
+    // Builds the tile under the robot. Unfortunately it has to get out of the way to see if it worked
     g_RobotUnderTile = buildTile;
     Energy -= REPAIR_COST;
     g_hasHUDChanged = TRUE;
@@ -1017,11 +1013,11 @@ void UpdateRepairRobot()
 
 bool CanFireLaser(u8 cannonX, u8 cannonY)
 {
-    // If the cannon was destroyed, it cannot fire anymore.
+    // Checks if there's still a cannon there.
     if(GetMapTile(cannonX, cannonY) != TILE_CANNON)
         return FALSE;
 
-    // Need enough energy to fire.
+    // Require 50 energy
     if(Energy < 50)
         return FALSE;
 
@@ -1045,6 +1041,7 @@ bool LaserHitsFuelAtTile(u8 tx, u8 ty)
     if(!g_FuelActive || !LaserOverlaps(tx, ty, g_FuelX, g_FuelY))
         return FALSE;
 
+    // Laser hit the fuel tank. GOOD SHOT CAPTAIN THAT WAS OUR FUEL YOU DUMMY
     StartExplosion(g_FuelX, g_FuelY);
     DespawnFuel();
     return TRUE;
@@ -1140,6 +1137,7 @@ void UpdateActiveLaser()
     {
         if(g_LaserErasing)
         {
+            // If there's no laser tile left well nobody's paralyzed anymore
             g_LaserActive = FALSE;
             g_LaserErasing = FALSE;
             return;
@@ -1277,7 +1275,8 @@ void TrySpawnMeanie()
 {
     u8 i;
 
-    // Find one inactive slot first: do not run the RNG while both are occupied.
+    // Find an empty slot. Two idiots is the current legal limit.
+    // No need to run the RNG while both slots are occupied.
     for(i = 0; i < MEANIE_COUNT; i++)
     {
         if(!g_Meanies[i].Active)
@@ -1316,6 +1315,7 @@ bool CheckMeanieCrashAt(Meanie* meanie, i16 x, i16 y)
        (ty2 != ty1 && (HitMeanieTile(tx1, ty2) ||
         (tx2 != tx1 && HitMeanieTile(tx2, ty2)))))
     {
+        // Destroy anything and itself except the repair robot
         Pawn_Disable(&meanie->PawnObj);
         meanie->Active = FALSE;
         return TRUE;
@@ -1333,6 +1333,7 @@ void DestroyMapTile(u8 tx, u8 ty)
     if(tile == TILE_REPAIR_ROBOT)
         return;
 
+    // This is what happens if a meanie touches the core
     if(tile == TILE_CORE)
     {
         g_hasHUDChanged = TRUE;
@@ -1377,7 +1378,8 @@ void UpdateOneMeanie(Meanie* meanie)
     if(!meanie->Active)
         return;
 
-    // If the current short movement segment is finished, pick another.
+    // Eight frames have passed. Time for another tactical decision.
+    // Left probably. Idk ask the meanie
     if(meanie->MoveFrames == 0)
     {
         PickMeanieSideMove(meanie);
@@ -1396,7 +1398,7 @@ void UpdateOneMeanie(Meanie* meanie)
     if(CheckMeanieCrashAt(meanie, x, y))
         return;
 
-    // Destroy meanie at screen limits.
+    // Removes the meanie if it reaches the screen limits. Oh boy it's invading the TV
     if(x <= MEANIE_MIN_X || x >= MEANIE_MAX_X || y >= MEANIE_BOTTOM_Y)
     {
         Pawn_Disable(&meanie->PawnObj);
@@ -1474,6 +1476,7 @@ void ShowMeanerScreen()
     // cleared name table for the intermission message.
     InitGraphics();
 
+    // Prints revenge message
     Print_DrawTextAt(3, 10, "WE'RE GONNA BE MEANER NOW");
     Energy = 1000;
     Score = 0;
@@ -1490,7 +1493,7 @@ void ShowMeanerScreen()
 //=============================================================================
 
 void LoadMap() {
-    // Copy the master template from ROM to the live RAM buffer
+    // Copies the original ship into RAM for it to be ruined in real time
     Mem_Copy(g_Map, g_RamMap, PLAYFIELD_SIZE);
 
     // Write the 704-byte map to the top of the VRAM layout table (0x1800)
@@ -1561,6 +1564,7 @@ void main()
     InitGraphics();
     ShowTitleScreen();
     LoadLevel();
+    // Initialize sound
     InitSound();
 
     while(1)
